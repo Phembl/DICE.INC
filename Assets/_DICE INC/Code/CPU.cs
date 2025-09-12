@@ -317,6 +317,7 @@ public class CPU : MonoBehaviour
     #region |-------------- STATISTICS TRACKING --------------|
     
     //Statistics Tracking
+    //Dice Rolled
     private int diceRolledTotal;
     
     public int GetDiceRolledTotal() => diceRolledTotal;
@@ -328,6 +329,21 @@ public class CPU : MonoBehaviour
     }
     
     public static event Action OnDiceRollTotalChanged;
+    
+    //Dice Roll StockValue (unlocked through StockMarket)
+
+    private float diceRollStockValue = 1;
+    
+    public float GetDiceRollStockValue() => diceRollStockValue;
+    
+    public void ChangeDiceRollStockValue(float currentValue)
+    {
+        diceRollStockValue = currentValue;
+        OnDiceRollStockValueChanged?.Invoke();
+    }
+    
+    public static event Action OnDiceRollStockValueChanged;
+    
 
     #endregion
     

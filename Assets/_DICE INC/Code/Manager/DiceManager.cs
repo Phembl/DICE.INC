@@ -65,6 +65,9 @@ public class DiceManager : MonoBehaviour
          pipsGenerated += diceResults[i];
       }
       
+      //Mult with Dice Roll Stockmarket value
+      pipsGenerated = (int)(pipsGenerated * CPU.instance.GetDiceRollStockValue());
+      
       CPU.instance.ChangeResource(Resource.Pips, pipsGenerated);
       CPU.instance.ChangeDiceRolledTotal(diceRolled); //Uses this value in case rolls are multiplied
       CPU.instance.ChangeResource(Resource.Dice, -dicesToRoll);

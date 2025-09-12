@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using Shapes;
 using Unity.Mathematics;
 using Random = UnityEngine.Random;
 
@@ -20,6 +21,8 @@ public class Stockmarket : InteractionArea
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
 
     [SerializeField] private TMP_Text stockValueTMP;
+    [SerializeField] private Transform stockValueEntryHolder;
+    [SerializeField] private GameObject stockValueEntryPrefab;
 
     [TitleGroup("Settings")] 
     [SerializeField] private float timeBetweenUpdates = 0.5f;
@@ -43,7 +46,7 @@ public class Stockmarket : InteractionArea
 
     
     private bool stockmarketCycleActive;
-    private double currentStockValue = 1f;
+    private float currentStockValue = 1f;
     
    
     
@@ -123,13 +126,40 @@ public class Stockmarket : InteractionArea
     {
         stockmarketCycleActive = true;
         bool lastTimeUp = true;
+        GameObject nextEntry = Instantiate(stockValueEntryPrefab, stockValueEntryHolder);
+        Vector2 lastEntryPosition = new Vector2(0, 0);
+        
         while (stockmarketCycleActive)
         {
             
+            yield return new WaitForSeconds(timeBetweenUpdates);
+           
+            if (stockValueEntryHolder.childCount > 19) Destroy(stockValueEntryHolder.GetChild(0).gameObject);
+                
+            foreach (Transform nextEntryHolder in stockValueEntryHolder)
+            {
+                Vector2 entryTarget = new Vector2(nextEntryHolder.localPosition.x - 20, nextEntryHolder.localPosition.y);
+                nextEntryHolder.localPosition = entryTarget;
+            }
+                
+            //Next Value
             float nextValueChange = Random.Range(currentLowerRange, currentUpperRange);
             currentStockValue += nextValueChange;
+            
+            if (currentStockValue <= 0) currentStockValue = 0;
+            CPU.instance.ChangeDiceRollStockValue(currentStockValue);
+            
             stockValueTMP.text = currentStockValue.ToString("F2");
-            yield return new WaitForSeconds(timeBetweenUpdates);
+            
+            //Next Entry
+            nextEntry = Instantiate(stockValueEntryPrefab, stockValueEntryHolder);
+            Vector2 nextEntryPosition = new Vector2(0, (currentStockValue * 100)-100);
+            nextEntry.transform.localPosition = nextEntryPosition;
+            
+            lastEntryPosition = stockValueEntryHolder.GetChild(nextEntry.transform.GetSiblingIndex() - 1).localPosition;
+            Vector2 lineEnd = new Vector2(lastEntryPosition.x, lastEntryPosition.y - nextEntryPosition.y);
+            nextEntry.GetComponent<Line>().End = lineEnd;
+            
         }
         
     }
