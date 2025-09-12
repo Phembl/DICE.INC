@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     [SerializeField, FoldoutGroup("References")] private CPU cpu;
     [SerializeField, FoldoutGroup("References")] private InteractionArea shop;
     [SerializeField, FoldoutGroup("References")] private InteractionArea workshop;
+    [SerializeField, FoldoutGroup("References")] private InteractionArea casino;
     [SerializeField, FoldoutGroup("References")] private InteractionArea diceworld;
     [SerializeField, FoldoutGroup("References")] private InteractionArea stockmarket;
     
@@ -64,6 +65,10 @@ public class GameManager : MonoBehaviour
     
     //Casino
     [SerializeField, FoldoutGroup("Casino")] private bool casinoUnlocked;
+    [SerializeField, FoldoutGroup("Casino")] private int startBets;
+    [SerializeField, FoldoutGroup("Casino")] private int startStakes;
+    [SerializeField, FoldoutGroup("Casino")] private int startLuckyNumber;
+    [SerializeField, FoldoutGroup("Casino")] private int startJackpot;
     
     //DiceWorld
     [SerializeField, FoldoutGroup("Diceworld")] private bool diceworldUnlocked;
@@ -123,6 +128,16 @@ public class GameManager : MonoBehaviour
         workshopStartSettings.Add(startOverdrive);
         workshop.InitializeInteractionArea(workshopUnlocked, workshopStartSettings);
         Debug.Log("|----- FINISH INIT: Workshop -----|");
+        
+        //Init Workshop
+        Debug.Log("|----- START INIT: Casino -----|");
+        List <int> casinoStartSettings  = new List<int>();
+        casinoStartSettings.Add(startBets);
+        casinoStartSettings.Add(startStakes);
+        casinoStartSettings.Add(startLuckyNumber);
+        casinoStartSettings.Add(startJackpot);
+        casino.InitializeInteractionArea(casinoUnlocked, casinoStartSettings);
+        Debug.Log("|----- FINISH INIT: Casino -----|");
         
         //Init Diceworld
         Debug.Log("|----- START INIT: Diceworld -----|");

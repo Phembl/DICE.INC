@@ -160,6 +160,8 @@ public class Stockmarket : InteractionArea
             Vector2 lineEnd = new Vector2(lastEntryPosition.x, lastEntryPosition.y - nextEntryPosition.y);
             nextEntry.GetComponent<Line>().End = lineEnd;
             
+            //TODO: Add some form of Zoom Effect so that the stock display can't go through Screen top
+            
         }
         
     }
