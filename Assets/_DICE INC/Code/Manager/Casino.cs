@@ -15,10 +15,16 @@ public class Casino : InteractionArea
 {
     
     
-    [SerializeField] private Transform workshopLoadScreen;
+
     [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Casino;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
 
+    [SerializeField] private Transform displayHouseNumbers;
+    [SerializeField] private Transform displayPlayerNumbers;
+    [SerializeField] private GameObject numberPrefab;
+    [SerializeField] private Sprite winIcon;
+    [SerializeField] private Sprite loseIcon;
+    [SerializeField] private TMP_Text outputTMP;
     [TitleGroup("Settings")] 
     
     [Header("Bets")]
@@ -29,21 +35,25 @@ public class Casino : InteractionArea
     [Header("Stakes")]
     [SerializeField] private int costStakesBase;
     [SerializeField] private float costStakesMultiplier;
-    [SerializeField] private int currentMin;
-    [SerializeField] private int currentMax;
+    [SerializeField] private int stakesNumberIncrease;
+    [ShowInInspector, ReadOnly] private int currentMin;
+    [ShowInInspector, ReadOnly] private int currentMax;
     
-    [Header("LuckyNumber")]
-    [SerializeField] private int costLuckyNumberBase;
-    [SerializeField] private float costLuckyNumberMultiplier;
+    [Header("Odds")]
+    [SerializeField] private int costOddsBase;
+    [SerializeField] private float costOddsMultiplier;
+    [ShowInInspector, ReadOnly] private int currentOdds;
     
     [Header("Jackpot")]
     [SerializeField] private int costJackpotBase;
     [SerializeField] private float costJackpotMultiplier;
+    [SerializeField] private int jackpotPrizeBase;
+    [ShowInInspector, ReadOnly] private float currentJackpotMult = 1;
     
     
     [Header("Progress")] 
     [SerializeField] private int betsToUnlockStakes;
-    [SerializeField] private int betsToUnlockLuckyNumber;
+    [SerializeField] private int betsToUnlockOdds;
     [SerializeField] private int betsToUnlockJackpot;
 
 
@@ -58,6 +68,8 @@ public class Casino : InteractionArea
     {
         currentMin = 1;
         currentMax = 20;
+        
+        outputTMP.text = "";
     }
     
     protected override List<int> GetCostsBase()
@@ -66,7 +78,7 @@ public class Casino : InteractionArea
         
         costs.Add(costBetsBase);
         costs.Add(costStakesBase);
-        costs.Add(costLuckyNumberBase);
+        costs.Add(costOddsBase);
         costs.Add(costJackpotBase);
         
         return costs;
@@ -78,7 +90,7 @@ public class Casino : InteractionArea
         
         costs.Add(costBetsMultiplier);
         costs.Add(costStakesMultiplier);
-        costs.Add(costLuckyNumberMultiplier);
+        costs.Add(costOddsMultiplier);
         costs.Add(costJackpotMultiplier);
         
         return costs;
@@ -93,25 +105,26 @@ public class Casino : InteractionArea
     
     protected override void RunInteraction(int index)
     {
-        int count = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Workshop, index);
+        int count = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Casino, index);
         
         switch (index)
         {
             case 0: //Bets
-                currentBets = currentBets + (1 * count);
+                currentBets = count;
                 CheckProgress();
                 break;
             
             case 1: //Stakes
-                
+                currentMax = (stakesNumberIncrease * count);
+                currentMin = (stakesNumberIncrease * count);
                 break;
             
-            case 2: //Lucky Number
-                
+            case 2: //Odds
+                currentOdds = count;
                 break;
             
             case 3: //Jackpot
-             
+                currentJackpotMult = (jackpotPrizeBase * count);
                 break;
             
          
@@ -133,7 +146,7 @@ public class Casino : InteractionArea
             !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Casino, 1)) UnlockInteractor(1);
         
         //Unlock Lucky Number
-        if(betCount >= betsToUnlockLuckyNumber &&
+        if(betCount >= betsToUnlockOdds &&
                 !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Casino, 2)) UnlockInteractor(2);
         
         //Unlock Jackpot
@@ -145,11 +158,95 @@ public class Casino : InteractionArea
     
     private IEnumerator CasinoCycle()
     {
+        if (casinoCycleActive) yield return null;
+        
         casinoCycleActive = true;
+        List<int> houseNumbers = new List<int>();
+        List<int> playerNumbers = new List<int>();
+        int overallWin = 0;
+        int jackpotNumber = -1;
+        
         while (casinoCycleActive)
         {
-            //TODO: Casino Cycle
-            yield return new WaitForSeconds(0.2f);
+            //Start new Cycle
+            houseNumbers.Clear();
+            playerNumbers.Clear();
+            overallWin = 0;
+            
+           outputTMP.text = "Next Round!";
+           int evaluatedBets = currentBets;
+           
+           
+           if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Casino,3) > 0) jackpotNumber = Random.Range(0, currentBets);
+           
+            //Make Bets
+            for (int i = 0; i < evaluatedBets; i++)
+            {
+                houseNumbers.Add(Random.Range(currentMin + currentOdds, currentMax + 1));
+                Debug.Log(houseNumbers[i]);
+                GameObject numberDisplay = Instantiate(numberPrefab, displayHouseNumbers);
+                numberDisplay.GetComponent<TMP_Text>().text = houseNumbers[i].ToString();
+                if (i == jackpotNumber)
+                    numberDisplay.GetComponent<TMP_Text>().text = $"{numberDisplay.GetComponent<TMP_Text>().text}!";
+                
+                playerNumbers.Add(Random.Range(currentMin + currentOdds, currentMax + 1));
+                numberDisplay = Instantiate(numberPrefab, displayPlayerNumbers);
+                numberDisplay.GetComponent<TMP_Text>().text = playerNumbers[i].ToString();
+                
+                yield return new WaitForSeconds(0.3f);
+            }
+            
+            yield return new WaitForSeconds(1.5f);
+            
+            //Check Bets
+            for (int i = 0; i < evaluatedBets; i++)
+            {
+                int houseNumber = houseNumbers[i];
+                int playerNumber = playerNumbers[i];
+
+                if (houseNumber != playerNumber) //Lose
+                {
+                    displayHouseNumbers.GetChild(i).transform.GetChild(0).GetComponent<Image>().sprite = loseIcon;
+                    displayPlayerNumbers.GetChild(i).transform.GetChild(0).GetComponent<Image>().sprite = loseIcon;
+                }
+                else //Win
+                {
+                    displayHouseNumbers.GetChild(i).transform.GetChild(0).GetComponent<Image>().sprite = winIcon;
+                    displayPlayerNumbers.GetChild(i).transform.GetChild(0).GetComponent<Image>().sprite = winIcon;
+                    overallWin += houseNumbers[i];
+                }
+                
+                displayHouseNumbers.GetChild(i).transform.GetChild(0).GetComponent<Image>().enabled = true;
+                displayPlayerNumbers.GetChild(i).transform.GetChild(0).GetComponent<Image>().enabled = true;
+                
+                yield return new WaitForSeconds(0.3f);
+            }
+            
+            yield return new WaitForSeconds(1.5f);
+
+            if (overallWin > 0)
+            {
+                overallWin = (int)(overallWin * currentJackpotMult);
+                outputTMP.text = $"You won {overallWin} pips!";
+                CPU.instance.ChangeResource(Resource.Pips, overallWin);
+            
+            }
+            
+            else outputTMP.text = "You won nothing...";
+            
+            yield return new WaitForSeconds(2f);
+
+            foreach (Transform display in displayHouseNumbers)
+            {
+                Destroy(display.gameObject);
+            }
+            foreach (Transform display in displayPlayerNumbers)
+            {
+                Destroy(display.gameObject);
+            }
+            
+            yield return new WaitForSeconds(0.5f);
+            
         }
         
     }

@@ -813,6 +813,43 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4696456407366371276, guid: cf1f537ff5c0d468e98acaf87b464c28, type: 3}
   m_PrefabInstance: {fileID: 45103078}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &54203865
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 54203866}
+  m_Layer: 5
+  m_Name: Casino_Displays
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &54203866
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54203865}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 146081018}
+  - {fileID: 1104347867}
+  m_Father: {fileID: 275615282}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 875.09, y: -164.5}
+  m_SizeDelta: {x: 800.7, y: 779.1}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &74715791 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4696456407366371276, guid: cf1f537ff5c0d468e98acaf87b464c28, type: 3}
@@ -1078,6 +1115,77 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4927310413855728146, guid: bb9291f7b29f94db987b2ba425562339, type: 3}
   m_PrefabInstance: {fileID: 1783062964}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &146081017
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 146081018}
+  - component: {fileID: 146081020}
+  - component: {fileID: 146081019}
+  m_Layer: 5
+  m_Name: Casino_Numbers_House
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &146081018
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 146081017}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 54203866}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -1.42, y: 240.7}
+  m_SizeDelta: {x: 780.97, y: 74.9}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &146081019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 146081017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 2
+  m_Spacing: 5
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
+--- !u!222 &146081020
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 146081017}
+  m_CullTransparentMesh: 1
 --- !u!1 &160469168
 GameObject:
   m_ObjectHideFlags: 0
@@ -1310,12 +1418,16 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4225958089476428264, guid: cf1f537ff5c0d468e98acaf87b464c28, type: 3}
+      propertyPath: maxCount
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4225958089476428264, guid: cf1f537ff5c0d468e98acaf87b464c28, type: 3}
       propertyPath: costResource
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4225958089476428264, guid: cf1f537ff5c0d468e98acaf87b464c28, type: 3}
       propertyPath: interactorName
-      value: Lucky Number
+      value: Odds
       objectReference: {fileID: 0}
     - target: {fileID: 4225958089476428264, guid: cf1f537ff5c0d468e98acaf87b464c28, type: 3}
       propertyPath: interactionArea
@@ -1407,11 +1519,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6592539899629421267, guid: cf1f537ff5c0d468e98acaf87b464c28, type: 3}
       propertyPath: m_text
-      value: lucky number
+      value: odds
       objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: cf1f537ff5c0d468e98acaf87b464c28, type: 3}
       propertyPath: m_Name
-      value: Interactor_Casino_LuckyNumber
+      value: Interactor_Casino_Odds
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1674,6 +1786,7 @@ GameObject:
   - component: {fileID: 275615281}
   - component: {fileID: 275615280}
   - component: {fileID: 275615279}
+  - component: {fileID: 275615283}
   m_Layer: 5
   m_Name: UI_Casino
   m_TagString: Untagged
@@ -1758,7 +1871,9 @@ RectTransform:
   m_Children:
   - {fileID: 402847608}
   - {fileID: 1328205184}
+  - {fileID: 923294295}
   - {fileID: 487608624}
+  - {fileID: 54203866}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1766,6 +1881,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!225 &275615283
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 275615278}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -2158,6 +2285,10 @@ PrefabInstance:
     - target: {fileID: 4225958089476428264, guid: cf1f537ff5c0d468e98acaf87b464c28, type: 3}
       propertyPath: isActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4225958089476428264, guid: cf1f537ff5c0d468e98acaf87b464c28, type: 3}
+      propertyPath: maxCount
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4225958089476428264, guid: cf1f537ff5c0d468e98acaf87b464c28, type: 3}
       propertyPath: isUnlocked
@@ -3574,10 +3705,10 @@ MonoBehaviour:
   startEfficiency: 0
   startCritical: 0
   startOverdrive: 0
-  casinoUnlocked: 0
+  casinoUnlocked: 1
   startBets: 0
   startStakes: 0
-  startLuckyNumber: 0
+  startOdds: 0
   startJackpot: 0
   diceworldUnlocked: 0
   startSides: 0
@@ -5067,6 +5198,142 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 907825599}
   m_CullTransparentMesh: 1
+--- !u!1 &923294292
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 923294295}
+  - component: {fileID: 923294294}
+  - component: {fileID: 923294293}
+  m_Layer: 5
+  m_Name: Casino_OutputText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &923294293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 923294292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: You won 1200 pips!
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 04ba92586bc8c42448ccc930fb465901, type: 2}
+  m_sharedMaterial: {fileID: 7604463300196444474, guid: 04ba92586bc8c42448ccc930fb465901, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4283018191
+  m_fontColor: {r: 0.8117647, g: 0.67058825, b: 0.28627452, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 35.25
+  m_fontSizeBase: 64
+  m_fontWeight: 400
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 32
+  m_fontSizeMax: 72
+  m_fontStyle: 16
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &923294294
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 923294292}
+  m_CullTransparentMesh: 1
+--- !u!224 &923294295
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 923294292}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 275615282}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 875.09, y: -510.39}
+  m_SizeDelta: {x: 380.87, y: 71.79}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &949694194
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5708,6 +5975,77 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1090120889}
+  m_CullTransparentMesh: 1
+--- !u!1 &1104347866
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1104347867}
+  - component: {fileID: 1104347869}
+  - component: {fileID: 1104347868}
+  m_Layer: 5
+  m_Name: Casino_Numbers_Player
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1104347867
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104347866}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 54203866}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -1.42, y: 141.4}
+  m_SizeDelta: {x: 780.97, y: 74.9}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1104347868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104347866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 2
+  m_Spacing: 5
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
+--- !u!222 &1104347869
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104347866}
   m_CullTransparentMesh: 1
 --- !u!1 &1131858533
 GameObject:
@@ -9270,23 +9608,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4b5056e7d0874a6c9025f8e9252af5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactorHolder: {fileID: 0}
-  areaCanvas: {fileID: 0}
-  workshopLoadScreen: {fileID: 0}
+  interactorHolder: {fileID: 487608624}
+  areaCanvas: {fileID: 275615283}
   thisInteractionAreaType: 4
-  costBetsBase: 0
-  costBetsMultiplier: 0
-  costStakesBase: 0
-  costStakesMultiplier: 0
-  currentMin: 0
-  currentMax: 0
-  costLuckyNumberBase: 0
-  costLuckyNumberMultiplier: 0
-  costJackpotBase: 0
-  costJackpotMultiplier: 0
-  betsToUnlockStakes: 0
-  betsToUnlockLuckyNumber: 0
-  betsToUnlockJackpot: 0
+  displayHouseNumbers: {fileID: 146081018}
+  displayPlayerNumbers: {fileID: 1104347867}
+  numberPrefab: {fileID: 1866386267115836899, guid: 3f7f2e985273742f2825c68870452e36, type: 3}
+  winIcon: {fileID: 21300000, guid: 35026dcf5f5934bc6820155ae63027e9, type: 3}
+  loseIcon: {fileID: 21300000, guid: b08df3f6118cd4af089b83b122ce9c88, type: 3}
+  outputTMP: {fileID: 923294293}
+  costBetsBase: 60
+  costBetsMultiplier: 1.25
+  costStakesBase: 1
+  costStakesMultiplier: 1.1
+  stakesNumberIncrease: 50
+  costOddsBase: 1
+  costOddsMultiplier: 1.1
+  costJackpotBase: 1
+  costJackpotMultiplier: 1.1
+  jackpotPrizeBase: 1000
+  betsToUnlockStakes: 1
+  betsToUnlockOdds: 3
+  betsToUnlockJackpot: 5
 --- !u!4 &1951630508
 Transform:
   m_ObjectHideFlags: 0

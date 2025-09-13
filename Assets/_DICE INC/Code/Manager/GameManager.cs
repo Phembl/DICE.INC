@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
     [SerializeField, FoldoutGroup("Casino")] private bool casinoUnlocked;
     [SerializeField, FoldoutGroup("Casino")] private int startBets;
     [SerializeField, FoldoutGroup("Casino")] private int startStakes;
-    [SerializeField, FoldoutGroup("Casino")] private int startLuckyNumber;
+    [SerializeField, FoldoutGroup("Casino")] private int startOdds;
     [SerializeField, FoldoutGroup("Casino")] private int startJackpot;
     
     //DiceWorld
@@ -134,7 +134,7 @@ public class GameManager : MonoBehaviour
         List <int> casinoStartSettings  = new List<int>();
         casinoStartSettings.Add(startBets);
         casinoStartSettings.Add(startStakes);
-        casinoStartSettings.Add(startLuckyNumber);
+        casinoStartSettings.Add(startOdds);
         casinoStartSettings.Add(startJackpot);
         casino.InitializeInteractionArea(casinoUnlocked, casinoStartSettings);
         Debug.Log("|----- FINISH INIT: Casino -----|");

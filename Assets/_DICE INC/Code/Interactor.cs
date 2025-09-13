@@ -16,7 +16,10 @@ public class Interactor : MonoBehaviour
     [SerializeField] private Sprite spriteNormal;
     [SerializeField] private Sprite spriteHovered;
     [Space]
+    [SerializeField] private int maxCount = -1;
+    [Space]
     [SerializeField] private bool isShop;
+    
     
     //Colors
     private Color colorNormal;
@@ -31,6 +34,7 @@ public class Interactor : MonoBehaviour
     //State Tracking
     private bool isHovered;
     private bool isUnlocked;
+    private bool isMaxed;
     private bool isPurchasable;
     private double currentCost;
     private int currentCount;
@@ -199,7 +203,7 @@ public class Interactor : MonoBehaviour
     
     void OnMouseOver()
     {
-        if (isHovered || !isPurchasable || !isUnlocked) return;
+        if (isHovered || !isPurchasable || !isUnlocked || isMaxed) return;
         
         isHovered = true;
         
@@ -226,7 +230,7 @@ public class Interactor : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (!isPurchasable || !isUnlocked) return;
+        if (!isPurchasable || !isUnlocked || isMaxed) return;
         
         if (clickAnim != null)  StopCoroutine(clickAnim);
         clickAnim = StartCoroutine(ClickAnimation());
@@ -253,6 +257,8 @@ public class Interactor : MonoBehaviour
     //Run By Interaction Parent (Shop, workshop, etc.)
     public void UpdatePrice(double _newCost)
     {
+        if (isMaxed) return;
+        
         currentCost = _newCost;
         //The internal price should be updatable, even if locked (only used by X 100)
         if (!isUnlocked) return;
@@ -271,6 +277,12 @@ public class Interactor : MonoBehaviour
         //Show count only if not Shop Interactor
         if (isShop) titleTMP.text = interactorName;
         else titleTMP.text = $"{interactorName}({currentCount.ToString()})";
+
+        if (currentCount == maxCount)
+        {
+            isMaxed = true;
+            costTMP.SetText("MAX");
+        }
     }
     #endregion
 }
