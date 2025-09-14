@@ -150,7 +150,7 @@ public class Workshop : InteractionArea
         }
     }
     
-    void CheckProgress()
+    protected override void CheckProgress()
     {
         if (!workshopCycleActive)
         {

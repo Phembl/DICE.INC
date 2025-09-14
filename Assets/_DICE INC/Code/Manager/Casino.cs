@@ -47,7 +47,8 @@ public class Casino : InteractionArea
     [SerializeField] private int costJackpotBase;
     [SerializeField] private float costJackpotMultiplier;
     [SerializeField] private int jackpotPrizeBase;
-    [ShowInInspector, ReadOnly] private float currentJackpotMult = 1;
+    [SerializeField] private int jackpotPercentageRange;
+    [ShowInInspector, ReadOnly] private int currentJackpotMult = 1;
     
     
     [Header("Progress")] 
@@ -123,7 +124,7 @@ public class Casino : InteractionArea
                 break;
             
             case 3: //Jackpot
-                currentJackpotMult = (jackpotPrizeBase * count);
+                //Jackpot Count is calculated within the jackpot mult roller
                 break;
             
          
@@ -131,7 +132,7 @@ public class Casino : InteractionArea
         }
     }
     
-    void CheckProgress()
+    protected override void CheckProgress()
     {
         if (!casinoCycleActive && currentBets > 0)
         {
@@ -160,35 +161,37 @@ public class Casino : InteractionArea
         if (casinoCycleActive) yield return null;
         
         casinoCycleActive = true;
-        List<int> houseNumbers = new List<int>();
-        List<int> playerNumbers = new List<int>();
-        int overallWin = 0;
-        int jackpotNumber = -1;
         
         while (casinoCycleActive)
         {
             //Start new Cycle
-            houseNumbers.Clear();
-            playerNumbers.Clear();
-            overallWin = 0;
+            List<int> houseNumbers = new List<int>();
+            List<int> playerNumbers = new List<int>();
+            int overallWin = 0;
+            
+            int jackpotIndex = -1;
             
            outputTMP.text = "Next Round!";
+           if (printLog) Debug.Log("CASINO: Starting new round");
            int evaluatedBets = currentBets;
            
-           
-           if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Casino,3) > 0) jackpotNumber = Random.Range(0, currentBets);
+           //If Jackpot is active, define the jackpot index
+           if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Casino,3) > 0) jackpotIndex = Random.Range(0, currentBets);
            
             //Make Bets
             for (int i = 0; i < evaluatedBets; i++)
             {
+                //Roll and write house numbers
                 houseNumbers.Add(Random.Range(currentMin + currentOdds, currentMax + 1));
-                Debug.Log(houseNumbers[i]);
                 GameObject numberDisplay = Instantiate(numberPrefab, displayHouseNumbers);
                 numberDisplay.GetComponent<TMP_Text>().text = houseNumbers[i].ToString();
 
-                if (i == jackpotNumber) //Create Jackpot marker (!)
+                if (i == jackpotIndex) //Create Jackpot marker (!)
+                {
                     numberDisplay.GetComponent<TMP_Text>().text = $"{numberDisplay.GetComponent<TMP_Text>().text}!";
-                
+                }
+                    
+                //Roll and write player numbers
                 playerNumbers.Add(Random.Range(currentMin + currentOdds, currentMax + 1));
                 numberDisplay = Instantiate(numberPrefab, displayPlayerNumbers);
                 numberDisplay.GetComponent<TMP_Text>().text = playerNumbers[i].ToString();
@@ -204,6 +207,8 @@ public class Casino : InteractionArea
                 int houseNumber = houseNumbers[i];
                 int playerNumber = playerNumbers[i];
 
+                //Compare the next house number with player number
+                
                 if (houseNumber != playerNumber) //Lose
                 {
                     displayHouseNumbers.GetChild(i).transform.GetChild(0).GetComponent<Image>().sprite = loseIcon;
@@ -214,12 +219,17 @@ public class Casino : InteractionArea
                     displayHouseNumbers.GetChild(i).transform.GetChild(0).GetComponent<Image>().sprite = winIcon;
                     displayPlayerNumbers.GetChild(i).transform.GetChild(0).GetComponent<Image>().sprite = winIcon;
 
-                    if (houseNumbers[i] == jackpotNumber)
+                    int prize = houseNumbers[i];
+                    
+                    if (i == jackpotIndex) //Win Jackpot
                     {
-                        Debug.Log("Casino: Jackpot won");
+                        currentJackpotMult = RollJackpotMult();
+                        if (printLog) Debug.Log($"CASINO: Jackpot won. Prize: {prize}");
+                        prize *= currentJackpotMult;
                         
                     }
-                    overallWin += houseNumbers[i];
+                    
+                    overallWin += prize;
                 }
                 
                 displayHouseNumbers.GetChild(i).transform.GetChild(0).GetComponent<Image>().enabled = true;
@@ -232,7 +242,6 @@ public class Casino : InteractionArea
 
             if (overallWin > 0)
             {
-                overallWin = (int)(overallWin * currentJackpotMult);
                 outputTMP.text = $"You won {overallWin} pips!";
                 CPU.instance.ChangeResource(Resource.Pips, overallWin);
             
@@ -255,6 +264,14 @@ public class Casino : InteractionArea
             
         }
         
+    }
+
+    int RollJackpotMult()
+    {
+        int prizeRange = jackpotPrizeBase / jackpotPercentageRange;
+        int newJackpotMult = Random.Range(jackpotPrizeBase - prizeRange , jackpotPrizeBase + prizeRange + 1);
+        
+        return newJackpotMult * CPU.instance.GetAreaInteractorCount(InteractionAreaType.Casino,3);
     }
     
     #endregion

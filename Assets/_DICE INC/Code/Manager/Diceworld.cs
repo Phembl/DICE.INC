@@ -166,7 +166,7 @@ public class Diceworld : InteractionArea
         return nextDisplayY;
     }
     
-    void CheckProgress()
+    protected override void CheckProgress()
     {
         if (diceworldLevel >= levelToUnlockAdvantage && 
             !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Diceworld, 1)) 

@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     [SerializeField, FoldoutGroup("References")] private InteractionArea casino;
     [SerializeField, FoldoutGroup("References")] private InteractionArea diceworld;
     [SerializeField, FoldoutGroup("References")] private InteractionArea stockmarket;
-    
+    #endregion
     
     #region |-------------- PROGRESS TRACKING --------------|
     
@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
     
     #endregion
     
-    #region |-------------- SETTINGS --------------|
+    #region |-------------- START RESOURCES --------------|
     
     [Header("Start Resources")]
     [SerializeField, FoldoutGroup("Settings")] private int startDiceRollTotal;
@@ -45,15 +45,13 @@ public class GameManager : MonoBehaviour
     
     #endregion
     
-    #region |-------------- SHOP --------------|
-    //Workshop
+    #region |-------------- AREA SETTINGS --------------|
+    //Shop
     [SerializeField, FoldoutGroup("Shop")] private bool shopUnlocked;
     [SerializeField, FoldoutGroup("Shop")] private int startDiceShop;
     [SerializeField, FoldoutGroup("Shop")] private int startToolsShop;
     [SerializeField, FoldoutGroup("Shop")] private int startDataShop;
-    #endregion
     
-    #region |-------------- WORKSHOP --------------|
     //Workshop
     [SerializeField, FoldoutGroup("Workshop")] private bool workshopUnlocked;
     [SerializeField, FoldoutGroup("Workshop")] private int startDicemaker;
@@ -61,7 +59,6 @@ public class GameManager : MonoBehaviour
     [SerializeField, FoldoutGroup("Workshop")] private int startEfficiency;
     [SerializeField, FoldoutGroup("Workshop")] private int startCritical;
     [SerializeField, FoldoutGroup("Workshop")] private int startOverdrive;
-    #endregion
     
     //Casino
     [SerializeField, FoldoutGroup("Casino")] private bool casinoUnlocked;
@@ -88,8 +85,9 @@ public class GameManager : MonoBehaviour
     //AutoShoper
     [SerializeField, FoldoutGroup("Auto-shoper")] private bool autoshoperUnlocked;
     
-    
     #endregion
+    
+   
     public static GameManager instance;
     private void Awake()
     {
@@ -109,6 +107,7 @@ public class GameManager : MonoBehaviour
     {
         ResourceManager.instance.InitializeResourceManager();
         
+        #region |-------------- INIT AREAS --------------|
         //Init Shop
         Debug.Log("|----- START INIT: Shop -----|");
         List <int> shopStartSettings  = new List<int>();
@@ -157,6 +156,7 @@ public class GameManager : MonoBehaviour
         stockmarket.InitializeInteractionArea(stockmarketUnlocked, stockmarketStartSettings);
         Debug.Log("|----- FINISH INIT: Stockmarket -----|");
       
+        #endregion
         
         CPU.instance.ChangeDiceRolledTotal(startDiceRollTotal);
         

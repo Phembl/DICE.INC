@@ -111,7 +111,7 @@ public class Stockmarket : InteractionArea
         }
     }
     
-    void CheckProgress()
+    protected override void CheckProgress()
     {
         
         if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Stockmarket, 0) > marketingToUnlockBottomline &&

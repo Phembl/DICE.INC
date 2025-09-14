@@ -71,7 +71,7 @@ public class Shop : InteractionArea
         {
             case 0: //Buy Dice
                 CPU.instance.ChangeResource(Resource.Dice,1);
-                CheckProgressDice();
+                CheckProgress();
                 break;
             
             case 1: //Buy Tools
@@ -85,7 +85,7 @@ public class Shop : InteractionArea
         }
     }
 
-    void CheckProgressDice()
+    protected override void CheckProgress()
     {
         double totalDicePurchased = 
             CPU.instance.GetAreaInteractorCount(InteractionAreaType.Shop, 0) + CPU.instance.GetAreaInteractorCount(InteractionAreaType.Shop, 1) * 100;

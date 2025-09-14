@@ -19,7 +19,7 @@ public abstract class InteractionArea : MonoBehaviour
     [SerializeField] private Transform interactorHolder;
     [SerializeField] private CanvasGroup areaCanvas;
     [Space]
-    [SerializeField] private bool printLog;
+    [SerializeField] protected bool printLog;
     
     protected bool areaUnlocked;
    
@@ -93,10 +93,12 @@ public abstract class InteractionArea : MonoBehaviour
         
         
         if (_isUnlocked) UnlockArea();
+
+        CheckProgress();
     }
 
     protected abstract void InitSubClass();
-    
+    protected abstract void CheckProgress();
     protected abstract List<int> GetCostsBase(); 
     protected abstract List<float> GetCostsMult();
     protected abstract InteractionAreaType GetInteractionAreaType();
