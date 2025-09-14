@@ -14,12 +14,12 @@ using Random = UnityEngine.Random;
 public class Workshop : InteractionArea
 {
     
-    
-    [SerializeField] private Transform workshopLoadScreen;
+    [TitleGroup("References")] 
     [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Workshop;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
+    [SerializeField] private Transform workshopLoadScreen;
 
-    [TitleGroup("Settings")] 
+    [TitleGroup("Workshop")] 
     [SerializeField] private float workshopTimer;
     [ShowInInspector, ReadOnly] private float currentTimer;
     

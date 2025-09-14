@@ -15,18 +15,17 @@ public class Casino : InteractionArea
 {
     
     
-
+    [TitleGroup("References")] 
     [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Casino;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
-
     [SerializeField] private Transform displayHouseNumbers;
     [SerializeField] private Transform displayPlayerNumbers;
     [SerializeField] private GameObject numberPrefab;
     [SerializeField] private Sprite winIcon;
     [SerializeField] private Sprite loseIcon;
     [SerializeField] private TMP_Text outputTMP;
-    [TitleGroup("Settings")] 
     
+    [TitleGroup("Casino")] 
     [Header("Bets")]
     [SerializeField] private int costBetsBase;
     [SerializeField] private float costBetsMultiplier;
@@ -186,7 +185,8 @@ public class Casino : InteractionArea
                 Debug.Log(houseNumbers[i]);
                 GameObject numberDisplay = Instantiate(numberPrefab, displayHouseNumbers);
                 numberDisplay.GetComponent<TMP_Text>().text = houseNumbers[i].ToString();
-                if (i == jackpotNumber)
+
+                if (i == jackpotNumber) //Create Jackpot marker (!)
                     numberDisplay.GetComponent<TMP_Text>().text = $"{numberDisplay.GetComponent<TMP_Text>().text}!";
                 
                 playerNumbers.Add(Random.Range(currentMin + currentOdds, currentMax + 1));
@@ -213,6 +213,12 @@ public class Casino : InteractionArea
                 {
                     displayHouseNumbers.GetChild(i).transform.GetChild(0).GetComponent<Image>().sprite = winIcon;
                     displayPlayerNumbers.GetChild(i).transform.GetChild(0).GetComponent<Image>().sprite = winIcon;
+
+                    if (houseNumbers[i] == jackpotNumber)
+                    {
+                        Debug.Log("Casino: Jackpot won");
+                        
+                    }
                     overallWin += houseNumbers[i];
                 }
                 

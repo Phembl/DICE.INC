@@ -16,7 +16,7 @@ public class Stockmarket : InteractionArea
 {
     
     
-   
+    [TitleGroup("References")] 
     [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Stockmarket;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
 
@@ -24,7 +24,7 @@ public class Stockmarket : InteractionArea
     [SerializeField] private Transform stockValueEntryHolder;
     [SerializeField] private GameObject stockValueEntryPrefab;
 
-    [TitleGroup("Settings")] 
+    [TitleGroup("Stockmarket")] 
     [SerializeField] private float timeBetweenUpdates = 0.5f;
     [SerializeField] private float startUpperRange;
     [SerializeField] private float startLowerRange;

@@ -7,11 +7,11 @@ using UnityEngine.UI;
 
 public class Shop : InteractionArea
 {
-    
+    [TitleGroup("References")] 
     [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Shop;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
     
-    [TitleGroup("Settings")] 
+    [TitleGroup("Shop")] 
     [Header("Dice")]
     [SerializeField] private int costDiceBase;
     [Header("Tools")]

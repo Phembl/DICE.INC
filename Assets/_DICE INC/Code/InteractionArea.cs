@@ -15,9 +15,11 @@ using System.Linq;
 public abstract class InteractionArea : MonoBehaviour
 {
     
-    [TitleGroup("References")] 
+    [TitleGroup("General")] 
     [SerializeField] private Transform interactorHolder;
     [SerializeField] private CanvasGroup areaCanvas;
+    [Space]
+    [SerializeField] private bool printLog;
     
     protected bool areaUnlocked;
    

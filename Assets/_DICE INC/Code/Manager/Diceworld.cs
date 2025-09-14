@@ -13,17 +13,16 @@ using UnityEngine.PlayerLoop;
 
 public class Diceworld : InteractionArea
 {
-    
+    [TitleGroup("References")] 
     [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Diceworld;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
-
     [SerializeField] private GameObject diceworldDisplay;
-        
-    [TitleGroup("Settings")] 
     [SerializeField] private TMP_Text rollCounter;
+    
+    [TitleGroup("Diceworld")] 
     [ShowInInspector, ReadOnly] private double currentRollCount;
-    [SerializeField] private double targetCountBase;
-    [SerializeField] private double targetCountMult;
+    [SerializeField] private double targetRollsBase;
+    [SerializeField] private double targetRollsMult;
     [ShowInInspector, ReadOnly] private double currentRollTarget;
     
     [Header("Sides")]
@@ -65,7 +64,7 @@ public class Diceworld : InteractionArea
     protected override void InitSubClass()
     {
       
-        currentRollTarget = targetCountBase;
+        currentRollTarget = targetRollsBase;
 
         rollCounter.text = $"{currentRollCount:N0}/{currentRollTarget:N0}";
         
@@ -145,7 +144,7 @@ public class Diceworld : InteractionArea
             currentRollCount -= currentRollTarget;
             diceworldLevel++;
             
-            currentRollTarget = Math.Round(targetCountBase * Math.Pow(targetCountMult, diceworldLevel));
+            currentRollTarget = Math.Round(targetRollsBase * Math.Pow(targetRollsMult, diceworldLevel));
 
             CPU.instance.ChangeResource(Resource.mDice, 1);
             
