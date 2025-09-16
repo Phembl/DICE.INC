@@ -1,12 +1,12 @@
 using UnityEngine;
 
-public class Settings : MonoBehaviour
+public class SettingsManager : MonoBehaviour
 {
     public Color colorNormal;
     public Color colorDark;
     public Color colorInactive;
     
-    public static Settings instance;
+    public static SettingsManager instance;
     private void Awake()
     {
         if  (instance == null) instance = this;

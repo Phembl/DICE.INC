@@ -50,6 +50,11 @@ namespace DICEINC.Global
             // Always show 2 decimals, e.g. 1.20k instead of 1.2k
             return value.ToString("F2") + suffixes[suffixIndex];
         }
+        
+        public static bool Roll(float percentChance)
+        {
+            return Random.value < (percentChance / 100f);
+        }
     }
    
     

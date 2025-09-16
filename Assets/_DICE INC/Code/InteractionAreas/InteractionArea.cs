@@ -26,6 +26,7 @@ public abstract class InteractionArea : MonoBehaviour
     private List<int> costBase = new List<int>();
     private List<float> costMult = new List<float>();
     private List<double> costCurrent = new List<double>();
+    private List<int> valueMax = new List<int>();
     private List<bool> interactorUnlockStatus =  new List<bool>();
     private List<Interactor> areaInteractors = new List<Interactor>();
 
@@ -55,6 +56,7 @@ public abstract class InteractionArea : MonoBehaviour
         costBase = GetCostsBase();
         costCurrent = costBase.Select(i => (double)i).ToList(); //Converts Base Cost List to current Cost List
         costMult = GetCostsMult();
+        valueMax = GetValueMax();
         
         interactionAreaType = GetInteractionAreaType();
         
@@ -68,7 +70,7 @@ public abstract class InteractionArea : MonoBehaviour
         //Initialize every Interactor 
         for (int i = 0; i < interactorHolder.childCount; i++)
         {
-            areaInteractors[i].InitializeInteractor(costBase[i]);
+            areaInteractors[i].InitializeInteractor(costBase[i], valueMax[i]);
         }
 
         for (int i = 0; i < startValues.Count; i++)
@@ -84,6 +86,13 @@ public abstract class InteractionArea : MonoBehaviour
                 //This is for testing and loading
                 UnlockInteractor(i);
                 UpdateInteractorCost(i);
+                
+                //Makes sure that an interactor is never initialized with a value higher than its Max
+                if (valueMax[i] > 0 && startValues[i] > valueMax[i])
+                {
+                    Debug.LogWarning($"{name} Interactor with index {i} is initialized with a higher start Count than its max value. Value is set = max.");
+                    startValues[i] = valueMax[i];
+                }
                 areaInteractors[i].UpdateCount(startValues[i]);
                 
                 RunInteraction(i);
@@ -101,6 +110,7 @@ public abstract class InteractionArea : MonoBehaviour
     protected abstract void CheckProgress();
     protected abstract List<int> GetCostsBase(); 
     protected abstract List<float> GetCostsMult();
+    protected abstract List<int> GetValueMax(); 
     protected abstract InteractionAreaType GetInteractionAreaType();
     
     #endregion

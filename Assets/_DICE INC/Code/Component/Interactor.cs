@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using DICEINC.Global;
+using Sirenix.OdinInspector;
 
 public class Interactor : MonoBehaviour
 {
@@ -13,10 +14,10 @@ public class Interactor : MonoBehaviour
     [SerializeField] private InteractionArea interactionArea;
     [SerializeField] private Resource costResource;
     [Space]
+    [ShowInInspector, ReadOnly] private int maxCount;
+    [Space]
     [SerializeField] private Sprite spriteNormal;
     [SerializeField] private Sprite spriteHovered;
-    [Space]
-    [SerializeField] private int maxCount = -1;
     [Space]
     [SerializeField] private bool isShop;
     
@@ -62,12 +63,12 @@ public class Interactor : MonoBehaviour
     }
 
     
-    public void InitializeInteractor(int _currentCost)
+    public void InitializeInteractor(int _currentCost, int _maxCount)
     {
         
-        colorNormal = Settings.instance.colorNormal;
-        colorDark = Settings.instance.colorDark;
-        colorInactive = Settings.instance.colorInactive;
+        colorNormal = SettingsManager.instance.colorNormal;
+        colorDark = SettingsManager.instance.colorDark;
+        colorInactive = SettingsManager.instance.colorInactive;
         
         background = GetComponent<Image>();
         titleTMP = transform.GetChild(0).gameObject.GetComponent<TMP_Text>();
@@ -76,6 +77,7 @@ public class Interactor : MonoBehaviour
         background.sprite = spriteNormal;
         
         currentCost = _currentCost;
+        maxCount = _maxCount;
         
         //Initially every Interactor is locked
         titleTMP.text = "???";
@@ -274,15 +276,16 @@ public class Interactor : MonoBehaviour
     {
         currentCount = _newCount;
         
+        if (currentCount >= maxCount && maxCount > 0)
+        {
+            isMaxed = true;
+            currentCount = maxCount;
+            costTMP.SetText("MAX");
+        }
+        
         //Show count only if not Shop Interactor
         if (isShop) titleTMP.text = interactorName;
         else titleTMP.text = $"{interactorName}({currentCount.ToString()})";
-
-        if (currentCount == maxCount)
-        {
-            isMaxed = true;
-            costTMP.SetText("MAX");
-        }
     }
     #endregion
 }

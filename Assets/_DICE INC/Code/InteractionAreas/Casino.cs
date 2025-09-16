@@ -14,7 +14,6 @@ using Random = UnityEngine.Random;
 public class Casino : InteractionArea
 {
     
-    
     [TitleGroup("References")] 
     [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Casino;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
@@ -27,37 +26,43 @@ public class Casino : InteractionArea
     
     [TitleGroup("Casino")] 
     [Header("Bets")]
-    [SerializeField] private int costBetsBase;
-    [SerializeField] private float costBetsMultiplier;
-    [ShowInInspector, ReadOnly] private int currentBets;
+    [SerializeField] private int betsCostBase;
+    [SerializeField] private float betsCostMult;
+    [SerializeField] private int betsMax;
+    [Space]
+    [ShowInInspector, ReadOnly] private int betsCurrent;
     
     [Header("Stakes")]
-    [SerializeField] private int costStakesBase;
-    [SerializeField] private float costStakesMultiplier;
-    [SerializeField] private int stakesNumberIncrease;
+    [SerializeField] private int stakesCostBase;
+    [SerializeField] private float stakesCostMult;
+    [SerializeField] private int stakesMax;
+    [Space]
+    [SerializeField] private int stakesValueIncrease;
     [ShowInInspector, ReadOnly] private int currentMin;
     [ShowInInspector, ReadOnly] private int currentMax;
     
     [Header("Odds")]
-    [SerializeField] private int costOddsBase;
-    [SerializeField] private float costOddsMultiplier;
-    [ShowInInspector, ReadOnly] private int currentOdds;
+    [SerializeField] private int oddsCostBase;
+    [SerializeField] private float oddsCostMult;
+    [SerializeField] private int oddsMax;
+    [Space]
+    [ShowInInspector, ReadOnly] private int oddsCurrent;
     
     [Header("Jackpot")]
-    [SerializeField] private int costJackpotBase;
-    [SerializeField] private float costJackpotMultiplier;
+    [SerializeField] private int jackpotCostBase;
+    [SerializeField] private float jackpotCostMult;
+    [SerializeField] private int jackpotMax;
+    [Space]
     [SerializeField] private int jackpotPrizeBase;
     [SerializeField] private int jackpotPercentageRange;
-    [ShowInInspector, ReadOnly] private int currentJackpotMult = 1;
+    [ShowInInspector, ReadOnly] private int jackpotCurrent = 1;
     
     
     [Header("Progress")] 
     [SerializeField] private int betsToUnlockStakes;
     [SerializeField] private int betsToUnlockOdds;
     [SerializeField] private int betsToUnlockJackpot;
-
-
-   
+    
     
     private bool casinoCycleActive;
     
@@ -76,10 +81,10 @@ public class Casino : InteractionArea
     {
         List<int> costs = new List<int>();
         
-        costs.Add(costBetsBase);
-        costs.Add(costStakesBase);
-        costs.Add(costOddsBase);
-        costs.Add(costJackpotBase);
+        costs.Add(betsCostBase);
+        costs.Add(stakesCostBase);
+        costs.Add(oddsCostBase);
+        costs.Add(jackpotCostBase);
         
         return costs;
     }
@@ -88,12 +93,24 @@ public class Casino : InteractionArea
     {
         List<float> costs = new List<float>();
         
-        costs.Add(costBetsMultiplier);
-        costs.Add(costStakesMultiplier);
-        costs.Add(costOddsMultiplier);
-        costs.Add(costJackpotMultiplier);
+        costs.Add(betsCostMult);
+        costs.Add(stakesCostMult);
+        costs.Add(oddsCostMult);
+        costs.Add(jackpotCostMult);
         
         return costs;
+    }
+
+    protected override List<int> GetValueMax()
+    {
+        List<int> max = new List<int>();
+        
+        max.Add(betsMax);
+        max.Add(stakesMax);
+        max.Add(oddsMax);
+        max.Add(jackpotMax);
+        
+        return max;
     }
     
    
@@ -110,17 +127,17 @@ public class Casino : InteractionArea
         switch (index)
         {
             case 0: //Bets
-                currentBets = count;
+                betsCurrent = count;
                 CheckProgress();
                 break;
             
             case 1: //Stakes
-                currentMax = (stakesNumberIncrease * count);
-                currentMin = (stakesNumberIncrease * count);
+                currentMax = (stakesValueIncrease * count);
+                currentMin = (stakesValueIncrease * count);
                 break;
             
             case 2: //Odds
-                currentOdds = count;
+                oddsCurrent = count;
                 break;
             
             case 3: //Jackpot
@@ -134,7 +151,7 @@ public class Casino : InteractionArea
     
     protected override void CheckProgress()
     {
-        if (!casinoCycleActive && currentBets > 0)
+        if (!casinoCycleActive && betsCurrent > 0)
         {
             StartCoroutine(CasinoCycle());
         }
@@ -170,19 +187,24 @@ public class Casino : InteractionArea
             int overallWin = 0;
             
             int jackpotIndex = -1;
+            bool jackpotUnlocked = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Casino, 3) > 0;
             
            outputTMP.text = "Next Round!";
-           if (printLog) Debug.Log("CASINO: Starting new round");
-           int evaluatedBets = currentBets;
+           if (printLog) Debug.Log("|--------------CASINO ROUND --------------|");
+           int evaluatedBets = betsCurrent;
            
            //If Jackpot is active, define the jackpot index
-           if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Casino,3) > 0) jackpotIndex = Random.Range(0, currentBets);
+           if (jackpotUnlocked)
+           {
+               jackpotIndex = Random.Range(0, betsCurrent);
+               if (printLog) Debug.Log($"New Jackpot index: {jackpotIndex}.");
+           }
            
             //Make Bets
             for (int i = 0; i < evaluatedBets; i++)
             {
                 //Roll and write house numbers
-                houseNumbers.Add(Random.Range(currentMin + currentOdds, currentMax + 1));
+                houseNumbers.Add(Random.Range(currentMin + oddsCurrent, currentMax + 1));
                 GameObject numberDisplay = Instantiate(numberPrefab, displayHouseNumbers);
                 numberDisplay.GetComponent<TMP_Text>().text = houseNumbers[i].ToString();
 
@@ -192,7 +214,7 @@ public class Casino : InteractionArea
                 }
                     
                 //Roll and write player numbers
-                playerNumbers.Add(Random.Range(currentMin + currentOdds, currentMax + 1));
+                playerNumbers.Add(Random.Range(currentMin + oddsCurrent, currentMax + 1));
                 numberDisplay = Instantiate(numberPrefab, displayPlayerNumbers);
                 numberDisplay.GetComponent<TMP_Text>().text = playerNumbers[i].ToString();
                 
@@ -223,9 +245,9 @@ public class Casino : InteractionArea
                     
                     if (i == jackpotIndex) //Win Jackpot
                     {
-                        currentJackpotMult = RollJackpotMult();
-                        if (printLog) Debug.Log($"CASINO: Jackpot won. Prize: {prize}");
-                        prize *= currentJackpotMult;
+                        jackpotCurrent = RollJackpotMult();
+                        if (printLog) Debug.Log($"Jackpot won. Prize: {prize}");
+                        prize *= jackpotCurrent;
                         
                     }
                     

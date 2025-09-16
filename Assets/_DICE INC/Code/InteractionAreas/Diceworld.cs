@@ -20,37 +20,45 @@ public class Diceworld : InteractionArea
     [SerializeField] private TMP_Text rollCounter;
     
     [TitleGroup("Diceworld")] 
-    [ShowInInspector, ReadOnly] private double currentRollCount;
-    [SerializeField] private double targetRollsBase;
-    [SerializeField] private double targetRollsMult;
-    [ShowInInspector, ReadOnly] private double currentRollTarget;
+    [ShowInInspector, ReadOnly] private int diceworldLevel = 1;
+    [ShowInInspector, ReadOnly] private double rollsCurrent;
+    [SerializeField] private double rollsGoalBase;
+    [SerializeField] private double rollsGoalMult;
+    [ShowInInspector, ReadOnly] private double rollsGoalCurrent;
     
     [Header("Sides")]
-    [SerializeField] private int costSidesBase;
-    [SerializeField] private float costSidesMultiplier;
-    [ShowInInspector, ReadOnly] private int currentSides;
+    [SerializeField] private int sidesCostBase;
+    [SerializeField] private float sidesCostMult;
+    [SerializeField] private int sidesMax;
+    [Space]
+    [ShowInInspector, ReadOnly] private int sidesCurrent;
     
     [Header("Advantage")]
-    [SerializeField] private int costAdvantageBase;
-    [SerializeField] private float costAdvantageMultiplier;
+    [SerializeField] private int advantageCostBase;
+    [SerializeField] private float advantageCostMult;
+    [SerializeField] private int advantageMax;
+    [Space]
+    [ShowInInspector, ReadOnly] private int advantageCurrent;
     
     [Header("High Roller")]
-    [SerializeField] private int costHighRollerBase;
-    [SerializeField] private float costHighRollerMultiplier;
+    [SerializeField] private int highrollerCostBase;
+    [SerializeField] private float highrollerCostMult;
+    [SerializeField] private int highrollerMax;
+    [Space]
+    [ShowInInspector, ReadOnly] private int highrollerCurrent;
     
     [Header("Explosive")]
-    [SerializeField] private int costExplosiveBase;
-    [SerializeField] private float costExplosiveMultiplier;
+    [SerializeField] private int explosiveCostBase;
+    [SerializeField] private float explosiveCostMult;
+    [SerializeField] private int explosiveMax;
+    [Space]
+    [ShowInInspector, ReadOnly] private int explosiveCurrent;
     
     [Header("Progress")] 
     [SerializeField] private int levelToUnlockAdvantage;
     [SerializeField] private int levelToUnlockHighRoller;
     [SerializeField] private int levelToUnlockExplosive;
-
-
-    private int diceworldLevel = 1;
-
-    private int startDiceRolls;
+    
     
     public static Diceworld instance;
     private void Awake()
@@ -64,12 +72,9 @@ public class Diceworld : InteractionArea
     protected override void InitSubClass()
     {
       
-        currentRollTarget = targetRollsBase;
-
-        rollCounter.text = $"{currentRollCount:N0}/{currentRollTarget:N0}";
+        rollsGoalCurrent = rollsGoalBase;
+        rollCounter.text = $"{rollsCurrent:N0}/{rollsGoalCurrent:N0}";
         
-        startDiceRolls = CPU.instance.GetDiceRolledTotal();
-
         diceworldDisplay.transform.DOLocalMoveY(-470, 0);
     }
     
@@ -77,10 +82,10 @@ public class Diceworld : InteractionArea
     {
         List<int> costs = new List<int>();
         
-        costs.Add(costSidesBase);
-        costs.Add(costAdvantageBase);
-        costs.Add(costHighRollerBase);
-        costs.Add(costExplosiveBase);
+        costs.Add(sidesCostBase);
+        costs.Add(advantageCostBase);
+        costs.Add(highrollerCostBase);
+        costs.Add(explosiveCostBase);
         
         return costs;
     }
@@ -89,12 +94,24 @@ public class Diceworld : InteractionArea
     {
         List<float> costs = new List<float>();
         
-        costs.Add(costSidesMultiplier);
-        costs.Add(costAdvantageMultiplier);
-        costs.Add(costHighRollerMultiplier);
-        costs.Add(costExplosiveMultiplier);
+        costs.Add(sidesCostMult);
+        costs.Add(advantageCostMult);
+        costs.Add(highrollerCostMult);
+        costs.Add(explosiveCostMult);
         
         return costs;
+    }
+    
+    protected override List<int> GetValueMax()
+    {
+        List<int> max = new List<int>();
+        
+        max.Add(sidesMax);
+        max.Add(advantageMax);
+        max.Add(highrollerMax);
+        max.Add(explosiveMax);
+        
+        return max;
     }
     
    
@@ -111,22 +128,21 @@ public class Diceworld : InteractionArea
         switch (index)
         {
             case 0: //Sides
+                sidesCurrent = count;
                 CheckProgress();
                 break;
             
             case 1: //Advantage
-               
+                advantageCurrent = count;
                 break;
             
             case 2: //HighRoller
-                
+                highrollerCurrent = count;
                 break;
             
             case 3: //Explosive
-                
+                explosiveCurrent = count;
                 break;
-            
-           
             
         }
     }
@@ -136,31 +152,31 @@ public class Diceworld : InteractionArea
     {
         if (!areaUnlocked) return;
         
-        currentRollCount += lastRolls;
+        rollsCurrent += lastRolls;
         
-        if (currentRollCount >= currentRollTarget)
+        if (rollsCurrent >= rollsGoalCurrent)
         {
             //Account for overflow
-            currentRollCount -= currentRollTarget;
+            rollsCurrent -= rollsGoalCurrent;
             diceworldLevel++;
             
-            currentRollTarget = Math.Round(targetRollsBase * Math.Pow(targetRollsMult, diceworldLevel));
+            rollsGoalCurrent = Math.Round(rollsGoalBase * Math.Pow(rollsGoalMult, diceworldLevel));
 
             CPU.instance.ChangeResource(Resource.mDice, 1);
             
             CheckProgress();
         }
       
-        if (currentRollCount > 0) diceworldDisplay.transform.DOLocalMoveY(GetDisplayY(), 0.2f);
+        if (rollsCurrent > 0) diceworldDisplay.transform.DOLocalMoveY(GetDisplayY(), 0.2f);
         else diceworldDisplay.transform.DOLocalMoveY(-470, 0.5f);
         
-        rollCounter.text = $"{currentRollCount:N0}/{currentRollTarget:N0}";
+        rollCounter.text = $"{rollsCurrent:N0}/{rollsGoalCurrent:N0}";
 
     }
 
     float GetDisplayY()
     {
-        float t = Mathf.InverseLerp(0f, (float)currentRollTarget, (float)currentRollCount);
+        float t = Mathf.InverseLerp(0f, (float)rollsGoalCurrent, (float)rollsCurrent);
         float nextDisplayY = Mathf.Lerp(-470f, 0f, t);
         
         return nextDisplayY;

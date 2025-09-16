@@ -13,13 +13,16 @@ public class Shop : InteractionArea
     
     [TitleGroup("Shop")] 
     [Header("Dice")]
-    [SerializeField] private int costDiceBase;
+    [SerializeField] private int diceCostBase;
+    [SerializeField] private int diceMax;
     [Header("Tools")]
-    [SerializeField] private int costToolsBase;
-    [SerializeField] private float costToolsMultiplier;
+    [SerializeField] private int toolsCostBase;
+    [SerializeField] private float toolsCostMult;
+    [SerializeField] private int toolsMax;
     [Header("Data")]
-    [SerializeField] private int costDataBase;
-    [SerializeField] private float costDataMultiplier;
+    [SerializeField] private int dataCostBase;
+    [SerializeField] private float dataCostMult;
+    [SerializeField] private int dataMax;
     [Header("Progress")]
     [SerializeField] private int diceCostIncrease1;
     [SerializeField] private int diceCostIncrease2;
@@ -40,9 +43,9 @@ public class Shop : InteractionArea
     {
         List<int> costs = new List<int>();
         
-        costs.Add(costDiceBase);
-        costs.Add(costToolsBase);
-        costs.Add(costDataBase);
+        costs.Add(diceCostBase);
+        costs.Add(toolsCostBase);
+        costs.Add(dataCostBase);
         
         return costs;
     }
@@ -52,10 +55,21 @@ public class Shop : InteractionArea
         List<float> costs = new List<float>();
         
         costs.Add(1);
-        costs.Add(costToolsMultiplier);
-        costs.Add(costDataMultiplier);
+        costs.Add(toolsCostMult);
+        costs.Add(dataCostMult);
         
         return costs;
+    }
+    
+    protected override List<int> GetValueMax()
+    {
+        List<int> max = new List<int>();
+        
+        max.Add(diceMax);
+        max.Add(toolsMax);
+        max.Add(dataMax);
+        
+        return max;
     }
     
    

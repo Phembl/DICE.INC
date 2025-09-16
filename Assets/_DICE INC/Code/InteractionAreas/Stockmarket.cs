@@ -25,19 +25,23 @@ public class Stockmarket : InteractionArea
     [SerializeField] private GameObject stockValueEntryPrefab;
 
     [TitleGroup("Stockmarket")] 
-    [SerializeField] private float timeBetweenUpdates = 0.5f;
+    [SerializeField] private float timeBetweenUpdates;
     [SerializeField] private float startUpperRange;
     [SerializeField] private float startLowerRange;
     
     [Header("Marketing")]
-    [SerializeField] private int costMarketingBase;
-    [SerializeField] private float costMarketingMultiplier;
+    [SerializeField] private int marketingCostBase;
+    [SerializeField] private float marketingCostMult;
+    [SerializeField] private int marketingMax;
+    [Space]
     [SerializeField] private float upperRangeIncrease;
     [ShowInInspector, ReadOnly] private float currentUpperRange;
     
     [Header("Bottomline")]
-    [SerializeField] private int costBottomlineBase;
-    [SerializeField] private float costBottomlineMultiplier;
+    [SerializeField] private int bottomlineCostBase;
+    [SerializeField] private float bottomlineCostMult;
+    [SerializeField] private int bottomlineMax;
+    [Space]
     [SerializeField] private float lowerRangeIncrease;
     [ShowInInspector, ReadOnly] private float currentLowerRange;
     
@@ -70,8 +74,8 @@ public class Stockmarket : InteractionArea
     {
         List<int> costs = new List<int>();
         
-        costs.Add(costMarketingBase);
-        costs.Add(costBottomlineBase);
+        costs.Add(marketingCostBase);
+        costs.Add(bottomlineCostBase);
         
         return costs;
     }
@@ -80,10 +84,20 @@ public class Stockmarket : InteractionArea
     {
         List<float> costs = new List<float>();
         
-        costs.Add(costMarketingMultiplier);
-        costs.Add(costBottomlineMultiplier);
+        costs.Add(marketingCostMult);
+        costs.Add(bottomlineCostMult);
         
         return costs;
+    }
+    
+    protected override List<int> GetValueMax()
+    {
+        List<int> max = new List<int>();
+        
+        max.Add(marketingMax);
+        max.Add(bottomlineMax);
+        
+        return max;
     }
     
    
@@ -125,7 +139,7 @@ public class Stockmarket : InteractionArea
     private IEnumerator StockmarketCycle()
     {
         stockmarketCycleActive = true;
-        bool lastTimeUp = true;
+        
         GameObject nextEntry = Instantiate(stockValueEntryPrefab, stockValueEntryHolder);
         Vector2 lastEntryPosition = new Vector2(0, 0);
         
@@ -142,7 +156,7 @@ public class Stockmarket : InteractionArea
                 nextEntryHolder.localPosition = entryTarget;
             }
                 
-            //Next Value
+            //Roll next stock value within range
             float nextValueChange = Random.Range(currentLowerRange, currentUpperRange);
             currentStockValue += nextValueChange;
             

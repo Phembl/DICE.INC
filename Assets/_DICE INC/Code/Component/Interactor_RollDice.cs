@@ -24,9 +24,9 @@ public class Interactor_RollDice : MonoBehaviour
 
     void Start()
     {
-        colorNormal = Settings.instance.colorNormal;
-        colorDark = Settings.instance.colorDark;
-        colorInactive = Settings.instance.colorInactive;
+        colorNormal = SettingsManager.instance.colorNormal;
+        colorDark = SettingsManager.instance.colorDark;
+        colorInactive = SettingsManager.instance.colorInactive;
         
         image = GetComponent<Image>();
         title = transform.GetChild(0).gameObject.GetComponent<TMP_Text>();
@@ -96,7 +96,7 @@ public class Interactor_RollDice : MonoBehaviour
     {
         if (!isActive) return;
 
-        DiceManager.instance.RollDice();
+        Dice.instance.RollDice();
     }
 
     public void ShowRollResult(int _diceRolled, int _pipsGenerated)

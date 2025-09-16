@@ -56,9 +56,9 @@ public class ResourceManager : MonoBehaviour
 
     public void InitializeResourceManager()
     {
-        colorNormal = Settings.instance.colorNormal;
-        colorDark = Settings.instance.colorDark;
-        colorInactive = Settings.instance.colorInactive;
+        colorNormal = SettingsManager.instance.colorNormal;
+        colorDark = SettingsManager.instance.colorDark;
+        colorInactive = SettingsManager.instance.colorInactive;
         
         pipsTitleTMP = resourceHolder.GetChild(0).transform.GetChild(0).GetComponent<TMP_Text>();
         pipsCounterTMP = resourceHolder.GetChild(0).transform.GetChild(1).GetComponent<TMP_Text>();
