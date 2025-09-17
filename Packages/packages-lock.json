@@ -1,5 +1,20 @@
 {
   "dependencies": {
+    "com.starphaselab.core": {
+      "version": "file:com.starphaselab.core",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
+    "com.starphaselab.rngneeds": {
+      "version": "file:com.starphaselab.rngneeds",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.collections": "1.2.4",
+        "com.starphaselab.core": "0.1.2"
+      }
+    },
     "com.unity.burst": {
       "version": "1.8.19",
       "depth": 2,
@@ -12,7 +27,7 @@
     },
     "com.unity.collections": {
       "version": "2.5.1",
-      "depth": 2,
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.unity.burst": "1.8.17",
@@ -55,7 +70,7 @@
     },
     "com.unity.nuget.mono-cecil": {
       "version": "1.11.4",
-      "depth": 3,
+      "depth": 2,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
@@ -121,7 +136,7 @@
     },
     "com.unity.test-framework": {
       "version": "1.5.1",
-      "depth": 3,
+      "depth": 2,
       "source": "builtin",
       "dependencies": {
         "com.unity.ext.nunit": "2.0.3",
@@ -131,7 +146,7 @@
     },
     "com.unity.test-framework.performance": {
       "version": "3.0.3",
-      "depth": 3,
+      "depth": 2,
       "source": "registry",
       "dependencies": {
         "com.unity.test-framework": "1.1.31",

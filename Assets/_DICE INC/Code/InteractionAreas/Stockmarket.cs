@@ -36,6 +36,7 @@ public class Stockmarket : InteractionArea
     [Space]
     [SerializeField] private float upperRangeIncrease;
     [ShowInInspector, ReadOnly] private float currentUpperRange;
+    [ShowInInspector, ReadOnly] private float chanceToRaise = 50f;
     
     [Header("Bottomline")]
     [SerializeField] private int bottomlineCostBase;
@@ -166,14 +167,11 @@ public class Stockmarket : InteractionArea
             
             //Next Entry
             nextEntry = Instantiate(stockValueEntryPrefab, stockValueEntryHolder);
-            
             float nextEntryY = (float)Math.Round(currentStockValue * 100f);
-            
             Vector3 nextEntryPosition = new Vector3(0, nextEntryY, 0);
             nextEntry.transform.localPosition = nextEntryPosition;
             
-            
-            
+            //Draw Line
             Vector3 lastEntryPosition = stockValueEntryHolder.GetChild(nextEntry.transform.GetSiblingIndex() - 1).localPosition;
             Vector3 lineEnd = new Vector3(lastEntryPosition.x, lastEntryPosition.y - nextEntryPosition.y, lastEntryPosition.z);
             nextEntry.GetComponent<Line>().End = lineEnd;
