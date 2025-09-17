@@ -141,7 +141,6 @@ public class Stockmarket : InteractionArea
         stockmarketCycleActive = true;
         
         GameObject nextEntry = Instantiate(stockValueEntryPrefab, stockValueEntryHolder);
-        Vector2 lastEntryPosition = new Vector2(0, 0);
         
         while (stockmarketCycleActive)
         {
@@ -152,7 +151,7 @@ public class Stockmarket : InteractionArea
                 
             foreach (Transform nextEntryHolder in stockValueEntryHolder)
             {
-                Vector2 entryTarget = new Vector2(nextEntryHolder.localPosition.x - 20, nextEntryHolder.localPosition.y);
+                Vector3 entryTarget = new Vector3(nextEntryHolder.localPosition.x - 20, nextEntryHolder.localPosition.y, nextEntryHolder.localPosition.z);
                 nextEntryHolder.localPosition = entryTarget;
             }
                 
@@ -167,14 +166,22 @@ public class Stockmarket : InteractionArea
             
             //Next Entry
             nextEntry = Instantiate(stockValueEntryPrefab, stockValueEntryHolder);
-            Vector2 nextEntryPosition = new Vector2(0, (currentStockValue * 100)-100);
+            
+            float nextEntryY = (float)Math.Round(currentStockValue * 100f);
+            
+            Vector3 nextEntryPosition = new Vector3(0, nextEntryY, 0);
             nextEntry.transform.localPosition = nextEntryPosition;
             
-            lastEntryPosition = stockValueEntryHolder.GetChild(nextEntry.transform.GetSiblingIndex() - 1).localPosition;
-            Vector2 lineEnd = new Vector2(lastEntryPosition.x, lastEntryPosition.y - nextEntryPosition.y);
+            
+            
+            Vector3 lastEntryPosition = stockValueEntryHolder.GetChild(nextEntry.transform.GetSiblingIndex() - 1).localPosition;
+            Vector3 lineEnd = new Vector3(lastEntryPosition.x, lastEntryPosition.y - nextEntryPosition.y, lastEntryPosition.z);
             nextEntry.GetComponent<Line>().End = lineEnd;
             
+            
             //TODO: Add some form of Zoom Effect so that the stock display can't go through Screen top
+            
+            //TODO: Introduce random shift events, like market crash
             
         }
         
@@ -187,6 +194,35 @@ public class Stockmarket : InteractionArea
     public TooltipData GetTooltipData()
     {
         TooltipData data = new TooltipData();
+        
+        int marketingCount = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Stockmarket, 0);
+        int bottomlineCount = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Stockmarket, 1);
+
+        float currentUpperRangePercentage = currentUpperRange * 100f;
+        if (marketingCount == 0)
+        {
+            currentUpperRangePercentage = 0f;
+        }
+        data.areaTitle = "Stockmarket";
+        data.areaDescription = $"The stock market changes the value of dice rolls." +
+                               $"<br>Currently, every dice roll it worth {(float)Math.Round(currentStockValue * 100f)}%. " +
+                               $"<br>The market is updated every {timeBetweenUpdates} seconds." +
+                               $"<br><br>MARKETING: Increases the upper limit of the stock value shift to {currentUpperRangePercentage}%.";
+        
+        string bottomlineText = $"<br><br>??? (Marketing to unlock: {marketingToUnlockBottomline})";
+        
+       
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Stockmarket, 1))
+        {
+            float currentLowerRangePercentage = currentLowerRange * 100f;
+            if (bottomlineCount == 0)
+            {
+                currentLowerRangePercentage = 0f;
+            }
+            bottomlineText = $"<br><br>BOTTOMLINE: Increases the lower limit of the stock value shift to {currentLowerRangePercentage}%";
+        }
+        
+        data.areaDescription += bottomlineText;
         
         return data;
     }

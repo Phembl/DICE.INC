@@ -17,6 +17,10 @@ public class TooltipManager : MonoBehaviour
     [SerializeField] private Workshop workshopComponent;
     [SerializeField] private Canvas workshopCanvas;
     [SerializeField] private GameObject workshopTooltip;
+    [Header("Stockmarket")]
+    [SerializeField] private Stockmarket stockmarketComponent;
+    [SerializeField] private Canvas stockmarketCanvas;
+    [SerializeField] private GameObject stockmarketTooltip;
     
 
     private InteractionArea currentInteractionArea;
@@ -85,8 +89,6 @@ public class TooltipManager : MonoBehaviour
                 isCurrentlyWorking = false;
                 tooltipIsOpen = false;
             });
-        
-        
     }
 
     //Called by InteractionArea if something has been bought while open
@@ -107,6 +109,12 @@ public class TooltipManager : MonoBehaviour
                 data = workshopComponent.GetTooltipData();
                 currentCanvas = workshopCanvas;
                 currentTooltip = workshopTooltip;
+                break;
+            
+            case InteractionAreaType.Stockmarket:
+                data = stockmarketComponent.GetTooltipData();
+                currentCanvas = stockmarketCanvas;
+                currentTooltip = stockmarketTooltip;
                 break;
         }
         

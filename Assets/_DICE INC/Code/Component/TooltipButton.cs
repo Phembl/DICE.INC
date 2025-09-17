@@ -23,6 +23,11 @@ public class TooltipButton : MonoBehaviour
 
     void Start()
     {
+        if (interactionArea == InteractionAreaType.None)
+        {
+            Debug.LogError($"{name} InteractionAreaType is not set");
+        }
+        
         markTMP = transform.GetChild(0).GetComponent<TMP_Text>();
         bgImage = GetComponent<Image>();
         
