@@ -24,6 +24,10 @@ public class TooltipManager : MonoBehaviour
     
 
     private InteractionArea currentInteractionArea;
+    
+    private InteractionAreaType currentInteractionAreaType;
+    public InteractionAreaType GetCurrentInteractionArea() => currentInteractionAreaType;
+    
     private Canvas currentCanvas;
     private GameObject currentTooltip;
     
@@ -50,6 +54,7 @@ public class TooltipManager : MonoBehaviour
         if (printLog) Debug.Log($"{interactionArea.ToString()} Tooltip is opened.");
         
         isCurrentlyWorking = true;
+        currentInteractionAreaType = interactionArea;
         
         var tooltipData = GetTooltipData(interactionArea);
         
@@ -83,6 +88,7 @@ public class TooltipManager : MonoBehaviour
         currentTooltip.GetComponent<CanvasGroup>().DOFade(0, 0.5f)
             .OnComplete(() =>
             {
+                currentInteractionAreaType = InteractionAreaType.None;
                 currentCanvas.planeDistance = 100;
                 currentCanvas.sortingOrder = 0;
                 currentTooltip.SetActive(false);

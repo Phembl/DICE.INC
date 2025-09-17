@@ -23,35 +23,40 @@ public class Stockmarket : InteractionArea
     [SerializeField] private TMP_Text stockValueTMP;
     [SerializeField] private Transform stockValueEntryHolder;
     [SerializeField] private GameObject stockValueEntryPrefab;
+    [SerializeField] private StockChangeTable changeTable;
+    
 
     [TitleGroup("Stockmarket")] 
     [SerializeField] private float timeBetweenUpdates;
-    [SerializeField] private float startUpperRange;
-    [SerializeField] private float startLowerRange;
+    [Space]
+    [SerializeField] private float marketcrashChanceIncreaseBase;
+    [ShowInInspector, ReadOnly] private float marketcrashChanceIncreaseCurrent;
+    [ShowInInspector, ReadOnly] private float marketcrashChanceCurrent;
     
     [Header("Marketing")]
     [SerializeField] private int marketingCostBase;
     [SerializeField] private float marketingCostMult;
     [SerializeField] private int marketingMax;
     [Space]
-    [SerializeField] private float upperRangeIncrease;
-    [ShowInInspector, ReadOnly] private float currentUpperRange;
-    [ShowInInspector, ReadOnly] private float chanceToRaise = 50f;
+    [SerializeField] private float growChanceIncrease;
+    [ShowInInspector, ReadOnly] private float growChanceBase = 30f;
+    [ShowInInspector, ReadOnly] private float growChanceCurrent;
+    [ShowInInspector, ReadOnly] private float marketingGrowth;
     
     [Header("Bottomline")]
     [SerializeField] private int bottomlineCostBase;
     [SerializeField] private float bottomlineCostMult;
     [SerializeField] private int bottomlineMax;
     [Space]
-    [SerializeField] private float lowerRangeIncrease;
-    [ShowInInspector, ReadOnly] private float currentLowerRange;
+    [SerializeField] private float bottomlineCrashChanceDecrease;
+    [ShowInInspector, ReadOnly] private float bottomlineCrashChanceDecreaseCurrent;
     
     [Header("Progress")] 
     [SerializeField] private int marketingToUnlockBottomline;
 
     
     private bool stockmarketCycleActive;
-    private float currentStockValue = 1f;
+    private float stockValueCurrent = 1f;
     
    
     
@@ -60,10 +65,10 @@ public class Stockmarket : InteractionArea
 
     protected override void InitSubClass()
     {
-        stockValueTMP.text = currentStockValue.ToString();
+        stockValueTMP.text = stockValueCurrent.ToString();
         
-        currentUpperRange = startUpperRange;
-        currentLowerRange = startLowerRange;
+        growChanceCurrent = growChanceBase;
+        marketcrashChanceIncreaseCurrent = marketcrashChanceIncreaseBase;
         
         if (!stockmarketCycleActive)
         {
@@ -116,11 +121,13 @@ public class Stockmarket : InteractionArea
         {
             case 0: //Marketing
                 CheckProgress();
-                currentUpperRange = startUpperRange + (upperRangeIncrease * count);
+                marketingGrowth = growChanceIncrease * count;
+                growChanceCurrent = growChanceBase + marketingGrowth;
                 break;
             
             case 1: //Bottomline
-                currentLowerRange = startLowerRange + (lowerRangeIncrease * count);
+                bottomlineCrashChanceDecreaseCurrent = (bottomlineCrashChanceDecrease * count);
+                marketcrashChanceIncreaseCurrent = marketcrashChanceIncreaseBase - (marketcrashChanceIncreaseBase * (bottomlineCrashChanceDecreaseCurrent/100));
                 break;
             
         }
@@ -129,7 +136,7 @@ public class Stockmarket : InteractionArea
     protected override void CheckProgress()
     {
         
-        if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Stockmarket, 0) > marketingToUnlockBottomline &&
+        if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Stockmarket, 0) >= marketingToUnlockBottomline &&
             !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Stockmarket, 1))
         {
             UnlockInteractor(1);
@@ -147,6 +154,12 @@ public class Stockmarket : InteractionArea
         {
             
             yield return new WaitForSeconds(timeBetweenUpdates);
+            
+            if (printLog) Debug.Log("|-------------- STOCKMARKET UPDATE --------------|");
+            if (printLog) Debug.Log($"Current stock value: {stockValueCurrent}");
+            if (printLog) Debug.Log($"Current grow chance: {growChanceCurrent}%");
+            if (printLog) Debug.Log($"Current market crash chance: {marketcrashChanceCurrent}%");
+            if (printLog) Debug.Log($"Current market crash chance growth: {marketcrashChanceIncreaseCurrent}.");
            
             if (stockValueEntryHolder.childCount > 19) Destroy(stockValueEntryHolder.GetChild(0).gameObject);
                 
@@ -156,18 +169,38 @@ public class Stockmarket : InteractionArea
                 nextEntryHolder.localPosition = entryTarget;
             }
                 
-            //Roll next stock value within range
-            float nextValueChange = Random.Range(currentLowerRange, currentUpperRange);
-            currentStockValue += nextValueChange;
+            //Roll for Marketcrash
+            if (Utility.Roll(marketcrashChanceCurrent)) //Market Crash
+            {
+                marketcrashChanceCurrent = 0f;
+                float crashDivider = Random.Range(1f, 2f);
+                stockValueCurrent /= crashDivider;
+                if (printLog) Debug.Log($"Marketcrash! Value has been divided by {crashDivider} and is now {stockValueCurrent}");
+            }
+            else //No market Crash
+            {
+                marketcrashChanceCurrent += marketcrashChanceIncreaseCurrent;
+                
+               //Check if the value growths
+                if (Utility.Roll(growChanceCurrent)) //Value Decreases
+                {
+                    //Roll next stock value within range
+                    float nextChange = changeTable.GetChangeValue();
+                    stockValueCurrent += nextChange;
+                }
+                
+                
+                if (printLog) Debug.Log($"Value now {stockValueCurrent}");
+            }
             
-            if (currentStockValue <= 0) currentStockValue = 0;
-            CPU.instance.ChangeDiceRollStockValue(currentStockValue);
+         
             
-            stockValueTMP.text = currentStockValue.ToString("F2");
+            if (stockValueCurrent <= 0) stockValueCurrent = 0;
+            stockValueTMP.text = stockValueCurrent.ToString("F3");
             
             //Next Entry
             nextEntry = Instantiate(stockValueEntryPrefab, stockValueEntryHolder);
-            float nextEntryY = (float)Math.Round(currentStockValue * 100f);
+            float nextEntryY = (float)Math.Round(stockValueCurrent * 100f);
             Vector3 nextEntryPosition = new Vector3(0, nextEntryY, 0);
             nextEntry.transform.localPosition = nextEntryPosition;
             
@@ -176,7 +209,11 @@ public class Stockmarket : InteractionArea
             Vector3 lineEnd = new Vector3(lastEntryPosition.x, lastEntryPosition.y - nextEntryPosition.y, lastEntryPosition.z);
             nextEntry.GetComponent<Line>().End = lineEnd;
             
-            
+            //Update Tooltip if StockMarket TT is open
+            if (TooltipManager.instance.GetTooltipStatus() && TooltipManager.instance.GetCurrentInteractionArea() == InteractionAreaType.Stockmarket)
+            {
+                TooltipManager.instance.UpdateTooltip(InteractionAreaType.Stockmarket);
+            }
             //TODO: Add some form of Zoom Effect so that the stock display can't go through Screen top
             
             //TODO: Introduce random shift events, like market crash
@@ -193,31 +230,24 @@ public class Stockmarket : InteractionArea
     {
         TooltipData data = new TooltipData();
         
-        int marketingCount = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Stockmarket, 0);
+       
         int bottomlineCount = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Stockmarket, 1);
-
-        float currentUpperRangePercentage = currentUpperRange * 100f;
-        if (marketingCount == 0)
-        {
-            currentUpperRangePercentage = 0f;
-        }
+        
         data.areaTitle = "Stockmarket";
         data.areaDescription = $"The stock market changes the value of dice rolls." +
-                               $"<br>Currently, every dice roll it worth {(float)Math.Round(currentStockValue * 100f)}%. " +
-                               $"<br>The market is updated every {timeBetweenUpdates} seconds." +
-                               $"<br><br>MARKETING: Increases the upper limit of the stock value shift to {currentUpperRangePercentage}%.";
+                               $"<br>Currently, every dice roll it worth <b>{(float)Math.Round(stockValueCurrent * 100f)}%</b>. " +
+                               $"<br>The market is updated every <b>{timeBetweenUpdates} seconds.</b>" +
+                               $"<br>Current chance for the market to crash:<b>{marketcrashChanceCurrent.ToString("F2")}%</b>." +
+                               $"<br><br><b>MARKETING:</b> Increases the chance for stock growth by <b>{marketingGrowth.ToString("F3")}</b>. " +
+                               $"<br>Current growth chance:<b>{growChanceCurrent}%</b>.";
         
+        //Bottomline TT
         string bottomlineText = $"<br><br>??? (Marketing to unlock: {marketingToUnlockBottomline})";
-        
-       
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Stockmarket, 1))
         {
-            float currentLowerRangePercentage = currentLowerRange * 100f;
-            if (bottomlineCount == 0)
-            {
-                currentLowerRangePercentage = 0f;
-            }
-            bottomlineText = $"<br><br>BOTTOMLINE: Increases the lower limit of the stock value shift to {currentLowerRangePercentage}%";
+            string bottomlineCrashChanceDecrease = bottomlineCrashChanceDecreaseCurrent.ToString("F2");
+            bottomlineText = $"<br><br><b>BOTTOMLINE:</b> Decreases the growth of market crash chance by <b>{bottomlineCrashChanceDecrease}%.</b>" +
+                             $"<br>Current market crash chance growth:<b>{marketcrashChanceIncreaseCurrent.ToString("F4")}</b>.";
         }
         
         data.areaDescription += bottomlineText;
