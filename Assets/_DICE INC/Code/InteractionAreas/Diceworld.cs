@@ -200,4 +200,15 @@ public class Diceworld : InteractionArea
     
     
     #endregion
+    
+    #region |-------------- TOOLTIP --------------|
+
+    public TooltipData GetTooltipData()
+    {
+        TooltipData data = new TooltipData();
+        
+        return data;
+    }
+   
+    #endregion
 }

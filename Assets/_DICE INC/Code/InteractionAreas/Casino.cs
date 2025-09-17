@@ -297,5 +297,16 @@ public class Casino : InteractionArea
     }
     
     #endregion
+    
+    #region |-------------- TOOLTIP --------------|
+
+    public TooltipData GetTooltipData()
+    {
+        TooltipData data = new TooltipData();
+        
+        return data;
+    }
+   
+    #endregion
 
 }

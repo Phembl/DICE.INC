@@ -1,9 +1,12 @@
+using DICEINC.Global;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Tooltip : MonoBehaviour
+public class TooltipButton : MonoBehaviour
 {
+    [SerializeField] private InteractionAreaType interactionArea;
+    
     //Colors
     private Color colorNormal;
     private Color colorDark;
@@ -14,6 +17,9 @@ public class Tooltip : MonoBehaviour
     
     //State Tracking
     private bool isHovered;
+    private bool isActive;
+
+    private bool printLog;
 
     void Start()
     {
@@ -57,6 +63,26 @@ public class Tooltip : MonoBehaviour
 
     void OnMouseDown()
     {
-        Debug.Log($"{name} is opening Tooltip");
+        
+
+        if (!isActive) //Open Tooltip
+        {
+            if (TooltipManager.instance.GetWorkingStatus()) return; //Checks if the tooltip is currently being build
+            
+            isActive = true;
+            markTMP.text = "X";
+            TooltipManager.instance.OpenTooltip(interactionArea);
+            
+        }
+        
+        else //Close Tooltip
+        {
+            if (TooltipManager.instance.GetWorkingStatus()) return; //Checks if the tooltip is currently being build
+            
+            isActive = false;
+            markTMP.text = "?";
+            TooltipManager.instance.CloseTooltip(); 
+        }
+        
     }
 }

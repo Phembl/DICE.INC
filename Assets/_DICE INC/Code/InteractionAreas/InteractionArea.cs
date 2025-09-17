@@ -17,7 +17,7 @@ public abstract class InteractionArea : MonoBehaviour
     
     [TitleGroup("General")] 
     [SerializeField] private Transform interactorHolder;
-    [SerializeField] private CanvasGroup areaCanvas;
+    [SerializeField] private GameObject interactorGO;
     [Space]
     [SerializeField] protected bool printLog;
     
@@ -31,6 +31,9 @@ public abstract class InteractionArea : MonoBehaviour
     private List<Interactor> areaInteractors = new List<Interactor>();
 
     private InteractionAreaType interactionAreaType;
+    
+    private CanvasGroup canvasGroup;
+    private Canvas canvas;
 
     
     #region |-------------- INIT --------------|
@@ -40,9 +43,12 @@ public abstract class InteractionArea : MonoBehaviour
         List<int> startValues)
     {
     
+        canvasGroup = interactorGO.GetComponent<CanvasGroup>();
+        canvas = interactorGO.GetComponent<Canvas>();
+        
         if (!_isUnlocked)
         {
-            areaCanvas.DOFade(0, 0);
+            canvasGroup.DOFade(0, 0);
 
             //Reset Start Settings if Area starts locked
             for (int i = 0; i < startValues.Count; i++)
@@ -123,7 +129,7 @@ public abstract class InteractionArea : MonoBehaviour
         areaUnlocked = true;
         
         UnlockInteractor(0);
-        areaCanvas.DOFade(1, 0.5f);
+        canvasGroup.DOFade(1, 0.5f);
     }
     
     public void UnlockInteractor(int index)
@@ -218,10 +224,14 @@ public abstract class InteractionArea : MonoBehaviour
         UpdateInteractorCost(index); //Update Cost
         RunInteraction(index);
         
+        if (TooltipManager.instance.GetTooltipStatus())
+        {
+            TooltipManager.instance.UpdateTooltip(interactionAreaType);
+        }
     }
     
     protected abstract void RunInteraction(int index);
 
     #endregion
-
+    
 }

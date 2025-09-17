@@ -29,6 +29,12 @@ namespace DICEINC.Global
         mDice,
         Data
     }
+
+    public struct TooltipData
+    {
+        public string areaTitle;
+        public string areaDescription;
+    }
     
     public static class Utility
     {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DICEINC.Global;
 using Sirenix.OdinInspector;
 using TMPro;
@@ -13,6 +14,7 @@ using Random = UnityEngine.Random;
 
 public class Workshop : InteractionArea
 {
+    #region |-------------- SETTINGS --------------|
     
     [TitleGroup("References")] 
     [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Workshop;
@@ -36,6 +38,7 @@ public class Workshop : InteractionArea
     [SerializeField] private int speedMax;
     [Space]
     [SerializeField] private float speedIncrease;
+    [ShowInInspector, ReadOnly] private float speedCurrent;
     
     [Header("Efficiency")]
     [SerializeField] private int efficiencyCostBase;
@@ -78,8 +81,8 @@ public class Workshop : InteractionArea
     [SerializeField] private int dicemakerToUnlockEfficiency;
     [SerializeField] private int dicemakerToUnlockCritical;
     [SerializeField] private int dicemakerToUnlockOverdrive;
-
-   
+    
+    #endregion
     
     private bool workshopCycleActive;
     
@@ -155,7 +158,8 @@ public class Workshop : InteractionArea
                 break;
             
             case 1: //Speed
-                timerCurrent = timerBase * math.pow((1 - speedIncrease), count);
+                speedCurrent = speedIncrease * count;
+                timerCurrent = timerBase - speedCurrent;
                 timerCurrent = (float)Math.Round(timerCurrent, 2);
                 break;
             
@@ -177,6 +181,8 @@ public class Workshop : InteractionArea
                 break;
             
         }
+
+        
     }
     
     protected override void CheckProgress()
@@ -272,6 +278,68 @@ public class Workshop : InteractionArea
         
     }
     
+    #endregion
+    
+    #region |-------------- TOOLTIP --------------|
+
+    public TooltipData GetTooltipData()
+    {
+        TooltipData data = new TooltipData();
+        
+        int productionCount = (int)(dicemakerCurrent * efficiencyCurrent);
+        
+        
+        data.areaTitle = "Workshop";
+        data.areaDescription = $"In the workshop, dicemaker produce dice." +
+                               $"<br>Currently, {productionCount} dice are produced every {timerCurrent} seconds." +
+                               $"<br><br>DICEMAKER: Produces {dicemakerCurrent} dice.";
+        
+        
+        string speedText = $"<br><br>??? (Dicemaker to unlock: {dicemakerToUnlockSpeed})";
+        
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Workshop, 1))
+        {
+            speedText = $"<br><br>SPEED: Decreases production time by {speedCurrent}s.";
+        }
+        
+        data.areaDescription += speedText;
+        
+        string efficiencyText = $"<br><br>??? (Dicemaker to unlock: {dicemakerToUnlockEfficiency})";
+        
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Workshop, 2))
+        {
+            efficiencyText = $"<br><br>EFFICIENCY: Increases production by: {efficiencyCurrent * 100}%.";
+        }
+        
+        data.areaDescription += efficiencyText;
+        
+        string criticalText = $"<br><br>??? (Dicemaker to unlock: {dicemakerToUnlockCritical})";
+        float currentCriticalIncrease = 0f;
+        if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Workshop,3) > 0) currentCriticalIncrease = (float)Math.Round(((criticalValueCurrent - 1) * 100), 2);
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Workshop, 3))
+        {
+            criticalText = 
+                $"<br><br>CRITICAL: {criticalChanceCurrent}% chance per cycle to increase production by {currentCriticalIncrease}%.";
+        }
+        
+        data.areaDescription += criticalText;
+        
+        string overdriveText = $"<br><br>??? (Dicemaker to unlock: {dicemakerToUnlockOverdrive})";
+        float currentOverdriveDecrease = 0f;
+        if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Workshop,4) > 0) currentOverdriveDecrease = (float)Math.Round((1/ overdriveValueCurrent - 1) * 100);
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Workshop, 4))
+        {
+            overdriveText =
+                $"<br><br>OVERDRIVE: {overdriveChanceCurrent}% chance per cycle to decrease production time by {currentOverdriveDecrease*(-1)}%.";
+        }
+        
+        data.areaDescription += overdriveText;
+        
+       
+        
+        return data;
+    }
+   
     #endregion
 
 }
