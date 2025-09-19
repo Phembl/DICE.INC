@@ -14,53 +14,53 @@ using Random = UnityEngine.Random;
 
 public class Stockmarket : InteractionArea
 {
-    
-    
     [TitleGroup("References")] 
     [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Stockmarket;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
 
     [SerializeField] private TMP_Text stockValueTMP;
     [SerializeField] private Transform stockValueEntryHolder;
+    [SerializeField] private Transform displayLineHolder;
     [SerializeField] private GameObject stockValueEntryPrefab;
     [SerializeField] private StockChangeTable changeTable;
     
-
-    [TitleGroup("Stockmarket")] 
+    [TitleGroup("Stock market")] 
     [SerializeField] private float timeBetweenUpdates;
     [Space]
     [SerializeField] private float marketcrashChanceIncreaseBase;
     [ShowInInspector, ReadOnly] private float marketcrashChanceIncreaseCurrent;
     [ShowInInspector, ReadOnly] private float marketcrashChanceCurrent;
     
-    [Header("Marketing")]
-    [SerializeField] private int marketingCostBase;
-    [SerializeField] private float marketingCostMult;
-    [SerializeField] private int marketingMax;
+    [Header("Growth Stock")]
+    [SerializeField] private int growthstockCostBase;
+    [SerializeField] private float growthstockCostMult;
+    [SerializeField] private int growthstockMax;
     [Space]
     [SerializeField] private float growChanceIncrease;
-    [ShowInInspector, ReadOnly] private float growChanceBase = 30f;
+    [ShowInInspector, ReadOnly] private float growChanceBase = 15f;
     [ShowInInspector, ReadOnly] private float growChanceCurrent;
-    [ShowInInspector, ReadOnly] private float marketingGrowth;
+    [ShowInInspector, ReadOnly] private float growthstockCurrent;
     
-    [Header("Bottomline")]
-    [SerializeField] private int bottomlineCostBase;
-    [SerializeField] private float bottomlineCostMult;
-    [SerializeField] private int bottomlineMax;
+    [Header("Market Cap")]
+    [SerializeField] private int marketcapCostBase;
+    [SerializeField] private float marketcapCostMult;
+    [SerializeField] private int marketcapMax;
     [Space]
-    [SerializeField] private float bottomlineCrashChanceDecrease;
-    [ShowInInspector, ReadOnly] private float bottomlineCrashChanceDecreaseCurrent;
+    [SerializeField] private float marketcapIncrease;
+    [ShowInInspector, ReadOnly] private float marketcapBase = 2f;
+    [ShowInInspector, ReadOnly] private float marketcapCurrent;
     
     [Header("Progress")] 
-    [SerializeField] private int marketingToUnlockBottomline;
-
+    [SerializeField] private int growthstockToUnlockMarketcap;
     
     private bool stockmarketCycleActive;
     private float stockValueCurrent = 1f;
+
+    private float marketcapDisplayMultBase = 150f;
+    private float marketcapDisplayReduction = 50f;
+    private float marketcapDisplayMultCurrent;
     
-   
-    
-    
+        
     #region |-------------- INIT --------------|
 
     protected override void InitSubClass()
@@ -69,6 +69,8 @@ public class Stockmarket : InteractionArea
         
         growChanceCurrent = growChanceBase;
         marketcrashChanceIncreaseCurrent = marketcrashChanceIncreaseBase;
+        marketcapCurrent = marketcapBase;
+        marketcapDisplayMultCurrent = marketcapDisplayMultBase;
         
         if (!stockmarketCycleActive)
         {
@@ -80,8 +82,8 @@ public class Stockmarket : InteractionArea
     {
         List<int> costs = new List<int>();
         
-        costs.Add(marketingCostBase);
-        costs.Add(bottomlineCostBase);
+        costs.Add(growthstockCostBase);
+        costs.Add(marketcapCostBase);
         
         return costs;
     }
@@ -90,8 +92,8 @@ public class Stockmarket : InteractionArea
     {
         List<float> costs = new List<float>();
         
-        costs.Add(marketingCostMult);
-        costs.Add(bottomlineCostMult);
+        costs.Add(growthstockCostMult);
+        costs.Add(marketcapCostMult);
         
         return costs;
     }
@@ -100,8 +102,8 @@ public class Stockmarket : InteractionArea
     {
         List<int> max = new List<int>();
         
-        max.Add(marketingMax);
-        max.Add(bottomlineMax);
+        max.Add(growthstockMax);
+        max.Add(marketcapMax);
         
         return max;
     }
@@ -119,24 +121,49 @@ public class Stockmarket : InteractionArea
         
         switch (index)
         {
-            case 0: //Marketing
+            case 0: //Growth Stock
+                growthstockCurrent = growChanceIncrease * count;
+                growChanceCurrent = growChanceBase + growthstockCurrent;
                 CheckProgress();
-                marketingGrowth = growChanceIncrease * count;
-                growChanceCurrent = growChanceBase + marketingGrowth;
                 break;
             
-            case 1: //Bottomline
-                bottomlineCrashChanceDecreaseCurrent = (bottomlineCrashChanceDecrease * count);
-                marketcrashChanceIncreaseCurrent = marketcrashChanceIncreaseBase - (marketcrashChanceIncreaseBase * (bottomlineCrashChanceDecreaseCurrent/100));
+            case 1: //Market Cap
+                marketcapCurrent = marketcapBase + (marketcapIncrease * count);
+                IncreaseMarketCap();
                 break;
             
+        }
+    }
+
+    void IncreaseMarketCap()
+    {
+        int marketcaplevel = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Stockmarket, 1);
+        float reductionValue = marketcapDisplayReduction / marketcaplevel;
+        foreach (Transform displayLine in displayLineHolder)
+        {
+            displayLine.localPosition = 
+                new Vector3(displayLine.localPosition.x, 
+                    displayLine.localPosition.y - reductionValue * (displayLine.GetSiblingIndex() + 1), 
+                    0);
+        }
+
+        marketcapDisplayMultCurrent = displayLineHolder.GetChild(0).localPosition.y;
+        
+        if (stockValueEntryHolder.childCount > 0)
+        {
+            foreach (Transform nextEntryHolder in stockValueEntryHolder)
+            {
+                nextEntryHolder.localPosition = new Vector3(nextEntryHolder.localPosition.x, 
+                    nextEntryHolder.localPosition.y - reductionValue, 
+                    0);
+            }
         }
     }
     
     protected override void CheckProgress()
     {
         
-        if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Stockmarket, 0) >= marketingToUnlockBottomline &&
+        if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Stockmarket, 0) >= growthstockToUnlockMarketcap &&
             !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Stockmarket, 1))
         {
             UnlockInteractor(1);
@@ -147,28 +174,28 @@ public class Stockmarket : InteractionArea
     private IEnumerator StockmarketCycle()
     {
         stockmarketCycleActive = true;
-        
-        GameObject nextEntry = Instantiate(stockValueEntryPrefab, stockValueEntryHolder);
-        
+
         while (stockmarketCycleActive)
         {
-            
+
             yield return new WaitForSeconds(timeBetweenUpdates);
-            
+
             if (printLog) Debug.Log("|-------------- STOCKMARKET UPDATE --------------|");
             if (printLog) Debug.Log($"Current stock value: {stockValueCurrent}");
             if (printLog) Debug.Log($"Current grow chance: {growChanceCurrent}%");
             if (printLog) Debug.Log($"Current market crash chance: {marketcrashChanceCurrent}%");
             if (printLog) Debug.Log($"Current market crash chance growth: {marketcrashChanceIncreaseCurrent}.");
-           
+
             if (stockValueEntryHolder.childCount > 19) Destroy(stockValueEntryHolder.GetChild(0).gameObject);
-                
-            foreach (Transform nextEntryHolder in stockValueEntryHolder)
+            if (stockValueEntryHolder.childCount > 0)
             {
-                Vector3 entryTarget = new Vector3(nextEntryHolder.localPosition.x - 20, nextEntryHolder.localPosition.y, nextEntryHolder.localPosition.z);
-                nextEntryHolder.localPosition = entryTarget;
+                foreach (Transform nextEntryHolder in stockValueEntryHolder)
+                {
+                    Vector3 entryTarget = new Vector3(nextEntryHolder.localPosition.x - 19, nextEntryHolder.localPosition.y, nextEntryHolder.localPosition.z);
+                    nextEntryHolder.localPosition = entryTarget;
+                }
             }
-                
+            
             //Roll for Marketcrash
             if (Utility.Roll(marketcrashChanceCurrent)) //Market Crash
             {
@@ -182,11 +209,13 @@ public class Stockmarket : InteractionArea
                 marketcrashChanceCurrent += marketcrashChanceIncreaseCurrent;
                 
                //Check if the value growths
-                if (Utility.Roll(growChanceCurrent)) //Value Decreases
+                if (Utility.Roll(growChanceCurrent))
                 {
                     //Roll next stock value within range
                     float nextChange = changeTable.GetChangeValue();
-                    stockValueCurrent += nextChange;
+                    stockValueCurrent += stockValueCurrent * nextChange;
+                    
+                    //TODO: Build some rescue mechanism in case the stock has crashed to low and can't get up again.
                 }
                 
                 
@@ -194,29 +223,30 @@ public class Stockmarket : InteractionArea
             }
             
          
-            
-            if (stockValueCurrent <= 0) stockValueCurrent = 0;
+            if (stockValueCurrent >= marketcapCurrent) stockValueCurrent = marketcapCurrent; //Market Cap
+            else if (stockValueCurrent <= 0) stockValueCurrent = 0; //Not below Zero
             stockValueTMP.text = stockValueCurrent.ToString("F3");
             
             //Next Entry
-            nextEntry = Instantiate(stockValueEntryPrefab, stockValueEntryHolder);
-            float nextEntryY = (float)Math.Round(stockValueCurrent * 100f);
+            GameObject nextEntry = Instantiate(stockValueEntryPrefab, stockValueEntryHolder);
+            float nextEntryY = (float)Math.Round(stockValueCurrent * marketcapDisplayMultCurrent);
             Vector3 nextEntryPosition = new Vector3(0, nextEntryY, 0);
             nextEntry.transform.localPosition = nextEntryPosition;
             
             //Draw Line
-            Vector3 lastEntryPosition = stockValueEntryHolder.GetChild(nextEntry.transform.GetSiblingIndex() - 1).localPosition;
-            Vector3 lineEnd = new Vector3(lastEntryPosition.x, lastEntryPosition.y - nextEntryPosition.y, lastEntryPosition.z);
-            nextEntry.GetComponent<Line>().End = lineEnd;
+            if (stockValueEntryHolder.childCount > 1)
+            {
+                Vector3 lastEntryPosition = stockValueEntryHolder.GetChild(nextEntry.transform.GetSiblingIndex() - 1).localPosition;
+                Vector3 lineEnd = new Vector3(lastEntryPosition.x, lastEntryPosition.y - nextEntryPosition.y, lastEntryPosition.z);
+                nextEntry.GetComponent<Line>().End = lineEnd;
+            }
+            
             
             //Update Tooltip if StockMarket TT is open
             if (TooltipManager.instance.GetTooltipStatus() && TooltipManager.instance.GetCurrentInteractionArea() == InteractionAreaType.Stockmarket)
             {
                 TooltipManager.instance.UpdateTooltip(InteractionAreaType.Stockmarket);
             }
-            //TODO: Add some form of Zoom Effect so that the stock display can't go through Screen top
-            
-            //TODO: Introduce random shift events, like market crash
             
         }
         
@@ -230,27 +260,27 @@ public class Stockmarket : InteractionArea
     {
         TooltipData data = new TooltipData();
         
-       
-        int bottomlineCount = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Stockmarket, 1);
-        
         data.areaTitle = "Stockmarket";
-        data.areaDescription = $"The stock market changes the value of dice rolls." +
+        data.areaDescription = "The stock market changes the value of dice rolls." +
                                $"<br>Currently, every dice roll it worth <b>{(float)Math.Round(stockValueCurrent * 100f)}%</b>. " +
                                $"<br>The market is updated every <b>{timeBetweenUpdates} seconds.</b>" +
-                               $"<br>Current chance for the market to crash:<b>{marketcrashChanceCurrent.ToString("F2")}%</b>." +
-                               $"<br><br><b>MARKETING:</b> Increases the chance for stock growth by <b>{marketingGrowth.ToString("F3")}</b>. " +
-                               $"<br>Current growth chance:<b>{growChanceCurrent}%</b>.";
+                               $"<br>Current chance for the market to crash: <b>{marketcrashChanceCurrent.ToString("F2")}%</b>.";
+
+        //Growth Stock TT
+        string growthstockTooltip = $"<br><br><b>GROWTH STOCK:</b> Each point increases the chance for growth by <b>{growChanceIncrease.ToString("F2")}%</b>. " +
+                                    $"<br>Current growth chance: <b>{growChanceCurrent}%</b>.";
         
-        //Bottomline TT
-        string bottomlineText = $"<br><br>??? (Marketing to unlock: {marketingToUnlockBottomline})";
+        
+        //Market Cap TT
+        string marketcapTooltip = $"<br><br>??? (Growth stock to unlock: <b>{growthstockToUnlockMarketcap}</b>)";
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Stockmarket, 1))
         {
-            string bottomlineCrashChanceDecrease = bottomlineCrashChanceDecreaseCurrent.ToString("F2");
-            bottomlineText = $"<br><br><b>BOTTOMLINE:</b> Decreases the growth of market crash chance by <b>{bottomlineCrashChanceDecrease}%.</b>" +
-                             $"<br>Current market crash chance growth:<b>{marketcrashChanceIncreaseCurrent.ToString("F4")}</b>.";
+            
+            marketcapTooltip = $"<br><br><b>MARKET CAP:</b> Each point increases the maximum stock value by <b>{marketcapIncrease*100}%.</b>" +
+                             $"<br>Current value max: <b>{marketcapCurrent}</b>.";
         }
         
-        data.areaDescription += bottomlineText;
+        data.areaDescription += growthstockTooltip + marketcapTooltip;
         
         return data;
     }

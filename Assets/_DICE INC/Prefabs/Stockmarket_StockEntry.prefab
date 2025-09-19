@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 408740239174951567}
   - component: {fileID: 5760762010360572995}
   - component: {fileID: 3119659973588232139}
+  - component: {fileID: 6010151627688607679}
   m_Layer: 5
   m_Name: Stockmarket_StockEntry
   m_TagString: Untagged
@@ -71,9 +72,9 @@ MonoBehaviour:
   colorEnd: {r: 1, g: 1, b: 1, a: 1}
   start: {x: 0, y: 0, z: 0}
   end: {x: 0, y: 0, z: 0}
-  thickness: 5
+  thickness: 10
   thicknessSpace: 0
-  endCaps: 0
+  endCaps: 2
   matchDashSpacingToSize: 1
   dashed: 0
   dashStyle:
@@ -115,7 +116,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6afefec347ded4848ac07cf2cc259ae2, type: 2}
+  - {fileID: 2100000, guid: d8dcf53039a8e5f468fb44f7e1a08f76, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -135,5 +136,17 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 3
+  m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6010151627688607679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7346033862385919937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 194f70dba38ad446cb114568820ef935, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

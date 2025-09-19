@@ -290,50 +290,49 @@ public class Workshop : InteractionArea
         
         
         data.areaTitle = "Workshop";
-        data.areaDescription = $"In the workshop, dicemaker produce dice." +
-                               $"<br>Currently, {productionCount} dice are produced every {timerCurrent} seconds." +
-                               $"<br><br>DICEMAKER: Produces {dicemakerCurrent} dice.";
+        data.areaDescription = "In the workshop, dicemaker produce dice." +
+                               $"<br>Currently, <b>{productionCount}</b> dice are produced every <b>{timerCurrent}</b> seconds.";
+             
+        //Dicemaker
+        string dicemakerText = $"<br><br><b>DICEMAKER:</b> Produce <b>{dicemakerCurrent}</b> dice.";
         
-        
-        string speedText = $"<br><br>??? (Dicemaker to unlock: {dicemakerToUnlockSpeed})";
+        //Speed
+        string speedText = $"<br><br>??? (Dicemaker to unlock: <b>{dicemakerToUnlockSpeed}</b>)";
         
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Workshop, 1))
         {
-            speedText = $"<br><br>SPEED: Decreases production time by {speedCurrent}s.";
+            speedText = $"<br><br><b>SPEED:</b> Every point decreases production time by <b>{speedIncrease}</b> seconds.";
         }
         
-        data.areaDescription += speedText;
-        
-        string efficiencyText = $"<br><br>??? (Dicemaker to unlock: {dicemakerToUnlockEfficiency})";
+        //Efficiency
+        string efficiencyText = $"<br><br>??? (Dicemaker to unlock: <b>{dicemakerToUnlockEfficiency}</b>)";
         
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Workshop, 2))
         {
-            efficiencyText = $"<br><br>EFFICIENCY: Increases production by: {efficiencyCurrent * 100}%.";
+            efficiencyText = $"<br><br><b>EFFICIENCY:</b> Every point increases production by: <b>{efficiencyIncrease * 100}</b>%.";
         }
         
-        data.areaDescription += efficiencyText;
-        
-        string criticalText = $"<br><br>??? (Dicemaker to unlock: {dicemakerToUnlockCritical})";
+        //Critical
+        string criticalText = $"<br><br>??? (Dicemaker to unlock: <b>{dicemakerToUnlockCritical}</b>)";
         float currentCriticalIncrease = 0f;
         if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Workshop,3) > 0) currentCriticalIncrease = (float)Math.Round(((criticalValueCurrent - 1) * 100), 2);
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Workshop, 3))
         {
             criticalText = 
-                $"<br><br>CRITICAL: {criticalChanceCurrent}% chance per cycle to increase production by {currentCriticalIncrease}%.";
+                $"<br><br><b>CRITICAL:</b> <b>{criticalChanceCurrent}</b>% chance per cycle to increase production by <b>{currentCriticalIncrease}</b>%.";
         }
         
-        data.areaDescription += criticalText;
-        
-        string overdriveText = $"<br><br>??? (Dicemaker to unlock: {dicemakerToUnlockOverdrive})";
+        //Overdrive
+        string overdriveText = $"<br><br>??? (Dicemaker to unlock: <b>{dicemakerToUnlockOverdrive}</b>)";
         float currentOverdriveDecrease = 0f;
         if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Workshop,4) > 0) currentOverdriveDecrease = (float)Math.Round((1/ overdriveValueCurrent - 1) * 100);
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Workshop, 4))
         {
             overdriveText =
-                $"<br><br>OVERDRIVE: {overdriveChanceCurrent}% chance per cycle to decrease production time by {currentOverdriveDecrease*(-1)}%.";
+                $"<br><br><b>OVERDRIVE:</b> <b>{overdriveChanceCurrent}</b>% chance per cycle to decrease production time by <b>{currentOverdriveDecrease*(-1)}</b>%.";
         }
         
-        data.areaDescription += overdriveText;
+        data.areaDescription += dicemakerText + speedText + efficiencyText + criticalText + overdriveText;
         
        
         

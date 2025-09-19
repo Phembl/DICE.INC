@@ -14,11 +14,15 @@ public class TooltipManager : MonoBehaviour
 
     [TitleGroup("References")] 
     [Header("Workshop")]
-    [SerializeField] private Workshop workshopComponent;
+    [SerializeField] private Workshop workshopManager;
     [SerializeField] private Canvas workshopCanvas;
     [SerializeField] private GameObject workshopTooltip;
+    [Header("Casino")]
+    [SerializeField] private Casino casinoManager;
+    [SerializeField] private Canvas casinoCanvas;
+    [SerializeField] private GameObject casinoTooltip;
     [Header("Stockmarket")]
-    [SerializeField] private Stockmarket stockmarketComponent;
+    [SerializeField] private Stockmarket stockmarketManager;
     [SerializeField] private Canvas stockmarketCanvas;
     [SerializeField] private GameObject stockmarketTooltip;
     
@@ -112,15 +116,21 @@ public class TooltipManager : MonoBehaviour
         switch (interactionArea)
         {
             case InteractionAreaType.Workshop:
-                data = workshopComponent.GetTooltipData();
+                data = workshopManager.GetTooltipData();
                 currentCanvas = workshopCanvas;
                 currentTooltip = workshopTooltip;
                 break;
             
             case InteractionAreaType.Stockmarket:
-                data = stockmarketComponent.GetTooltipData();
+                data = stockmarketManager.GetTooltipData();
                 currentCanvas = stockmarketCanvas;
                 currentTooltip = stockmarketTooltip;
+                break;
+            
+            case InteractionAreaType.Casino:
+                data = casinoManager.GetTooltipData();
+                currentCanvas = casinoCanvas;
+                currentTooltip = casinoTooltip;
                 break;
         }
         

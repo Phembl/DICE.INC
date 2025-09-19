@@ -304,6 +304,39 @@ public class Casino : InteractionArea
     {
         TooltipData data = new TooltipData();
         
+        data.areaTitle = "Casino";
+        data.areaDescription = "In the casino, the";
+
+        //Bets TT
+        string betsTooltip = "<br><br><b>BETS:</b>";
+        
+        //StakesCap TT
+        string stakesTooltip = $"<br><br>??? (Bets to unlock: {betsToUnlockStakes})";
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Casino, 1))
+        {
+            
+            stakesTooltip = $"<br><br><b>STAKES:</b> Each point.</b>";
+        }
+        
+        //Odds TT
+        string oddsTooltip = $"<br><br>??? (Bets to unlock: {betsToUnlockOdds})";
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Casino, 2))
+        {
+            
+            oddsTooltip = $"<br><br><b>ODDS:</b> Each point.</b>";
+        }
+        
+        //Jackpot TT
+        string jackpotTooltip = $"<br><br>??? (Bets to unlock: {betsToUnlockJackpot})";
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Casino, 3))
+        {
+            
+            jackpotTooltip = $"<br><br><b>JACKPOT:</b> Each point.</b>";
+        }
+        
+        
+        data.areaDescription += betsTooltip + stakesTooltip + oddsTooltip + jackpotTooltip;
+        
         return data;
     }
    

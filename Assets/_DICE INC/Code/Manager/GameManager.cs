@@ -76,8 +76,8 @@ public class GameManager : MonoBehaviour
     
     //Stockmarket
     [SerializeField, FoldoutGroup("Stockmarket")] private bool stockmarketUnlocked;
-    [SerializeField, FoldoutGroup("Stockmarket")] private int startMarketing;
-    [SerializeField, FoldoutGroup("Stockmarket")] private int startBottomline;
+    [SerializeField, FoldoutGroup("Stockmarket")] private int startGrowthStock;
+    [SerializeField, FoldoutGroup("Stockmarket")] private int startMarketCap;
     
     //DataCenter
     [SerializeField, FoldoutGroup("Datacenter")] private bool datacenterUnlocked;
@@ -147,8 +147,8 @@ public class GameManager : MonoBehaviour
         //Init Stockmarket
         Debug.Log("|----- START INIT: Stockmarket -----|");
         List <int> stockmarketStartSettings  = new List<int>();
-        stockmarketStartSettings.Add(startMarketing);
-        stockmarketStartSettings.Add(startBottomline);
+        stockmarketStartSettings.Add(startGrowthStock);
+        stockmarketStartSettings.Add(startMarketCap);
         stockmarket.InitializeInteractionArea(stockmarketUnlocked, stockmarketStartSettings);
         Debug.Log("|----- FINISH INIT: Stockmarket -----|");
       
