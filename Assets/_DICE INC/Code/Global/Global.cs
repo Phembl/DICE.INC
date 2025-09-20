@@ -16,8 +16,9 @@ namespace DICEINC.Global
         Casino,
         Diceworld,
         Stockmarket,
-        Datacenter
-        
+        Datacenter,
+        AutoShopper,
+        Transformer
     }
     
     public enum Resource

@@ -142,7 +142,6 @@ public class Workshop : InteractionArea
    
     #endregion
     
-    
     #region |-------------- INDIVIDUAL FUNCTIONS --------------|
     
     

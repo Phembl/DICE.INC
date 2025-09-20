@@ -63,6 +63,7 @@ public class CPU : MonoBehaviour
             case Resource.Pips:
                 pipsCurrent += change;
                 if (change > 0) pipsTotal += change;
+                if (pipsCurrent < 0) pipsCurrent = 0;
                 OnPipsChanged?.Invoke();
                 if (printLog) Debug.Log($"Pips changed to {pipsCurrent}");
                 break;
@@ -70,6 +71,7 @@ public class CPU : MonoBehaviour
             case Resource.Dice:
                 diceCurrent += change;
                 if (change > 0) diceTotal += change;
+                if (diceCurrent < 0) diceCurrent = 0;
                 OnDiceChanged?.Invoke();
                 if (printLog) Debug.Log($"Dice changed to {diceCurrent}");
                 break;
@@ -77,6 +79,7 @@ public class CPU : MonoBehaviour
             case Resource.Tools:
                 toolsCurrent += change;
                 if (change > 0) toolsTotal += change;
+                if (toolsCurrent < 0) toolsCurrent = 0;
                 OnToolsChanged?.Invoke();
                 if (printLog) Debug.Log($"Tools changed to {toolsCurrent}");
                 break;
@@ -84,6 +87,7 @@ public class CPU : MonoBehaviour
             case Resource.Luck:
                 luckCurrent += change;
                 if (change > 0) luckTotal += change;
+                if (luckCurrent < 0) luckCurrent = 0;
                 OnLuckChanged?.Invoke();
                 if (printLog) Debug.Log($"Luck changed to {luckCurrent}");
                 break;
@@ -91,6 +95,7 @@ public class CPU : MonoBehaviour
             case Resource.mDice:
                 mDiceCurrent += change;
                 if (change > 0) mDiceTotal += change;
+                if (mDiceCurrent < 0) mDiceCurrent = 0;
                 OnMDiceChanged?.Invoke();
                 if (printLog) Debug.Log($"MDice changed to {mDiceCurrent}");
                 break;
@@ -98,6 +103,7 @@ public class CPU : MonoBehaviour
             case Resource.Data:
                 dataCurrent += change;
                 if (change > 0) dataTotal += change;
+                if (dataCurrent < 0) dataCurrent = 0;
                 OnDataChanged?.Invoke();
                 if (printLog) Debug.Log($"Data changed to {dataCurrent}");
                 break;
@@ -113,6 +119,15 @@ public class CPU : MonoBehaviour
     
     #endregion
     
+    #region |-------------- AREA TRACKING --------------|
+
+    private bool[] areaUnlockStates = new bool[]{false, true, true, false, false, false, false, false, false, false};
+    public void SetAreaUnlockState(InteractionAreaType area)
+    {
+        areaUnlockStates[(int)area] = true;
+    }
+    
+    #endregion
     #region |-------------- INTERACTION TRACKING --------------|
     
     private List<int> shopInteractorCount = new List<int>();

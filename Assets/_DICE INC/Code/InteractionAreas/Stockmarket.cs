@@ -72,12 +72,17 @@ public class Stockmarket : InteractionArea
         marketcapCurrent = marketcapBase;
         marketcapDisplayMultCurrent = marketcapDisplayMultBase;
         
+        
+    }
+
+    protected override void OnAreaUnlock()
+    {
         if (!stockmarketCycleActive)
         {
             StartCoroutine(StockmarketCycle());
         }
     }
-    
+
     protected override List<int> GetCostsBase()
     {
         List<int> costs = new List<int>();

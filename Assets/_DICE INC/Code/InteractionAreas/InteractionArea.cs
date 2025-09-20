@@ -105,11 +105,15 @@ public abstract class InteractionArea : MonoBehaviour
             }
             
         }
-        
-        
-        if (_isUnlocked) UnlockArea();
 
-        CheckProgress();
+
+        if (_isUnlocked)
+        {
+            UnlockArea();
+            CheckProgress();
+        }
+
+        
     }
 
     protected abstract void InitSubClass();
@@ -128,8 +132,16 @@ public abstract class InteractionArea : MonoBehaviour
         if (areaUnlocked) return;
         areaUnlocked = true;
         
+        CPU.instance.SetAreaUnlockState(interactionAreaType);
         UnlockInteractor(0);
         canvasGroup.DOFade(1, 0.5f);
+
+        OnAreaUnlock();
+    }
+
+    protected virtual void OnAreaUnlock()
+    {
+        //Optionally overriden by child class
     }
     
     public void UnlockInteractor(int index)
@@ -137,7 +149,7 @@ public abstract class InteractionArea : MonoBehaviour
         
         if (index > areaInteractors.Count)
         {
-            Debug.LogWarning("An unknown interactor is supposed to be unlocked. Unlock aborted.");
+            Debug.LogWarning("An unknown interactor is trying to be unlocked. Unlock aborted.");
             return;
         }
 

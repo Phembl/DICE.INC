@@ -176,12 +176,14 @@ public class GameManager : MonoBehaviour
             shop.UnlockInteractor(0);
         }
 
+        /*
         if (currentDiceRollTotal >= 10 && !workshopUnlocked)
         {
             workshopUnlocked = true;
             workshop.UnlockArea();
             shop.UnlockInteractor(1);
         }
+        */
 
      
 

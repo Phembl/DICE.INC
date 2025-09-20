@@ -207,6 +207,40 @@ public class Diceworld : InteractionArea
     {
         TooltipData data = new TooltipData();
         
+        data.areaTitle = "Diceworld";
+        data.areaDescription = "In the diceworld, the";
+
+        //Extra Sides TT
+        string extrasidesTooltip = "<br><br><b>EXTRA SIDES:</b>";
+        
+        //Advantage TT
+        string advantageTooltip = $"<br><br>??? (Level to unlock: {levelToUnlockAdvantage})";
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Diceworld, 1))
+        {
+            
+            advantageTooltip = $"<br><br><b>ADVANTAGE:</b> Each point.</b>";
+        }
+        
+        //High Roller TT
+        string highrollerTooltip = $"<br><br>??? (Level to unlock: {levelToUnlockHighRoller})";
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Diceworld, 2))
+        {
+            
+            highrollerTooltip = $"<br><br><b>HIGH ROLLER:</b> Each point.</b>";
+        }
+        
+        //Explosive TT
+        string explosiveTooltip = $"<br><br>??? (Level to unlock: {levelToUnlockExplosive})";
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Diceworld, 3))
+        {
+            
+            explosiveTooltip = $"<br><br><b>EXPLOSIVE:</b> Each point.</b>";
+        }
+        
+        
+        data.areaDescription += extrasidesTooltip + advantageTooltip + highrollerTooltip + explosiveTooltip;
+        
+        
         return data;
     }
    

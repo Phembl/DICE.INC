@@ -21,6 +21,10 @@ public class TooltipManager : MonoBehaviour
     [SerializeField] private Casino casinoManager;
     [SerializeField] private Canvas casinoCanvas;
     [SerializeField] private GameObject casinoTooltip;
+    [Header("Dieworld")]
+    [SerializeField] private Diceworld diceworldManager;
+    [SerializeField] private Canvas diceworldCanvas;
+    [SerializeField] private GameObject diceworldTooltip;
     [Header("Stockmarket")]
     [SerializeField] private Stockmarket stockmarketManager;
     [SerializeField] private Canvas stockmarketCanvas;
@@ -125,6 +129,12 @@ public class TooltipManager : MonoBehaviour
                 data = stockmarketManager.GetTooltipData();
                 currentCanvas = stockmarketCanvas;
                 currentTooltip = stockmarketTooltip;
+                break;
+            
+            case InteractionAreaType.Diceworld:
+                data = diceworldManager.GetTooltipData();
+                currentCanvas = diceworldCanvas;
+                currentTooltip = diceworldTooltip;
                 break;
             
             case InteractionAreaType.Casino:
