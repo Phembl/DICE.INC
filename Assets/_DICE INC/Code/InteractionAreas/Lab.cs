@@ -42,8 +42,10 @@ public class Lab : MonoBehaviour
         if  (instance == null) instance = this;
     }
     
-    void Start()
+    public void InitializeLab(int startResearchIndex)
     {
+        currentResearchIndex = startResearchIndex;
+        
         labButtonTMP = labButton.transform.GetChild(0).GetComponent<TMP_Text>();
         
         //Save & Deactivate all memory fields
@@ -90,7 +92,7 @@ public class Lab : MonoBehaviour
         memoryFieldsToCompare.Clear();
         
         
-        //Prepare Button
+        //Prepare Button_Tooltip
         labButtonTMP.text = 
             $"START RESEARCH:<br><b>{researchGoals[currentResearchIndex].ToString()}</b><br>({researchCost[currentResearchIndex]} PIPS/s)";
 
@@ -207,7 +209,7 @@ public class Lab : MonoBehaviour
         
         researchSuccessCounter = 0;
         
-        //Prep Button
+        //Prep Button_Tooltip
         labButton.gameObject.GetComponent<Interactor_StartResearch>().SetActivity(false);
         labButtonTMP.text = "RESEARCH SUCCESSFUL!";
         yield return new WaitForSeconds(0.5f);

@@ -7,7 +7,6 @@ using System.Linq;
 public class Dice : MonoBehaviour
 {
    [SerializeField] private TMP_Text diceRollCounter;
-   [SerializeField] private Interactor_RollDice rollDiceButton;
 
    public bool printLog;
    
@@ -22,7 +21,7 @@ public class Dice : MonoBehaviour
       CPU.OnDiceRollTotalChanged += UpdateRollCounter;
    }
    
-   public void RollDice() //Called by RollDice Button
+   public void RollDice() //Called by RollDice Button_Tooltip
    {
       int diceToRoll = (int)CPU.instance.GetDice();
       
@@ -110,8 +109,6 @@ public class Dice : MonoBehaviour
       CPU.instance.ChangeResource(Resource.Dice, -diceToRollOriginal); //Uses this value because exploded dice should not be counted here
       
       Diceworld.instance.UpdateRollCounter(diceRolled);
-      
-      rollDiceButton.ShowRollResult(diceRolled, pipsGenerated);
       
       if (printLog) Debug.Log("|--------------DICE ROLLS FINISHED--------------|");
       

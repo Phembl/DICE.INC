@@ -76,12 +76,12 @@ public class CPU : MonoBehaviour
                 if (printLog) Debug.Log($"Dice changed to {diceCurrent}");
                 break;
             
-            case Resource.Tools:
+            case Resource.Material:
                 toolsCurrent += change;
                 if (change > 0) toolsTotal += change;
                 if (toolsCurrent < 0) toolsCurrent = 0;
                 OnToolsChanged?.Invoke();
-                if (printLog) Debug.Log($"Tools changed to {toolsCurrent}");
+                if (printLog) Debug.Log($"Material changed to {toolsCurrent}");
                 break;
             
             case Resource.Luck:
@@ -147,17 +147,17 @@ public class CPU : MonoBehaviour
     {
         switch (interactionAreaType)
         {
-            case InteractionAreaType.Shop:
+            case InteractionAreaType.Import:
                 shopInteractorCount.Add(count);
                 shopInteractorUnlockStates.Add(false);
                 break;
             
-            case InteractionAreaType.Workshop:
+            case InteractionAreaType.Factory:
                 workshopInteractorCount.Add(count);
                 workshopInteractorUnlockStates.Add(false);
                 break;
             
-            case InteractionAreaType.Casino:
+            case InteractionAreaType.Transformer:
                 casinoInteractorCount.Add(count);
                 casinoInteractorUnlockStates.Add(false);
                 break;
@@ -184,15 +184,15 @@ public class CPU : MonoBehaviour
     {
         switch (interactionAreaType)
         {
-            case InteractionAreaType.Shop:
+            case InteractionAreaType.Import:
                 shopInteractorCount[index] += increase;
                 break;
             
-            case InteractionAreaType.Workshop:
+            case InteractionAreaType.Factory:
                 workshopInteractorCount[index] += increase;
                 break;
             
-            case InteractionAreaType.Casino:
+            case InteractionAreaType.Transformer:
                 casinoInteractorCount[index] += increase;
                 break;
             
@@ -220,15 +220,15 @@ public class CPU : MonoBehaviour
         
         switch (interactionAreaType)
         {
-            case InteractionAreaType.Shop:
+            case InteractionAreaType.Import:
                 count = shopInteractorCount[index];
                 break;
             
-            case InteractionAreaType.Workshop:
+            case InteractionAreaType.Factory:
                 count = workshopInteractorCount[index];
                 break;
             
-            case InteractionAreaType.Casino:
+            case InteractionAreaType.Transformer:
                 count = casinoInteractorCount[index];
                 break;
             
@@ -257,15 +257,15 @@ public class CPU : MonoBehaviour
     {
         switch (interactionAreaType)
         {
-            case InteractionAreaType.Shop:
+            case InteractionAreaType.Import:
                 shopInteractorUnlockStates[index] = true;
                 break;
             
-            case InteractionAreaType.Workshop:
+            case InteractionAreaType.Factory:
                 workshopInteractorUnlockStates[index] = true;
                 break;
             
-            case InteractionAreaType.Casino:
+            case InteractionAreaType.Transformer:
                 casinoInteractorUnlockStates[index] = true;
                 break;
             
@@ -293,15 +293,15 @@ public class CPU : MonoBehaviour
         
         switch (interactionAreaType)
         {
-            case InteractionAreaType.Shop:
+            case InteractionAreaType.Import:
                 unlockState = shopInteractorUnlockStates[index];
                 break;
             
-            case InteractionAreaType.Workshop:
+            case InteractionAreaType.Factory:
                 unlockState = workshopInteractorUnlockStates[index];
                 break;
             
-            case InteractionAreaType.Casino:
+            case InteractionAreaType.Transformer:
                 unlockState = casinoInteractorUnlockStates[index];
                 break;
             

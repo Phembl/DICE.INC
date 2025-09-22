@@ -15,7 +15,7 @@ public class ResourceManager : MonoBehaviour
     [TitleGroup("Settings")] 
     [SerializeField] private bool pipsUnlocked;
     [SerializeField] private bool diceUnlocked;
-    [SerializeField] private bool toolsUnlocked;
+    [SerializeField] private bool materialUnlocked;
     [SerializeField] private bool luckUnlocked;
     [SerializeField] private bool mDiceUnlocked;
     [SerializeField] private bool dataUnlocked;
@@ -25,8 +25,8 @@ public class ResourceManager : MonoBehaviour
     private TMP_Text pipsCounterTMP;
     private TMP_Text diceTitleTMP;
     private TMP_Text diceCounterTMP;
-    private TMP_Text toolsTitleTMP;
-    private TMP_Text toolsCounterTMP;
+    private TMP_Text materialTitleTMP;
+    private TMP_Text materialCounterTMP;
     private TMP_Text luckTitleTMP;
     private TMP_Text luckCounterTMP;
     private TMP_Text mDiceTitleTMP;
@@ -34,8 +34,7 @@ public class ResourceManager : MonoBehaviour
     private TMP_Text dataTitleTMP;
     private TMP_Text dataCounterTMP;
     
-    private Color colorNormal;
-    private Color colorDark;
+    private Color colorActive;
     private Color colorInactive;
 
     public static ResourceManager instance;
@@ -56,8 +55,7 @@ public class ResourceManager : MonoBehaviour
 
     public void InitializeResourceManager()
     {
-        colorNormal = SettingsManager.instance.colorNormal;
-        colorDark = SettingsManager.instance.colorDark;
+        colorActive = SettingsManager.instance.colorNormal;
         colorInactive = SettingsManager.instance.colorInactive;
         
         pipsTitleTMP = resourceHolder.GetChild(0).transform.GetChild(0).GetComponent<TMP_Text>();
@@ -66,8 +64,8 @@ public class ResourceManager : MonoBehaviour
         diceTitleTMP = resourceHolder.GetChild(1).transform.GetChild(0).GetComponent<TMP_Text>();
         diceCounterTMP = resourceHolder.GetChild(1).transform.GetChild(1).GetComponent<TMP_Text>();
         
-        toolsTitleTMP = resourceHolder.GetChild(2).transform.GetChild(0).GetComponent<TMP_Text>();
-        toolsCounterTMP = resourceHolder.GetChild(2).transform.GetChild(1).GetComponent<TMP_Text>();
+        materialTitleTMP = resourceHolder.GetChild(2).transform.GetChild(0).GetComponent<TMP_Text>();
+        materialCounterTMP = resourceHolder.GetChild(2).transform.GetChild(1).GetComponent<TMP_Text>();
     
         luckTitleTMP = resourceHolder.GetChild(3).transform.GetChild(0).GetComponent<TMP_Text>();
         luckCounterTMP = resourceHolder.GetChild(3).transform.GetChild(1).GetComponent<TMP_Text>();
@@ -84,8 +82,8 @@ public class ResourceManager : MonoBehaviour
         if (diceUnlocked) UnlockResource(Resource.Dice);
         else LockResource(Resource.Dice);
         
-        if (toolsUnlocked) UnlockResource(Resource.Tools);
-        else LockResource(Resource.Tools);
+        if (materialUnlocked) UnlockResource(Resource.Material);
+        else LockResource(Resource.Material);
         
         if (luckUnlocked) UnlockResource(Resource.Luck);
         else LockResource(Resource.Luck);
@@ -107,27 +105,27 @@ public class ResourceManager : MonoBehaviour
                 pipsUnlocked = true;
                 pipsTitleTMP.text = "pips";
                 pipsCounterTMP.text = "0";
-                pipsTitleTMP.color = colorNormal;
-                pipsCounterTMP.color = colorNormal;
+                pipsTitleTMP.color = colorActive;
+                pipsCounterTMP.color = colorActive;
                 break;
             
             case Resource.Dice:
                 diceUnlocked = true;
                 diceTitleTMP.text = "dice";
                 diceCounterTMP.text = "0";
-                diceTitleTMP.color = colorNormal;
-                diceCounterTMP.color = colorNormal;
+                diceTitleTMP.color = colorActive;
+                diceCounterTMP.color = colorActive;
                 Debug.Log("Resource: Dice are now unlocked");
                 CPU.instance.UnlockDice();
                 break;
             
-            case Resource.Tools:
-                toolsUnlocked = true;
-                toolsTitleTMP.text = "tools";
-                toolsCounterTMP.text = "0";
-                toolsTitleTMP.color = colorNormal;
-                toolsCounterTMP.color = colorNormal;
-                Debug.Log("Resource: Tools are now unlocked");
+            case Resource.Material:
+                materialUnlocked = true;
+                materialTitleTMP.text = "material";
+                materialCounterTMP.text = "0";
+                materialTitleTMP.color = colorActive;
+                materialCounterTMP.color = colorActive;
+                Debug.Log("Resource: Material are now unlocked");
                 CPU.instance.UnlockTools();
                 break;
             
@@ -135,8 +133,8 @@ public class ResourceManager : MonoBehaviour
                 luckUnlocked = true;
                 luckTitleTMP.text = "luck";
                 luckCounterTMP.text = "0";
-                luckTitleTMP.color = colorNormal;
-                luckCounterTMP.color = colorNormal;
+                luckTitleTMP.color = colorActive;
+                luckCounterTMP.color = colorActive;
                 Debug.Log("Resource: luck are now unlocked");
                 CPU.instance.UnlockLuck();
                 break;
@@ -145,8 +143,8 @@ public class ResourceManager : MonoBehaviour
                 mDiceUnlocked = true;
                 mDiceTitleTMP.text = "mDICE";
                 mDiceCounterTMP.text = "0";
-                mDiceTitleTMP.color = colorNormal;
-                mDiceCounterTMP.color = colorNormal;
+                mDiceTitleTMP.color = colorActive;
+                mDiceCounterTMP.color = colorActive;
                 Debug.Log("Resource: mDice are now unlocked");
                 CPU.instance.UnlockMDice();
                 break;
@@ -155,8 +153,8 @@ public class ResourceManager : MonoBehaviour
                 dataUnlocked = true;
                 dataTitleTMP.text = "data";
                 dataCounterTMP.text = "0";
-                dataTitleTMP.color = colorNormal;
-                dataCounterTMP.color = colorNormal;
+                dataTitleTMP.color = colorActive;
+                dataCounterTMP.color = colorActive;
                 Debug.Log("Resource: Data are now unlocked");
                 CPU.instance.UnlockData();
                 break;
@@ -184,12 +182,12 @@ public class ResourceManager : MonoBehaviour
                 diceCounterTMP.color = colorInactive;
                 break;
             
-            case Resource.Tools:
-                toolsUnlocked = false;
-                toolsTitleTMP.text = "???";
-                toolsCounterTMP.text = "";
-                toolsTitleTMP.color = colorInactive;
-                toolsCounterTMP.color = colorInactive;
+            case Resource.Material:
+                materialUnlocked = false;
+                materialTitleTMP.text = "???";
+                materialCounterTMP.text = "";
+                materialTitleTMP.color = colorInactive;
+                materialCounterTMP.color = colorInactive;
                 break;
             
             case Resource.Luck:
@@ -236,9 +234,9 @@ public class ResourceManager : MonoBehaviour
 
     void UpdateDisplayTools()
     {
-        if (!toolsUnlocked) UnlockResource(Resource.Tools);
+        if (!materialUnlocked) UnlockResource(Resource.Material);
         double toolsCurrent = CPU.instance.GetTools();
-        toolsCounterTMP.text = Utility.ShortenNumberToString(toolsCurrent);
+        materialCounterTMP.text = Utility.ShortenNumberToString(toolsCurrent);
     }
     
     void UpdateDisplayLuck()

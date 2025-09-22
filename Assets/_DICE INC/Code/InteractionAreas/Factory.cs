@@ -12,27 +12,29 @@ using Unity.Mathematics;
 using Random = UnityEngine.Random;
 
 
-public class Workshop : InteractionArea
+public class Factory : InteractionArea
 {
     #region |-------------- SETTINGS --------------|
     
     [TitleGroup("References")] 
-    [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Workshop;
+    [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Factory;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
-    [SerializeField] private Transform workshopLoadScreen;
+    [SerializeField] private Transform factoryLoader;
 
-    [TitleGroup("Workshop")] 
+    [TitleGroup("Factory")] 
+    [ShowInInspector, ReadOnly] private int factoryLevel;
+    [Space]
     [SerializeField] private float timerBase;
     [ShowInInspector, ReadOnly] private float timerCurrent;
     
-    [Header("Dicemaker")]
+    [Header("Worker")]
     [SerializeField] private int dicemakerCostBase;
     [SerializeField] private float dicemakerCostMult;
     [SerializeField] private int dicemakerMax;
     [Space]
     [ShowInInspector, ReadOnly] private int dicemakerCurrent;
     
-    [Header("Speed")]
+    [Header("Conveyor")]
     [SerializeField] private int speedCostBase;
     [SerializeField] private float speedCostMult;
     [SerializeField] private int speedMax;
@@ -40,7 +42,7 @@ public class Workshop : InteractionArea
     [SerializeField] private float speedIncrease;
     [ShowInInspector, ReadOnly] private float speedCurrent;
     
-    [Header("Efficiency")]
+    [Header("Tools")]
     [SerializeField] private int efficiencyCostBase;
     [SerializeField] private float efficiencyCostMult;
     [SerializeField] private int efficiencyMax;
@@ -50,7 +52,7 @@ public class Workshop : InteractionArea
     [Space]
     [ShowInInspector, ReadOnly] private float efficiencyCurrent;
     
-    [Header("Critical")]
+    [Header("Surplus")]
     [SerializeField] private int criticalCostBase;
     [SerializeField] private float criticalCostMult;
     [SerializeField] private int criticalMax;
@@ -76,11 +78,13 @@ public class Workshop : InteractionArea
     [ShowInInspector, ReadOnly] private float overdriveChanceCurrent;
     [ShowInInspector, ReadOnly] private float overdriveValueCurrent;
     
-    [Header("Progress")] 
-    [SerializeField] private int dicemakerToUnlockSpeed;
-    [SerializeField] private int dicemakerToUnlockEfficiency;
-    [SerializeField] private int dicemakerToUnlockCritical;
-    [SerializeField] private int dicemakerToUnlockOverdrive;
+        
+    [Header("Innovation")]
+    [SerializeField] private int costInnovationBase;
+    [SerializeField] private float costInnovationMultiplier;
+    [SerializeField] private int innovationMax;
+    [Space]
+    
     
     #endregion
     
@@ -94,7 +98,7 @@ public class Workshop : InteractionArea
         timerCurrent = timerBase;
         efficiencyCurrent = efficiencyBase;
         
-        foreach (Transform nextLoader in workshopLoadScreen)
+        foreach (Transform nextLoader in factoryLoader)
         {
             nextLoader.GetComponent<Image>().DOFade(0, 0);
         }
@@ -109,6 +113,8 @@ public class Workshop : InteractionArea
         costs.Add(efficiencyCostBase);
         costs.Add(criticalCostBase);
         costs.Add(costOverdriveBase);
+        costs.Add(costOverdriveBase);
+        costs.Add(costOverdriveBase);
         
         return costs;
     }
@@ -121,6 +127,8 @@ public class Workshop : InteractionArea
         costs.Add(speedCostMult);
         costs.Add(efficiencyCostMult);
         costs.Add(criticalCostMult);
+        costs.Add(costOverdriveMultiplier);
+        costs.Add(costOverdriveMultiplier);
         costs.Add(costOverdriveMultiplier);
         
         return costs;
@@ -135,6 +143,8 @@ public class Workshop : InteractionArea
         max.Add(efficiencyMax);
         max.Add(criticalMax);
         max.Add(overdriveMax);
+        max.Add(overdriveMax);
+        max.Add(overdriveMax);
         
         return max;
     }
@@ -147,13 +157,13 @@ public class Workshop : InteractionArea
     
     protected override void RunInteraction(int index)
     {
-        int count = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Workshop, index);
+        int count = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory, index);
         
         switch (index)
         {
             case 0: //Dicemaker
                 dicemakerCurrent = count;
-                CheckProgress();
+                if (!workshopCycleActive) StartCoroutine(WorkShopCycle());
                 break;
             
             case 1: //Speed
@@ -164,47 +174,43 @@ public class Workshop : InteractionArea
             
             case 2: //Efficiency
                 efficiencyCurrent = efficiencyBase + (efficiencyIncrease * count);
-                if (printLog) Debug.Log($"Workshop: Efficiency upgraded: Current value:{efficiencyCurrent}");
+                if (printLog) Debug.Log($"Factory: Efficiency upgraded: Current value:{efficiencyCurrent}");
                 break;
             
             case 3: //Critical
                 criticalChanceCurrent = criticalChanceBase + (criticalChanceIncrease * count);
                 criticalValueCurrent = criticalValueBase + (criticalValueIncrease * count);
-                if (printLog) Debug.Log($"Workshop: Critical upgraded: Value:{criticalValueCurrent}, Chance:{criticalChanceCurrent}%");
+                if (printLog) Debug.Log($"Factory: Critical upgraded: Value:{criticalValueCurrent}, Chance:{criticalChanceCurrent}%");
                 break;
             
             case 4: //Overdrive
                 overdriveChanceCurrent = overdriveChanceBase + (overdriveChanceIncrease * count);
                 overdriveValueCurrent = overdriveValueBase + (overdriveValueIncrease * count);
-                if (printLog) Debug.Log($"Workshop: Overdrive upgraded: Value:{overdriveValueCurrent}, Chance:{overdriveChanceCurrent}%");
+                if (printLog) Debug.Log($"Factory: Overdrive upgraded: Value:{overdriveValueCurrent}, Chance:{overdriveChanceCurrent}%");
                 break;
             
         }
 
+        CheckProgress();
         
     }
     
     protected override void CheckProgress()
     {
-        if (!workshopCycleActive)
-        {
-            ResourceManager.instance.UnlockResource(Resource.Tools);
-            StartCoroutine(WorkShopCycle());
-        }
-        
-        int dicemakerCount = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Workshop, 0);
+        /*
+        int dicemakerCount = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory, 0);
         
         //Unlock Speed
         if (dicemakerCount >= dicemakerToUnlockSpeed &&
-            !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Workshop, 1)) UnlockInteractor(1);
+            !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 1)) UnlockInteractor(1);
         
         //Unlock Efficiency
         if(dicemakerCount >= dicemakerToUnlockEfficiency &&
-                !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Workshop, 2)) UnlockInteractor(2);
+                !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 2)) UnlockInteractor(2);
         
         //Unlock Critical && Luck
         if (dicemakerCount >= dicemakerToUnlockCritical &&
-                 !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Workshop, 3))
+                 !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 3))
         {
             UnlockInteractor(3);
             ResourceManager.instance.UnlockResource(Resource.Luck);
@@ -212,10 +218,24 @@ public class Workshop : InteractionArea
         
         //Unlock Overdrive
         if (dicemakerCount >= dicemakerToUnlockOverdrive &&
-                 !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Workshop, 4))
+                 !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 4))
         {
             UnlockInteractor(4);
         }
+*/
+        factoryLevel =
+            CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory, 0) +
+            CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory, 1) +
+            CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory, 2) +
+            CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory, 3) +
+            CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory, 4);
+
+        //Check if last Interactor has not yet been unlocked
+        if (!CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 4))
+        {
+            ProgressManager.instance.AreaProgress(InteractionAreaType.Factory, factoryLevel);
+        }
+        
     }
     
     private IEnumerator WorkShopCycle()
@@ -248,7 +268,7 @@ public class Workshop : InteractionArea
             {
                 float singleLoadTimer = nextProductionTimer / 10;
                 
-                workshopLoadScreen.GetChild(i).gameObject.GetComponent<Image>().DOFade(1, singleLoadTimer);
+                factoryLoader.GetChild(i).gameObject.GetComponent<Image>().DOFade(1, singleLoadTimer);
                 yield return new WaitForSeconds(singleLoadTimer);
             }
             
@@ -265,7 +285,7 @@ public class Workshop : InteractionArea
             CPU.instance.ChangeResource(Resource.Dice, diceCreated);
             
             //Restart
-            foreach (Transform nextLoader in workshopLoadScreen)
+            foreach (Transform nextLoader in factoryLoader)
             {
                 nextLoader.GetComponent<Image>().DOFade(0, 0.2f);
             }
@@ -288,7 +308,7 @@ public class Workshop : InteractionArea
         int productionCount = (int)(dicemakerCurrent * efficiencyCurrent);
         
         
-        data.areaTitle = "Workshop";
+        data.areaTitle = "Factory";
         data.areaDescription = "In the workshop, dicemaker produce dice." +
                                $"<br>Currently, <b>{productionCount}</b> dice are produced every <b>{timerCurrent}</b> seconds.";
              
@@ -296,36 +316,36 @@ public class Workshop : InteractionArea
         string dicemakerText = $"<br><br><b>DICEMAKER:</b> Produce <b>{dicemakerCurrent}</b> dice.";
         
         //Speed
-        string speedText = $"<br><br>??? (Dicemaker to unlock: <b>{dicemakerToUnlockSpeed}</b>)";
+        string speedText = $"<br><br>???)";
         
-        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Workshop, 1))
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 1))
         {
             speedText = $"<br><br><b>SPEED:</b> Every point decreases production time by <b>{speedIncrease}</b> seconds.";
         }
         
         //Efficiency
-        string efficiencyText = $"<br><br>??? (Dicemaker to unlock: <b>{dicemakerToUnlockEfficiency}</b>)";
+        string efficiencyText = $"<br><br>???)";
         
-        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Workshop, 2))
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 2))
         {
             efficiencyText = $"<br><br><b>EFFICIENCY:</b> Every point increases production by: <b>{efficiencyIncrease * 100}</b>%.";
         }
         
         //Critical
-        string criticalText = $"<br><br>??? (Dicemaker to unlock: <b>{dicemakerToUnlockCritical}</b>)";
+        string criticalText = $"<br><br>???";
         float currentCriticalIncrease = 0f;
-        if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Workshop,3) > 0) currentCriticalIncrease = (float)Math.Round(((criticalValueCurrent - 1) * 100), 2);
-        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Workshop, 3))
+        if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory,3) > 0) currentCriticalIncrease = (float)Math.Round(((criticalValueCurrent - 1) * 100), 2);
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 3))
         {
             criticalText = 
                 $"<br><br><b>CRITICAL:</b> <b>{criticalChanceCurrent}</b>% chance per cycle to increase production by <b>{currentCriticalIncrease}</b>%.";
         }
         
         //Overdrive
-        string overdriveText = $"<br><br>??? (Dicemaker to unlock: <b>{dicemakerToUnlockOverdrive}</b>)";
+        string overdriveText = $"<br><br>???)";
         float currentOverdriveDecrease = 0f;
-        if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Workshop,4) > 0) currentOverdriveDecrease = (float)Math.Round((1/ overdriveValueCurrent - 1) * 100);
-        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Workshop, 4))
+        if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory,4) > 0) currentOverdriveDecrease = (float)Math.Round((1/ overdriveValueCurrent - 1) * 100);
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 4))
         {
             overdriveText =
                 $"<br><br><b>OVERDRIVE:</b> <b>{overdriveChanceCurrent}</b>% chance per cycle to decrease production time by <b>{currentOverdriveDecrease*(-1)}</b>%.";

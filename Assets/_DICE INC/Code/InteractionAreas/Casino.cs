@@ -15,7 +15,7 @@ public class Casino : InteractionArea
 {
     
     [TitleGroup("References")] 
-    [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Casino;
+    [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Transformer;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
     [SerializeField] private Transform displayHouseNumbers;
     [SerializeField] private Transform displayPlayerNumbers;
@@ -24,7 +24,7 @@ public class Casino : InteractionArea
     [SerializeField] private Sprite loseIcon;
     [SerializeField] private TMP_Text outputTMP;
     
-    [TitleGroup("Casino")] 
+    [TitleGroup("Transformer")] 
     [Header("Bets")]
     [SerializeField] private int betsCostBase;
     [SerializeField] private float betsCostMult;
@@ -122,7 +122,7 @@ public class Casino : InteractionArea
     
     protected override void RunInteraction(int index)
     {
-        int count = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Casino, index);
+        int count = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Transformer, index);
         
         switch (index)
         {
@@ -156,19 +156,19 @@ public class Casino : InteractionArea
             StartCoroutine(CasinoCycle());
         }
         
-        int betCount = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Casino, 0);
+        int betCount = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Transformer, 0);
         
         //Unlock Stakes
         if (betCount >= betsToUnlockStakes &&
-            !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Casino, 1)) UnlockInteractor(1);
+            !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Transformer, 1)) UnlockInteractor(1);
         
         //Unlock Lucky Number
         if(betCount >= betsToUnlockOdds &&
-                !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Casino, 2)) UnlockInteractor(2);
+                !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Transformer, 2)) UnlockInteractor(2);
         
         //Unlock Jackpot
         if (betCount >= betsToUnlockJackpot &&
-                 !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Casino, 3)) UnlockInteractor(3);
+                 !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Transformer, 3)) UnlockInteractor(3);
       
         
     }
@@ -187,7 +187,7 @@ public class Casino : InteractionArea
             int overallWin = 0;
             
             int jackpotIndex = -1;
-            bool jackpotUnlocked = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Casino, 3) > 0;
+            bool jackpotUnlocked = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Transformer, 3) > 0;
             
            outputTMP.text = "Next Round!";
            if (printLog) Debug.Log("|--------------CASINO ROUND --------------|");
@@ -293,7 +293,7 @@ public class Casino : InteractionArea
         int prizeRange = jackpotPrizeBase / jackpotPercentageRange;
         int newJackpotMult = Random.Range(jackpotPrizeBase - prizeRange , jackpotPrizeBase + prizeRange + 1);
         
-        return newJackpotMult * CPU.instance.GetAreaInteractorCount(InteractionAreaType.Casino,3);
+        return newJackpotMult * CPU.instance.GetAreaInteractorCount(InteractionAreaType.Transformer,3);
     }
     
     #endregion
@@ -304,7 +304,7 @@ public class Casino : InteractionArea
     {
         TooltipData data = new TooltipData();
         
-        data.areaTitle = "Casino";
+        data.areaTitle = "Transformer";
         data.areaDescription = "In the casino, the";
 
         //Bets TT
@@ -312,7 +312,7 @@ public class Casino : InteractionArea
         
         //StakesCap TT
         string stakesTooltip = $"<br><br>??? (Bets to unlock: {betsToUnlockStakes})";
-        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Casino, 1))
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Transformer, 1))
         {
             
             stakesTooltip = $"<br><br><b>STAKES:</b> Each point.</b>";
@@ -320,7 +320,7 @@ public class Casino : InteractionArea
         
         //Odds TT
         string oddsTooltip = $"<br><br>??? (Bets to unlock: {betsToUnlockOdds})";
-        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Casino, 2))
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Transformer, 2))
         {
             
             oddsTooltip = $"<br><br><b>ODDS:</b> Each point.</b>";
@@ -328,7 +328,7 @@ public class Casino : InteractionArea
         
         //Jackpot TT
         string jackpotTooltip = $"<br><br>??? (Bets to unlock: {betsToUnlockJackpot})";
-        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Casino, 3))
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Transformer, 3))
         {
             
             jackpotTooltip = $"<br><br><b>JACKPOT:</b> Each point.</b>";

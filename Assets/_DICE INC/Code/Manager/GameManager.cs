@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
 {
     #region |-------------- REFERENCES --------------|
     [SerializeField, FoldoutGroup("References")] private CPU cpu;
+    [SerializeField, FoldoutGroup("References")] private Lab lab;
     [SerializeField, FoldoutGroup("References")] private InteractionArea shop;
     [SerializeField, FoldoutGroup("References")] private InteractionArea workshop;
     [SerializeField, FoldoutGroup("References")] private InteractionArea casino;
@@ -21,7 +22,6 @@ public class GameManager : MonoBehaviour
     
     #region |-------------- PROGRESS TRACKING --------------|
     
-    [Header("Resource")]
     [ReadOnly, FoldoutGroup("Tracking")] public double pipsOverall => cpu.GetPipsTotal();
     [ReadOnly, FoldoutGroup("Tracking")] public double diceOverall=> cpu.GetDiceTotal();
     [ReadOnly, FoldoutGroup("Tracking")] public double toolsOverall=> cpu.GetToolsTotal();
@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour
     
     [Header("Start Resources")]
     [SerializeField, FoldoutGroup("Settings")] private int startDiceRollTotal;
+    [SerializeField, FoldoutGroup("Settings")] private int startResearchProgress;
     [Space]
     [SerializeField, FoldoutGroup("Settings")] private int startPips;
     [SerializeField, FoldoutGroup("Settings")] private int startDice;
@@ -46,26 +47,26 @@ public class GameManager : MonoBehaviour
     #endregion
     
     #region |-------------- AREA SETTINGS --------------|
-    //Shop
-    [SerializeField, FoldoutGroup("Shop")] private bool shopUnlocked;
-    [SerializeField, FoldoutGroup("Shop")] private int startDiceShop;
-    [SerializeField, FoldoutGroup("Shop")] private int startToolsShop;
-    [SerializeField, FoldoutGroup("Shop")] private int startDataShop;
+    //Import
+    [SerializeField, FoldoutGroup("Import")] private bool shopUnlocked;
+    [SerializeField, FoldoutGroup("Import")] private int startDiceShop;
+    [SerializeField, FoldoutGroup("Import")] private int startToolsShop;
+    [SerializeField, FoldoutGroup("Import")] private int startDataShop;
     
-    //Workshop
-    [SerializeField, FoldoutGroup("Workshop")] private bool workshopUnlocked;
-    [SerializeField, FoldoutGroup("Workshop")] private int startDicemaker;
-    [SerializeField, FoldoutGroup("Workshop")] private int startSpeed;
-    [SerializeField, FoldoutGroup("Workshop")] private int startEfficiency;
-    [SerializeField, FoldoutGroup("Workshop")] private int startCritical;
-    [SerializeField, FoldoutGroup("Workshop")] private int startOverdrive;
+    //Factory
+    [SerializeField, FoldoutGroup("Factory")] private bool workshopUnlocked;
+    [SerializeField, FoldoutGroup("Factory")] private int startDicemaker;
+    [SerializeField, FoldoutGroup("Factory")] private int startSpeed;
+    [SerializeField, FoldoutGroup("Factory")] private int startEfficiency;
+    [SerializeField, FoldoutGroup("Factory")] private int startCritical;
+    [SerializeField, FoldoutGroup("Factory")] private int startOverdrive;
     
-    //Casino
-    [SerializeField, FoldoutGroup("Casino")] private bool casinoUnlocked;
-    [SerializeField, FoldoutGroup("Casino")] private int startBets;
-    [SerializeField, FoldoutGroup("Casino")] private int startStakes;
-    [SerializeField, FoldoutGroup("Casino")] private int startOdds;
-    [SerializeField, FoldoutGroup("Casino")] private int startJackpot;
+    //Transformer
+    [SerializeField, FoldoutGroup("Transformer")] private bool casinoUnlocked;
+    [SerializeField, FoldoutGroup("Transformer")] private int startBets;
+    [SerializeField, FoldoutGroup("Transformer")] private int startStakes;
+    [SerializeField, FoldoutGroup("Transformer")] private int startOdds;
+    [SerializeField, FoldoutGroup("Transformer")] private int startJackpot;
     
     //DiceWorld
     [SerializeField, FoldoutGroup("Diceworld")] private bool diceworldUnlocked;
@@ -94,45 +95,42 @@ public class GameManager : MonoBehaviour
         if  (instance == null) instance = this;
     }
     
-    void OnEnable()
-    {
-        CPU.OnDiceRollTotalChanged += UpdateProgress;
-    }
-    
     void Start()
     {
         ResourceManager.instance.InitializeResourceManager();
         
         #region |-------------- INIT AREAS --------------|
-        //Init Shop
-        Debug.Log("|----- START INIT: Shop -----|");
+        //Init Import
+        Debug.Log("|----- START INIT: Import -----|");
         List <int> shopStartSettings  = new List<int>();
         shopStartSettings.Add(startDiceShop);
         shopStartSettings.Add(startToolsShop);
         shopStartSettings.Add(startDataShop);
         shop.InitializeInteractionArea(shopUnlocked, shopStartSettings);
-        Debug.Log("|----- FINISH INIT: Shop -----|");
+        Debug.Log("|----- FINISH INIT: Import -----|");
         
-        //Init Workshop
-        Debug.Log("|----- START INIT: Workshop -----|");
+        //Init Factory
+        Debug.Log("|----- START INIT: Factory -----|");
         List <int> workshopStartSettings  = new List<int>();
         workshopStartSettings.Add(startDicemaker);
         workshopStartSettings.Add(startSpeed);
         workshopStartSettings.Add(startEfficiency);
         workshopStartSettings.Add(startCritical);
         workshopStartSettings.Add(startOverdrive);
+        workshopStartSettings.Add(startOverdrive);
+        workshopStartSettings.Add(startOverdrive);
         workshop.InitializeInteractionArea(workshopUnlocked, workshopStartSettings);
-        Debug.Log("|----- FINISH INIT: Workshop -----|");
+        Debug.Log("|----- FINISH INIT: Factory -----|");
         
-        //Init Workshop
-        Debug.Log("|----- START INIT: Casino -----|");
+        //Init Factory
+        Debug.Log("|----- START INIT: Transformer -----|");
         List <int> casinoStartSettings  = new List<int>();
         casinoStartSettings.Add(startBets);
         casinoStartSettings.Add(startStakes);
         casinoStartSettings.Add(startOdds);
         casinoStartSettings.Add(startJackpot);
         casino.InitializeInteractionArea(casinoUnlocked, casinoStartSettings);
-        Debug.Log("|----- FINISH INIT: Casino -----|");
+        Debug.Log("|----- FINISH INIT: Transformer -----|");
         
         //Init Diceworld
         Debug.Log("|----- START INIT: Diceworld -----|");
@@ -152,41 +150,32 @@ public class GameManager : MonoBehaviour
         stockmarket.InitializeInteractionArea(stockmarketUnlocked, stockmarketStartSettings);
         Debug.Log("|----- FINISH INIT: Stockmarket -----|");
       
+        /*
+        //Init Lab
+        Debug.Log("|----- START INIT: Lab -----|");
+        lab.InitializeLab(startResearchProgress);
+        Debug.Log("|----- FINISH INIT: Lab -----|");
+        
+         */
+        
+        
         #endregion
+       
+        
         
         CPU.instance.ChangeDiceRolledTotal(startDiceRollTotal);
         
         if (startPips > 0) CPU.instance.ChangeResource(Resource.Pips, startPips);
         if (startDice > 0) CPU.instance.ChangeResource(Resource.Dice, startDice);
-        if (startTools > 0) CPU.instance.ChangeResource(Resource.Tools, startTools);
+        if (startTools > 0) CPU.instance.ChangeResource(Resource.Material, startTools);
         if (startLuck > 0) CPU.instance.ChangeResource(Resource.Luck, startLuck);
         if (startMDice > 0) CPU.instance.ChangeResource(Resource.mDice, startMDice);
         if (startData > 0) CPU.instance.ChangeResource(Resource.Data, startData);
         
-        if (workshopUnlocked) shop.UnlockInteractor(1);
+        //UnlockDice
+        CPU.instance.UnlockDice();
+        shop.UnlockInteractor(0);
     }
-
-    void UpdateProgress()
-    {
-        int currentDiceRollTotal = CPU.instance.GetDiceRolledTotal();
-
-        if (currentDiceRollTotal >= 0 && !CPU.instance.GetDiceUnlockState())
-        {
-            CPU.instance.UnlockDice();
-            shop.UnlockInteractor(0);
-        }
-
-        /*
-        if (currentDiceRollTotal >= 10 && !workshopUnlocked)
-        {
-            workshopUnlocked = true;
-            workshop.UnlockArea();
-            shop.UnlockInteractor(1);
-        }
-        */
-
-     
-
-    }
+    
     
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,16 +17,17 @@ public class Interactor : MonoBehaviour
     [Space]
     [ShowInInspector, ReadOnly] private int maxCount;
     [Space]
-    [SerializeField] private Sprite spriteNormal;
-    [SerializeField] private Sprite spriteHovered;
-    [Space]
+    //[SerializeField] private Sprite spriteNormal;
+    //[SerializeField] private Sprite spriteHovered;
+    //[Space]
     [SerializeField] private bool isShop;
     
     
     //Colors
-    private Color colorNormal;
-    private Color colorDark;
+    private Color colorActive;
+    //private Color colorDark;
     private Color colorInactive;
+    private Color colorScreen;
     
     //Text
     private TMP_Text titleTMP;
@@ -66,15 +68,17 @@ public class Interactor : MonoBehaviour
     public void InitializeInteractor(int _currentCost, int _maxCount)
     {
         
-        colorNormal = SettingsManager.instance.colorNormal;
-        colorDark = SettingsManager.instance.colorDark;
+        colorActive = SettingsManager.instance.colorNormal;
+        //colorDark = SettingsManager.instance.colorDark;
         colorInactive = SettingsManager.instance.colorInactive;
         
         background = GetComponent<Image>();
+        colorScreen = background.color;
+        
         titleTMP = transform.GetChild(0).gameObject.GetComponent<TMP_Text>();
         costTMP = transform.GetChild(1).gameObject.GetComponent<TMP_Text>();
         
-        background.sprite = spriteNormal;
+        //background.sprite = spriteNormal;
         
         currentCost = _currentCost;
         maxCount = _maxCount;
@@ -85,7 +89,7 @@ public class Interactor : MonoBehaviour
             
         titleTMP.color = colorInactive;
         costTMP.color = colorInactive;
-        background.color = colorInactive;
+        //background.color = colorInactive;
 
         isUnlocked = false;
         
@@ -120,7 +124,7 @@ public class Interactor : MonoBehaviour
     
     void CheckAvailabilityTools()
     {
-        if (costResource != Resource.Tools) return;
+        if (costResource != Resource.Material) return;
         
         CheckAvailability();
     }
@@ -157,7 +161,7 @@ public class Interactor : MonoBehaviour
                 else isPurchasable = true;
                 break;
             
-            case Resource.Tools:
+            case Resource.Material:
                 if (currentCost > CPU.instance.GetTools()) isPurchasable = false;
                 else isPurchasable = true;
                 break;
@@ -183,9 +187,9 @@ public class Interactor : MonoBehaviour
         {
             if (!isHovered)
             {
-                titleTMP.color = colorNormal;
-                costTMP.color = colorNormal;
-                background.color = colorNormal;
+                titleTMP.color = colorActive;
+                costTMP.color = colorActive;
+                background.color = colorScreen;
             }
             
         }
@@ -193,8 +197,7 @@ public class Interactor : MonoBehaviour
         else
         {
             if (clickAnim != null)  StopCoroutine(clickAnim);
-            background.sprite = spriteNormal;
-            background.color = colorInactive;
+            background.color = colorScreen;
             titleTMP.color = colorInactive;
             costTMP.color = colorInactive;
         }
@@ -209,9 +212,9 @@ public class Interactor : MonoBehaviour
         
         isHovered = true;
         
-        background.sprite = spriteHovered;
-        titleTMP.color = colorDark;
-        costTMP.color = colorDark;
+        background.color = colorActive;
+        titleTMP.color = colorScreen;
+        costTMP.color = colorScreen;
         
     }
 
@@ -223,9 +226,9 @@ public class Interactor : MonoBehaviour
 
         if (isPurchasable)
         {
-            background.sprite = spriteNormal;
-            titleTMP.color = colorNormal;
-            costTMP.color = colorNormal;
+            background.color = colorScreen;
+            titleTMP.color = colorActive;
+            costTMP.color = colorActive;
         }
        
     }
@@ -243,20 +246,15 @@ public class Interactor : MonoBehaviour
 
     private IEnumerator ClickAnimation()
     {
-        
-        background.color = colorDark;
-        titleTMP.color = colorNormal;
-        costTMP.color = colorNormal;
+        background.DOFade(0.7f, 0.05f);
         
         yield return new WaitForSeconds(0.1f);
         
-        background.color = colorNormal;
-        titleTMP.color = colorDark;
-        costTMP.color = colorDark;
+        background.DOFade(1f, 0.05f);
     }
 
     #region |-------------- UPDATING --------------|
-    //Run By Interaction Parent (Shop, workshop, etc.)
+    //Run By Interaction Parent (Import, workshop, etc.)
     public void UpdatePrice(double _newCost)
     {
         if (isMaxed) return;
@@ -283,7 +281,7 @@ public class Interactor : MonoBehaviour
             costTMP.SetText("MAX");
         }
         
-        //Show count only if not Shop Interactor
+        //Show count only if not Import Interactor
         if (isShop) titleTMP.text = interactorName;
         else titleTMP.text = $"{interactorName}({currentCount.ToString()})";
     }

@@ -10,22 +10,21 @@ namespace DICEINC.Global
     public enum InteractionAreaType
     {
         None,
-        Shop,
+        Import,
         Lab,
-        Workshop,
-        Casino,
+        Factory,
+        Transformer,
         Diceworld,
         Stockmarket,
         Datacenter,
-        AutoShopper,
-        Transformer
+      
     }
     
     public enum Resource
     {
         Pips,
         Dice,
-        Tools,
+        Material,
         Luck,
         mDice,
         Data

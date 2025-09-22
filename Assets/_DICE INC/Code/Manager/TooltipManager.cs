@@ -13,11 +13,11 @@ public class TooltipManager : MonoBehaviour
     [SerializeField] private bool printLog;
 
     [TitleGroup("References")] 
-    [Header("Workshop")]
-    [SerializeField] private Workshop workshopManager;
+    [Header("Factory")]
+    [SerializeField] private Factory factoryManager;
     [SerializeField] private Canvas workshopCanvas;
     [SerializeField] private GameObject workshopTooltip;
-    [Header("Casino")]
+    [Header("Transformer")]
     [SerializeField] private Casino casinoManager;
     [SerializeField] private Canvas casinoCanvas;
     [SerializeField] private GameObject casinoTooltip;
@@ -119,8 +119,8 @@ public class TooltipManager : MonoBehaviour
 
         switch (interactionArea)
         {
-            case InteractionAreaType.Workshop:
-                data = workshopManager.GetTooltipData();
+            case InteractionAreaType.Factory:
+                data = factoryManager.GetTooltipData();
                 currentCanvas = workshopCanvas;
                 currentTooltip = workshopTooltip;
                 break;
@@ -137,7 +137,7 @@ public class TooltipManager : MonoBehaviour
                 currentTooltip = diceworldTooltip;
                 break;
             
-            case InteractionAreaType.Casino:
+            case InteractionAreaType.Transformer:
                 data = casinoManager.GetTooltipData();
                 currentCanvas = casinoCanvas;
                 currentTooltip = casinoTooltip;

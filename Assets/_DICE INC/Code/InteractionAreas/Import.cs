@@ -5,17 +5,17 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Shop : InteractionArea
+public class Import : InteractionArea
 {
     [TitleGroup("References")] 
-    [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Shop;
+    [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Import;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
     
-    [TitleGroup("Shop")] 
+    [TitleGroup("Import")] 
     [Header("Dice")]
     [SerializeField] private int diceCostBase;
     [SerializeField] private int diceMax;
-    [Header("Tools")]
+    [Header("Material")]
     [SerializeField] private int toolsCostBase;
     [SerializeField] private float toolsCostMult;
     [SerializeField] private int toolsMax;
@@ -88,8 +88,8 @@ public class Shop : InteractionArea
                 CheckProgress();
                 break;
             
-            case 1: //Buy Tools
-                CPU.instance.ChangeResource(Resource.Tools,1);
+            case 1: //Buy Material
+                CPU.instance.ChangeResource(Resource.Material,1);
                 break;
             
             case 2: //Buy Data
@@ -102,7 +102,7 @@ public class Shop : InteractionArea
     protected override void CheckProgress()
     {
         double totalDicePurchased = 
-            CPU.instance.GetAreaInteractorCount(InteractionAreaType.Shop, 0) + CPU.instance.GetAreaInteractorCount(InteractionAreaType.Shop, 1) * 100;
+            CPU.instance.GetAreaInteractorCount(InteractionAreaType.Import, 0) + CPU.instance.GetAreaInteractorCount(InteractionAreaType.Import, 1) * 100;
         
         if (totalDicePurchased >= diceCostIncrease1 && diceCostLevel == 1)
                     

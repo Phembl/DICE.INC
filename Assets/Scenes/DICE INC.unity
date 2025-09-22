@@ -5072,21 +5072,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cpu: {fileID: 625926000}
+  lab: {fileID: 1247712825}
   shop: {fileID: 1992266993}
   workshop: {fileID: 1859983091}
   casino: {fileID: 1951630507}
   diceworld: {fileID: 690977110}
   stockmarket: {fileID: 237082651}
   startDiceRollTotal: 0
+  startResearchProgress: 1
   startPips: 10000
   startDice: 0
-  startTools: 0
+  startTools: 100
   startLuck: 0
   startMDice: 0
   startData: 0
   shopUnlocked: 1
   startDiceShop: 0
-  startToolsShop: 0
+  startToolsShop: 1
   startDataShop: 0
   workshopUnlocked: 0
   startDicemaker: 0
@@ -9255,9 +9257,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   labMemoryHolder: {fileID: 272438278}
   labButton: {fileID: 1319670012}
-  workshop: {fileID: 1859983091}
-  casino: {fileID: 1951630507}
-  diceworld: {fileID: 690977110}
   printLog: 0
   researchCost: 010000001400000064000000f4010000d007000088130000983a0000
   researchGoals: 03000000040000000500000006000000070000000800000009000000
@@ -13702,6 +13701,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1810783068}
+  - component: {fileID: 1810783069}
   m_Layer: 0
   m_Name: ProgressManager
   m_TagString: Untagged
@@ -13724,6 +13724,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1810783069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1810783067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54df76e9c993348bd9a8b946b97c3f9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  printLog: 1
+  shop: {fileID: 1992266993}
+  workshop: {fileID: 1859983091}
+  casino: {fileID: 1951630507}
+  diceworld: {fileID: 690977110}
+  lvlUnlockSpeed: 1
+  lvlUnlockEfficiency: 2
+  lvlUnlockCritical: 3
+  lvlUnlockOverdrive: 4
 --- !u!1001 &1817879661
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14079,9 +14100,9 @@ MonoBehaviour:
   overdriveValueBase: 3
   overdriveValueIncrease: 0.2
   dicemakerToUnlockSpeed: 1
-  dicemakerToUnlockEfficiency: 1
-  dicemakerToUnlockCritical: 1
-  dicemakerToUnlockOverdrive: 1
+  dicemakerToUnlockEfficiency: 5
+  dicemakerToUnlockCritical: 15
+  dicemakerToUnlockOverdrive: 50
 --- !u!224 &1900116956 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1700768717062524888, guid: 529d50c3e3b9247148b75cb7b832bea4, type: 3}

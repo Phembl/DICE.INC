@@ -181,9 +181,9 @@ public abstract class InteractionArea : MonoBehaviour
             return; 
         }
         
-        if (interactionAreaType == InteractionAreaType.Shop)
+        if (interactionAreaType == InteractionAreaType.Import)
         {
-            //If the interactor is Shop-> Dice, the cost are updated from the subclass
+            //If the interactor is Import-> Dice, the cost are updated from the subclass
             if (index == 0) return;
         }
         
@@ -205,10 +205,10 @@ public abstract class InteractionArea : MonoBehaviour
     }
 
     
-    //This is called from the Shop child class with the current Dice cost
+    //This is called from the Import child class with the current Dice cost
     protected void ShopCostUpdateDice(int newCost)
     {
-        if (interactionAreaType != InteractionAreaType.Shop) return;
+        if (interactionAreaType != InteractionAreaType.Import) return;
         
         //Dice
         costBase[0] = newCost;
@@ -219,7 +219,7 @@ public abstract class InteractionArea : MonoBehaviour
     
     #region |-------------- INTERACTION --------------|
     
-    //Called by Shop Interactors
+    //Called by Import Interactors
     public void Interaction(int index, Resource costResource)
     {
         //Pay Cost of interaction
@@ -229,8 +229,8 @@ public abstract class InteractionArea : MonoBehaviour
         CPU.instance.IncreaseAreaInteractorCount(interactionAreaType, index);
         
         //Update Counter Display on Interactor
-        //Shop Count doesn't need to be updated
-        if (interactionAreaType != InteractionAreaType.Shop) 
+        //Import Count doesn't need to be updated
+        if (interactionAreaType != InteractionAreaType.Import) 
             areaInteractors[index].UpdateCount(CPU.instance.GetAreaInteractorCount(interactionAreaType, index));
         
         UpdateInteractorCost(index); //Update Cost
