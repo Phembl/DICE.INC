@@ -108,7 +108,7 @@ public class Dice : MonoBehaviour
       CPU.instance.ChangeDiceRolledTotal(diceRolled); //Uses this value in case rolls are multiplied
       CPU.instance.ChangeResource(Resource.Dice, -diceToRollOriginal); //Uses this value because exploded dice should not be counted here
       
-      Diceworld.instance.UpdateRollCounter(diceRolled);
+      Technology.instance.UpdateRollCounter(diceRolled);
       
       if (printLog) Debug.Log("|--------------DICE ROLLS FINISHED--------------|");
       

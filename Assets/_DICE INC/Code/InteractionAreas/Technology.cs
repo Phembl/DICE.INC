@@ -11,7 +11,7 @@ using Random = UnityEngine.Random;
 using DG.Tweening;
 using UnityEngine.PlayerLoop;
 
-public class Diceworld : InteractionArea
+public class Technology : InteractionArea
 {
     [TitleGroup("References")] 
     [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Technology;
@@ -60,7 +60,7 @@ public class Diceworld : InteractionArea
     [SerializeField] private int levelToUnlockExplosive;
     
     
-    public static Diceworld instance;
+    public static Technology instance;
     private void Awake()
     {
         if  (instance == null) instance = this;

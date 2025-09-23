@@ -273,4 +273,19 @@ public class Lab : MonoBehaviour
     
     
     #endregion
+    
+    
+    #region |-------------- TOOLTIP --------------|
+
+    public TooltipData GetTooltipData()
+    {
+        TooltipData data = new TooltipData();
+        
+        data.areaTitle = "Laboratory";
+        data.areaDescription = "The laboratory,";
+        
+        
+        return data;
+    }
+    #endregion
 }

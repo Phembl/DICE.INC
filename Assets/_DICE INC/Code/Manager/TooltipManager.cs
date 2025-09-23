@@ -13,22 +13,34 @@ public class TooltipManager : MonoBehaviour
     [SerializeField] private bool printLog;
 
     [TitleGroup("References")] 
+    [Header("Import")]
+    [SerializeField] private Import importManager;
+    [SerializeField] private Canvas importCanvas;
+    [SerializeField] private GameObject importTooltip;
+    [Header("Lab")]
+    [SerializeField] private Lab labManager;
+    [SerializeField] private Canvas labCanvas;
+    [SerializeField] private GameObject labTooltip;
     [Header("Factory")]
     [SerializeField] private Factory factoryManager;
-    [SerializeField] private Canvas workshopCanvas;
-    [SerializeField] private GameObject workshopTooltip;
+    [SerializeField] private Canvas factoryCanvas;
+    [SerializeField] private GameObject factoryTooltip;
     [Header("Transformer")]
-    [SerializeField] private Casino casinoManager;
-    [SerializeField] private Canvas casinoCanvas;
-    [SerializeField] private GameObject casinoTooltip;
-    [Header("Dieworld")]
-    [SerializeField] private Diceworld diceworldManager;
-    [SerializeField] private Canvas diceworldCanvas;
-    [SerializeField] private GameObject diceworldTooltip;
+    [SerializeField] private Transformer transformerManager;
+    [SerializeField] private Canvas transformerCanvas;
+    [SerializeField] private GameObject transformerTooltip;
+    [Header("Technology")]
+    [SerializeField] private Technology technologyManager;
+    [SerializeField] private Canvas technologyCanvas;
+    [SerializeField] private GameObject technologyTooltip;
     [Header("Stockmarket")]
     [SerializeField] private Stockmarket stockmarketManager;
     [SerializeField] private Canvas stockmarketCanvas;
     [SerializeField] private GameObject stockmarketTooltip;
+    [Header("Datacenter")]
+    [SerializeField] private Datacenter datacenterManager;
+    [SerializeField] private Canvas datacenterCanvas;
+    [SerializeField] private GameObject datacenterTooltip;
     
 
     private InteractionArea currentInteractionArea;
@@ -53,7 +65,7 @@ public class TooltipManager : MonoBehaviour
 
     private void Start()
     {
-        workshopTooltip.SetActive(false);
+        factoryTooltip.SetActive(false);
     }
 
     public void OpenTooltip(InteractionAreaType interactionArea)
@@ -119,10 +131,33 @@ public class TooltipManager : MonoBehaviour
 
         switch (interactionArea)
         {
+            case InteractionAreaType.Import:
+                data = importManager.GetTooltipData();
+                currentCanvas = importCanvas;
+                currentTooltip = importTooltip;
+                break;
+            
+            case InteractionAreaType.Lab:
+                data = labManager.GetTooltipData();
+                currentCanvas = labCanvas;
+                currentTooltip = labTooltip;
+                break;
+            
             case InteractionAreaType.Factory:
                 data = factoryManager.GetTooltipData();
-                currentCanvas = workshopCanvas;
-                currentTooltip = workshopTooltip;
+                currentCanvas = factoryCanvas;
+                currentTooltip = factoryTooltip;
+                break;
+            case InteractionAreaType.Transformer:
+                data = transformerManager.GetTooltipData();
+                currentCanvas = transformerCanvas;
+                currentTooltip = transformerTooltip;
+                break;
+            
+            case InteractionAreaType.Technology:
+                data = technologyManager.GetTooltipData();
+                currentCanvas = technologyCanvas;
+                currentTooltip = technologyTooltip;
                 break;
             
             case InteractionAreaType.Stockmarket:
@@ -131,17 +166,12 @@ public class TooltipManager : MonoBehaviour
                 currentTooltip = stockmarketTooltip;
                 break;
             
-            case InteractionAreaType.Technology:
-                data = diceworldManager.GetTooltipData();
-                currentCanvas = diceworldCanvas;
-                currentTooltip = diceworldTooltip;
+            case InteractionAreaType.Datacenter:
+                data = datacenterManager.GetTooltipData();
+                currentCanvas = datacenterCanvas;
+                currentTooltip = datacenterTooltip;
                 break;
-            
-            case InteractionAreaType.Transformer:
-                data = casinoManager.GetTooltipData();
-                currentCanvas = casinoCanvas;
-                currentTooltip = casinoTooltip;
-                break;
+         
         }
         
         return data;
