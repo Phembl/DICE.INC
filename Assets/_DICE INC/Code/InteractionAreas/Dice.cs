@@ -27,10 +27,10 @@ public class Dice : MonoBehaviour
       
       if (diceToRoll == 0) return;
       
-      int diceUpperLimit = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Diceworld, 0) + 7; //Needs to be + 7 because of maxExclusive Random.Range
-      int diceLowerLimit = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Diceworld, 2) + 1; //Uses highRoller + 1, otherwise highRoller (1) would useless
-      int advantageValue = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Diceworld, 1) + 1; //Uses Advantage + 1, because if Advantage = 0 it needs to simply roll 1 time
-      float explosionChance = (float)CPU.instance.GetAreaInteractorCount(InteractionAreaType.Diceworld, 3);
+      int diceUpperLimit = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Technology, 0) + 7; //Needs to be + 7 because of maxExclusive Random.Range
+      int diceLowerLimit = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Technology, 2) + 1; //Uses highRoller + 1, otherwise highRoller (1) would useless
+      int advantageValue = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Technology, 1) + 1; //Uses Advantage + 1, because if Advantage = 0 it needs to simply roll 1 time
+      float explosionChance = (float)CPU.instance.GetAreaInteractorCount(InteractionAreaType.Technology, 3);
       
       int diceToRollOriginal = diceToRoll;
       int diceRolled = 0;

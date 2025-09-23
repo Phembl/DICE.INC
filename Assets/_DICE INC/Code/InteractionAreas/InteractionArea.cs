@@ -187,7 +187,7 @@ public abstract class InteractionArea : MonoBehaviour
             if (index == 0) return;
         }
         
-        if (interactionAreaType == InteractionAreaType.Diceworld)
+        if (interactionAreaType == InteractionAreaType.Technology)
         {
             //DiceWorld just increases each cost by one
             costCurrent[index] += 1;

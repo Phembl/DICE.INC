@@ -14,7 +14,7 @@ namespace DICEINC.Global
         Lab,
         Factory,
         Transformer,
-        Diceworld,
+        Technology,
         Stockmarket,
         Datacenter,
       

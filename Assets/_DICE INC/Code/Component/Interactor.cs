@@ -48,7 +48,7 @@ public class Interactor : MonoBehaviour
     {
         CPU.OnPipsChanged += CheckAvailabilityPips;
         CPU.OnDiceChanged += CheckAvailabilityDice;
-        CPU.OnToolsChanged += CheckAvailabilityTools;
+        CPU.OnMaterialChanged += CheckAvailabilityMaterial;
         CPU.OnLuckChanged += CheckAvailabilityLuck;
         CPU.OnMDiceChanged += CheckAvailabilityMDice;
         CPU.OnDataChanged += CheckAvailabilityData;
@@ -58,7 +58,7 @@ public class Interactor : MonoBehaviour
     {
         CPU.OnPipsChanged -= CheckAvailabilityPips;
         CPU.OnDiceChanged -= CheckAvailabilityDice;
-        CPU.OnToolsChanged -= CheckAvailabilityTools;
+        CPU.OnMaterialChanged -= CheckAvailabilityMaterial;
         CPU.OnLuckChanged -= CheckAvailabilityLuck;
         CPU.OnMDiceChanged -= CheckAvailabilityMDice;
         CPU.OnDataChanged -= CheckAvailabilityData;
@@ -122,7 +122,7 @@ public class Interactor : MonoBehaviour
         CheckAvailability();
     }
     
-    void CheckAvailabilityTools()
+    void CheckAvailabilityMaterial()
     {
         if (costResource != Resource.Material) return;
         

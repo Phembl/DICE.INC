@@ -69,11 +69,11 @@ public class GameManager : MonoBehaviour
     [SerializeField, FoldoutGroup("Transformer")] private int startJackpot;
     
     //DiceWorld
-    [SerializeField, FoldoutGroup("Diceworld")] private bool diceworldUnlocked;
-    [SerializeField, FoldoutGroup("Diceworld")] private int startSides;
-    [SerializeField, FoldoutGroup("Diceworld")] private int startAdvantage;
-    [SerializeField, FoldoutGroup("Diceworld")] private int startHighRoller;
-    [SerializeField, FoldoutGroup("Diceworld")] private int startExplosive;
+    [SerializeField, FoldoutGroup("Technology")] private bool diceworldUnlocked;
+    [SerializeField, FoldoutGroup("Technology")] private int startSides;
+    [SerializeField, FoldoutGroup("Technology")] private int startAdvantage;
+    [SerializeField, FoldoutGroup("Technology")] private int startHighRoller;
+    [SerializeField, FoldoutGroup("Technology")] private int startExplosive;
     
     //Stockmarket
     [SerializeField, FoldoutGroup("Stockmarket")] private bool stockmarketUnlocked;
@@ -122,7 +122,8 @@ public class GameManager : MonoBehaviour
         workshop.InitializeInteractionArea(workshopUnlocked, workshopStartSettings);
         Debug.Log("|----- FINISH INIT: Factory -----|");
         
-        //Init Factory
+        //Init Transformer
+        /*
         Debug.Log("|----- START INIT: Transformer -----|");
         List <int> casinoStartSettings  = new List<int>();
         casinoStartSettings.Add(startBets);
@@ -131,16 +132,17 @@ public class GameManager : MonoBehaviour
         casinoStartSettings.Add(startJackpot);
         casino.InitializeInteractionArea(casinoUnlocked, casinoStartSettings);
         Debug.Log("|----- FINISH INIT: Transformer -----|");
+        */
         
-        //Init Diceworld
-        Debug.Log("|----- START INIT: Diceworld -----|");
+        //Init Technology
+        Debug.Log("|----- START INIT: Technology -----|");
         List <int> diceworldStartSettings  = new List<int>();
         diceworldStartSettings.Add(startSides);
         diceworldStartSettings.Add(startAdvantage);
         diceworldStartSettings.Add(startHighRoller);
         diceworldStartSettings.Add(startExplosive);
         diceworld.InitializeInteractionArea(diceworldUnlocked, diceworldStartSettings);
-        Debug.Log("|----- FINISH INIT: Diceworld -----|");
+        Debug.Log("|----- FINISH INIT: Technology -----|");
         
         //Init Stockmarket
         Debug.Log("|----- START INIT: Stockmarket -----|");

@@ -11,47 +11,47 @@ public class CPU : MonoBehaviour
     
     private double pipsCurrent = 1;
     private double diceCurrent;
-    private double toolsCurrent;
+    private double materialCurrent;
     private double luckCurrent;
     private double mDiceCurrent;
     private double dataCurrent;
     
     private double pipsTotal;
     private double diceTotal;
-    private double toolsTotal;
+    private double materialTotal;
     private double luckTotal;
     private double mDiceTotal;
     private double dataTotal;
 
     private bool diceUnlocked;
-    private bool toolsUnlocked;
+    private bool materialUnlocked;
     private bool luckUnlocked;
     private bool mDiceUnlocked; 
     private bool dataUnlocked;
     
     public void UnlockDice() => diceUnlocked = true;
-    public void UnlockTools() => toolsUnlocked = true;
+    public void UnlockTools() => materialUnlocked = true;
     public void UnlockLuck() => luckUnlocked = true;
     public void UnlockMDice() => mDiceUnlocked = true;
     public void UnlockData() => dataUnlocked = true;
     
     public double GetPips() => pipsCurrent;
     public double GetDice() => diceCurrent;
-    public double GetTools() => toolsCurrent;
+    public double GetTools() => materialCurrent;
     public double GetLuck() => luckCurrent;
     public double GetMDice() => mDiceCurrent;
     public double GetData() => dataCurrent;
     
     public double GetPipsTotal() => pipsTotal;
     public double GetDiceTotal() => diceTotal;
-    public double GetToolsTotal() => toolsTotal;
+    public double GetToolsTotal() => materialTotal;
     public double GetLuckTotal() => luckTotal;
     public double GetMDiceTotal() => mDiceTotal;
     public double GetDataTotal() => dataTotal;
     
     public static event Action OnPipsChanged;
     public static event Action OnDiceChanged;
-    public static event Action OnToolsChanged;
+    public static event Action OnMaterialChanged;
     public static event Action OnLuckChanged;
     public static event Action OnMDiceChanged;
     public static event Action OnDataChanged;
@@ -77,11 +77,11 @@ public class CPU : MonoBehaviour
                 break;
             
             case Resource.Material:
-                toolsCurrent += change;
-                if (change > 0) toolsTotal += change;
-                if (toolsCurrent < 0) toolsCurrent = 0;
-                OnToolsChanged?.Invoke();
-                if (printLog) Debug.Log($"Material changed to {toolsCurrent}");
+                materialCurrent += change;
+                if (change > 0) materialTotal += change;
+                if (materialCurrent < 0) materialCurrent = 0;
+                OnMaterialChanged?.Invoke();
+                if (printLog) Debug.Log($"Material changed to {materialCurrent}");
                 break;
             
             case Resource.Luck:
@@ -112,7 +112,7 @@ public class CPU : MonoBehaviour
     }
     
     public bool GetDiceUnlockState() => diceUnlocked;
-    public bool GetToolsUnlockState() => toolsUnlocked;
+    public bool GetMaterialUnlockState() => materialUnlocked;
     public bool GetLuckUnlockState() => luckUnlocked;
     public bool GetMDiceUnlockState() => mDiceUnlocked;
     public bool GetDataUnlockState() => dataUnlocked;
@@ -130,14 +130,14 @@ public class CPU : MonoBehaviour
     #endregion
     #region |-------------- INTERACTION TRACKING --------------|
     
-    private List<int> shopInteractorCount = new List<int>();
-    private List<bool> shopInteractorUnlockStates = new List<bool>();
-    private List<int> workshopInteractorCount = new List<int>();
-    private List<bool> workshopInteractorUnlockStates = new List<bool>();
-    private List<int> casinoInteractorCount = new List<int>();
-    private List<bool> casinoInteractorUnlockStates = new List<bool>();
-    private List<int> diceworldInteractorCount = new List<int>();
-    private List<bool> diceworldInteractorUnlockStates = new List<bool>();
+    private List<int> importInteractorCount = new List<int>();
+    private List<bool> importInteractorUnlockStates = new List<bool>();
+    private List<int> factoryInteractorCount = new List<int>();
+    private List<bool> factoryInteractorUnlockStates = new List<bool>();
+    private List<int> transformerInteractorCount = new List<int>();
+    private List<bool> transfomerInteractorUnlockStates = new List<bool>();
+    private List<int> technologyInteractorCount = new List<int>();
+    private List<bool> technologyInteractorUnlockStates = new List<bool>();
     private List<int> stockmarketInteractorCount = new List<int>();
     private List<bool> stockmarketInteractorUnlockStates = new List<bool>();
     private List<int> datacenterInteractorCount = new List<int>();
@@ -148,23 +148,23 @@ public class CPU : MonoBehaviour
         switch (interactionAreaType)
         {
             case InteractionAreaType.Import:
-                shopInteractorCount.Add(count);
-                shopInteractorUnlockStates.Add(false);
+                importInteractorCount.Add(count);
+                importInteractorUnlockStates.Add(false);
                 break;
             
             case InteractionAreaType.Factory:
-                workshopInteractorCount.Add(count);
-                workshopInteractorUnlockStates.Add(false);
+                factoryInteractorCount.Add(count);
+                factoryInteractorUnlockStates.Add(false);
                 break;
             
             case InteractionAreaType.Transformer:
-                casinoInteractorCount.Add(count);
-                casinoInteractorUnlockStates.Add(false);
+                transformerInteractorCount.Add(count);
+                transfomerInteractorUnlockStates.Add(false);
                 break;
             
-            case InteractionAreaType.Diceworld:
-                diceworldInteractorCount.Add(count);
-                diceworldInteractorUnlockStates.Add(false);
+            case InteractionAreaType.Technology:
+                technologyInteractorCount.Add(count);
+                technologyInteractorUnlockStates.Add(false);
                 break;
             
             case InteractionAreaType.Stockmarket:
@@ -185,19 +185,19 @@ public class CPU : MonoBehaviour
         switch (interactionAreaType)
         {
             case InteractionAreaType.Import:
-                shopInteractorCount[index] += increase;
+                importInteractorCount[index] += increase;
                 break;
             
             case InteractionAreaType.Factory:
-                workshopInteractorCount[index] += increase;
+                factoryInteractorCount[index] += increase;
                 break;
             
             case InteractionAreaType.Transformer:
-                casinoInteractorCount[index] += increase;
+                transformerInteractorCount[index] += increase;
                 break;
             
-            case InteractionAreaType.Diceworld:
-                diceworldInteractorCount[index] += increase;
+            case InteractionAreaType.Technology:
+                technologyInteractorCount[index] += increase;
                 break;
             
             case InteractionAreaType.Stockmarket:
@@ -221,19 +221,19 @@ public class CPU : MonoBehaviour
         switch (interactionAreaType)
         {
             case InteractionAreaType.Import:
-                count = shopInteractorCount[index];
+                count = importInteractorCount[index];
                 break;
             
             case InteractionAreaType.Factory:
-                count = workshopInteractorCount[index];
+                count = factoryInteractorCount[index];
                 break;
             
             case InteractionAreaType.Transformer:
-                count = casinoInteractorCount[index];
+                count = transformerInteractorCount[index];
                 break;
             
-            case InteractionAreaType.Diceworld:
-                count = diceworldInteractorCount[index];
+            case InteractionAreaType.Technology:
+                count = technologyInteractorCount[index];
                 break;
             
             case InteractionAreaType.Stockmarket:
@@ -258,19 +258,19 @@ public class CPU : MonoBehaviour
         switch (interactionAreaType)
         {
             case InteractionAreaType.Import:
-                shopInteractorUnlockStates[index] = true;
+                importInteractorUnlockStates[index] = true;
                 break;
             
             case InteractionAreaType.Factory:
-                workshopInteractorUnlockStates[index] = true;
+                factoryInteractorUnlockStates[index] = true;
                 break;
             
             case InteractionAreaType.Transformer:
-                casinoInteractorUnlockStates[index] = true;
+                transfomerInteractorUnlockStates[index] = true;
                 break;
             
-            case InteractionAreaType.Diceworld:
-                diceworldInteractorUnlockStates[index] = true;
+            case InteractionAreaType.Technology:
+                technologyInteractorUnlockStates[index] = true;
                 break;
             
             case InteractionAreaType.Stockmarket:
@@ -294,19 +294,19 @@ public class CPU : MonoBehaviour
         switch (interactionAreaType)
         {
             case InteractionAreaType.Import:
-                unlockState = shopInteractorUnlockStates[index];
+                unlockState = importInteractorUnlockStates[index];
                 break;
             
             case InteractionAreaType.Factory:
-                unlockState = workshopInteractorUnlockStates[index];
+                unlockState = factoryInteractorUnlockStates[index];
                 break;
             
             case InteractionAreaType.Transformer:
-                unlockState = casinoInteractorUnlockStates[index];
+                unlockState = transfomerInteractorUnlockStates[index];
                 break;
             
-            case InteractionAreaType.Diceworld:
-                unlockState = diceworldInteractorUnlockStates[index];
+            case InteractionAreaType.Technology:
+                unlockState = technologyInteractorUnlockStates[index];
                 break;
             
             case InteractionAreaType.Stockmarket:

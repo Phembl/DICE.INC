@@ -131,7 +131,7 @@ public class TooltipManager : MonoBehaviour
                 currentTooltip = stockmarketTooltip;
                 break;
             
-            case InteractionAreaType.Diceworld:
+            case InteractionAreaType.Technology:
                 data = diceworldManager.GetTooltipData();
                 currentCanvas = diceworldCanvas;
                 currentTooltip = diceworldTooltip;

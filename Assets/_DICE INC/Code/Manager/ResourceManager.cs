@@ -47,7 +47,7 @@ public class ResourceManager : MonoBehaviour
     {
         CPU.OnPipsChanged += UpdateDisplayPips;
         CPU.OnDiceChanged += UpdateDisplayDice;
-        CPU.OnToolsChanged += UpdateDisplayTools;
+        CPU.OnMaterialChanged += UpdateDisplayMaterial;
         CPU.OnLuckChanged += UpdateDisplayLuck;
         CPU.OnMDiceChanged += UpdateDisplayMDice;
         CPU.OnDataChanged += UpdateDisplayData;
@@ -232,7 +232,7 @@ public class ResourceManager : MonoBehaviour
         diceCounterTMP.text = Utility.ShortenNumberToString(diceCurrent);
     }
 
-    void UpdateDisplayTools()
+    void UpdateDisplayMaterial()
     {
         if (!materialUnlocked) UnlockResource(Resource.Material);
         double toolsCurrent = CPU.instance.GetTools();

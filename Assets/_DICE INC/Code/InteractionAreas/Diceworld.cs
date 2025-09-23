@@ -14,12 +14,12 @@ using UnityEngine.PlayerLoop;
 public class Diceworld : InteractionArea
 {
     [TitleGroup("References")] 
-    [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Diceworld;
+    [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Technology;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
     [SerializeField] private GameObject diceworldDisplay;
     [SerializeField] private TMP_Text rollCounter;
     
-    [TitleGroup("Diceworld")] 
+    [TitleGroup("Technology")] 
     [ShowInInspector, ReadOnly] private int diceworldLevel = 1;
     [ShowInInspector, ReadOnly] private double rollsCurrent;
     [SerializeField] private double rollsGoalBase;
@@ -123,7 +123,7 @@ public class Diceworld : InteractionArea
     
     protected override void RunInteraction(int index)
     {
-        int count = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Diceworld, index);
+        int count = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Technology, index);
         
         switch (index)
         {
@@ -185,15 +185,15 @@ public class Diceworld : InteractionArea
     protected override void CheckProgress()
     {
         if (diceworldLevel >= levelToUnlockAdvantage && 
-            !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Diceworld, 1)) 
+            !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Technology, 1)) 
             UnlockInteractor(1);
         
         if (diceworldLevel >= levelToUnlockHighRoller && 
-            !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Diceworld, 2)) 
+            !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Technology, 2)) 
             UnlockInteractor(2);
         
         if (diceworldLevel >= levelToUnlockExplosive && 
-            !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Diceworld, 3)) 
+            !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Technology, 3)) 
             UnlockInteractor(3);
     }
     
@@ -207,7 +207,7 @@ public class Diceworld : InteractionArea
     {
         TooltipData data = new TooltipData();
         
-        data.areaTitle = "Diceworld";
+        data.areaTitle = "Technology";
         data.areaDescription = "In the diceworld, the";
 
         //Extra Sides TT
@@ -215,7 +215,7 @@ public class Diceworld : InteractionArea
         
         //Advantage TT
         string advantageTooltip = $"<br><br>??? (Level to unlock: {levelToUnlockAdvantage})";
-        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Diceworld, 1))
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Technology, 1))
         {
             
             advantageTooltip = $"<br><br><b>ADVANTAGE:</b> Each point.</b>";
@@ -223,7 +223,7 @@ public class Diceworld : InteractionArea
         
         //High Roller TT
         string highrollerTooltip = $"<br><br>??? (Level to unlock: {levelToUnlockHighRoller})";
-        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Diceworld, 2))
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Technology, 2))
         {
             
             highrollerTooltip = $"<br><br><b>HIGH ROLLER:</b> Each point.</b>";
@@ -231,7 +231,7 @@ public class Diceworld : InteractionArea
         
         //Explosive TT
         string explosiveTooltip = $"<br><br>??? (Level to unlock: {levelToUnlockExplosive})";
-        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Diceworld, 3))
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Technology, 3))
         {
             
             explosiveTooltip = $"<br><br><b>EXPLOSIVE:</b> Each point.</b>";
