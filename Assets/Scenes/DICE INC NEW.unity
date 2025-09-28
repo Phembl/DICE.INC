@@ -4605,7 +4605,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4225958089476428264, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: interactorName
-      value: TBA
+      value: Self Learning
       objectReference: {fileID: 0}
     - target: {fileID: 4225958089476428264, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: interactionArea
@@ -4693,7 +4693,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
-      value: Interactor_Factory_
+      value: Interactor_Factory_SelfLearning
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5962,7 +5962,7 @@ MonoBehaviour:
   datacenter: {fileID: 272257916}
   startDiceRollTotal: 0
   startResearchProgress: 0
-  startPips: 10000
+  startPips: 0
   startDice: 0
   startMaterial: 0
   startLuck: 0
@@ -5972,7 +5972,7 @@ MonoBehaviour:
   startDiceImport: 0
   startMaterialImport: 0
   startDataImport: 0
-  factoryUnlocked: 1
+  factoryUnlocked: 0
   startDicemaker: 0
   startSpeed: 0
   startEfficiency: 0
@@ -7571,7 +7571,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: cc94e9b18fcd7493c83695f2d40223e0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7a52991eb3d1242928f2c9facef84b65, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -12361,7 +12361,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4225958089476428264, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: interactorName
-      value: TBA
+      value: AI Worker
       objectReference: {fileID: 0}
     - target: {fileID: 4225958089476428264, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: interactionArea
@@ -12449,7 +12449,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
-      value: Interactor_Factory_
+      value: Interactor_Factory_AIWorker
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -13237,13 +13237,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   printLog: 1
   import: {fileID: 1992266993}
-  workshop: {fileID: 1859983091}
-  casino: {fileID: 0}
-  diceworld: {fileID: 690977110}
-  lvlUnlockSpeed: 1
-  lvlUnlockEfficiency: 2
-  lvlUnlockCritical: 3
-  lvlUnlockOverdrive: 4
+  factory: {fileID: 1859983091}
+  transformer: {fileID: 1951630509}
+  technology: {fileID: 690977110}
+  stockmarket: {fileID: 237082651}
+  datacenter: {fileID: 272257916}
+  unlockConveyorLvl: 5
+  unlockToolsLvl: 10
+  unlockSurplusLvl: 15
+  unlockOverdriveLvl: 20
+  unlockAIWorkersLvl: 25
+  unlockMachineLearningLvl: 30
 --- !u!1001 &1817879661
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13642,16 +13646,16 @@ MonoBehaviour:
   thisInteractionAreaType: 3
   factoryLoader: {fileID: 1550192372}
   timerBase: 10
-  dicemakerCostBase: 12
-  dicemakerCostMult: 1.12
-  dicemakerMax: -1
-  speedCostBase: 5
-  speedCostMult: 2.02
-  speedMax: 25
+  workerCostBase: 250
+  workerCostMult: 1.03
+  workerMax: -1
+  conveyorCostBase: 5
+  conveyorCostMult: 1.05
+  conveyorMax: 100
   speedIncrease: 0.04
-  efficiencyCostBase: 40
-  efficiencyCostMult: 1.03
-  efficiencyMax: -1
+  toolsCostBase: 40
+  toolsCostMult: 1.03
+  toolsMax: -1
   efficiencyIncrease: 0.22
   criticalCostBase: 2
   criticalCostMult: 1.06
@@ -13667,9 +13671,12 @@ MonoBehaviour:
   overdriveChanceIncrease: 0.15
   overdriveValueBase: 3
   overdriveValueIncrease: 0.2
-  costInnovationBase: 0
-  costInnovationMultiplier: 0
-  innovationMax: 0
+  costAIWorkerBase: 100
+  costAIWorkerMultiplier: 2
+  AIWorkerMax: -1
+  costSelfLearningBase: 500
+  costSelfLearningMultiplier: 2
+  selfLearningMax: -1
 --- !u!1 &1899903177
 GameObject:
   m_ObjectHideFlags: 0

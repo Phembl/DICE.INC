@@ -8,18 +8,18 @@ public class ProgressManager : MonoBehaviour
     [SerializeField] private bool printLog;
     [Header("References")]
     [SerializeField] private Import import;
-    [SerializeField] private InteractionArea workshop;
-    [SerializeField] private InteractionArea casino;
-    [SerializeField] private InteractionArea diceworld;
+    [SerializeField] private InteractionArea factory;
+    [SerializeField] private InteractionArea transformer;
+    [SerializeField] private InteractionArea technology;
+    [SerializeField] private InteractionArea stockmarket;
+    [SerializeField] private InteractionArea datacenter;
     
-    [SerializeField, FoldoutGroup("Factory")] private int lvlUnlockSpeed;
-    [SerializeField, FoldoutGroup("Factory")] private int lvlUnlockEfficiency;
-    [SerializeField, FoldoutGroup("Factory")] private int lvlUnlockCritical;
-    [SerializeField, FoldoutGroup("Factory")] private int lvlUnlockOverdrive;
-    private bool speedUnlocked;
-    private bool efficiencyUnlocked;
-    private bool criticalUnlocked;
-    private bool overdriveUnlocked;
+    [SerializeField, FoldoutGroup("Factory")] private int unlockConveyorLvl;
+    [SerializeField, FoldoutGroup("Factory")] private int unlockToolsLvl;
+    [SerializeField, FoldoutGroup("Factory")] private int unlockSurplusLvl;
+    [SerializeField, FoldoutGroup("Factory")] private int unlockOverdriveLvl;
+    [SerializeField, FoldoutGroup("Factory")] private int unlockAIWorkersLvl;
+    [SerializeField, FoldoutGroup("Factory")] private int unlockMachineLearningLvl;
     
     public static ProgressManager instance;
     private void Awake()
@@ -32,18 +32,27 @@ public class ProgressManager : MonoBehaviour
         switch (researchIndex)
         {
             case 0: //Unlock Material & Factory
-                workshop.UnlockArea();
+                factory.UnlockArea();
                 ResourceManager.instance.UnlockResource(Resource.Material);
                 import.UnlockInteractor(1);
                 break;
             
             case 1:
-                casino.UnlockArea();
+                transformer.UnlockArea();
                 break;
             
             case 2:
-                diceworld.UnlockArea();
+                technology.UnlockArea();
                 ResourceManager.instance.UnlockResource(Resource.mDice);
+                break;
+            
+            case 3:
+                stockmarket.UnlockArea();
+                ResourceManager.instance.UnlockResource(Resource.Data);
+                break;
+            
+            case 4:
+                datacenter.UnlockArea();
                 break;
         }
     }
@@ -55,14 +64,18 @@ public class ProgressManager : MonoBehaviour
         switch (area)
         {
             case InteractionAreaType.Factory:
-                if (level >= lvlUnlockSpeed && !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 1)) 
-                    workshop.UnlockInteractor(1);
-                if (level >= lvlUnlockEfficiency && !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 2)) 
-                    workshop.UnlockInteractor(2);
-                if (level >= lvlUnlockCritical && !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 3)) 
-                    workshop.UnlockInteractor(3);
-                if (level >= lvlUnlockOverdrive && !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 4)) 
-                    workshop.UnlockInteractor(4);
+                if (level >= unlockConveyorLvl && !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 1)) 
+                    factory.UnlockInteractor(1);
+                if (level >= unlockToolsLvl && !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 2)) 
+                    factory.UnlockInteractor(2);
+                if (level >= unlockSurplusLvl && !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 3)) 
+                    factory.UnlockInteractor(3);
+                if (level >= unlockOverdriveLvl && !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 4)) 
+                    factory.UnlockInteractor(4);
+                if (level >= unlockAIWorkersLvl && !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 5))
+                    factory.UnlockInteractor(5);
+                if (level >= unlockMachineLearningLvl && !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 6))
+                    factory.UnlockInteractor(6);
                 break;
         }
     }
