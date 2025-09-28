@@ -141,6 +141,9 @@ public class Import : InteractionArea
     {
         TooltipData data = new TooltipData();
         
+        data.areaTitle = "Import";
+        data.areaDescription = "The import,";
+        
         return data;
     }
     

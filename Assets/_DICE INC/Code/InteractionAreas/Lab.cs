@@ -4,6 +4,7 @@ using DICEINC.Global;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
+using DG.Tweening;
 using UnityEngine.UI;
 
 public class Lab : MonoBehaviour
@@ -11,30 +12,36 @@ public class Lab : MonoBehaviour
     [TitleGroup("Lab")] 
     [Header("References")]
     [SerializeField] private Transform labMemoryHolder;
-    [SerializeField] private GameObject labButton;
-    private TMP_Text labButtonTMP;
+    //[SerializeField] private GameObject labButton;
+    [SerializeField] private TMP_Text labTMP;
+    [SerializeField] private Sprite[] memoryIcons;
     [Space] 
-
     
     [Header("Settings")]
     [SerializeField] private bool printLog;
     [SerializeField] private int[] researchCost = new int[7];
     [SerializeField] private InteractionAreaType[] researchGoals = new InteractionAreaType[7];
     private List<string> letterPool;
+    private List<Sprite> iconPool;
+    
+    private Tweener textChange;
     
     //Research
     private int currentResearchIndex;
     private bool researchIsActive;
+    private bool researchIsPrepared;
     public bool GetResearchIsActive() => researchIsActive;
     private Coroutine researchCostCoroutine;
     private int researchSuccessCounter;
+    private int currentResearchOverallCost;
 
     //Memory Fields & Buttons
-    private MemoryField[] memoryFields =  new MemoryField[24];
-    private List<MemoryField> memoryFieldsTemp = new List<MemoryField>();
+    private Transform[] buttonObjects = new Transform[16];
+    private Button_Memory[] memoryFields =  new Button_Memory[16];
+    private List<Button_Memory> memoryFieldsTemp = new List<Button_Memory>();
     private string currentButtonText;
     private int[] researchIndexToCompare = new int[2];
-    private List<MemoryField> memoryFieldsToCompare = new List<MemoryField>();
+    private List<Button_Memory> memoryFieldsToCompare = new List<Button_Memory>();
     
     public static Lab instance;
     private void Awake()
@@ -45,15 +52,14 @@ public class Lab : MonoBehaviour
     public void InitializeLab(int startResearchIndex)
     {
         currentResearchIndex = startResearchIndex;
-        
-        labButtonTMP = labButton.transform.GetChild(0).GetComponent<TMP_Text>();
+        currentResearchOverallCost = 0;
         
         //Save & Deactivate all memory fields
         for (int i = 0; i < labMemoryHolder.childCount; i++)
         {
-            MemoryField nextMemoryField = labMemoryHolder.GetChild(i).gameObject.GetComponent<MemoryField>();
-            memoryFields[i] = nextMemoryField;
-            nextMemoryField.ActivateDeactivate(false);
+            buttonObjects[i] = labMemoryHolder.GetChild(i).transform.GetChild(0);
+            memoryFields[i] = buttonObjects[i].GetComponent<Button_Memory>();
+            memoryFields[i].ActivateDeactivate(false);
         }
 
         PrepareNextResearch();
@@ -63,26 +69,27 @@ public class Lab : MonoBehaviour
     
     void PrepareNextResearch()
     {
-        DefineLetterPool();
+        researchIsPrepared = true;
+        DefineIconPool();
         
         //MemoryFieldsUsed is used as a temp container to store and remove the memoryFields for randomization
-        foreach (MemoryField nextMemory in memoryFields)
+        foreach (Button_Memory nextMemory in memoryFields)
         {
             //nextMemory.SetSolved(false);
             memoryFieldsTemp.Add(nextMemory);
         }
         
-        for (int i = 0; i < 12; i++)
+        for (int i = 0; i < 8; i++)
         {
             //This picks two random memoryFields and gives them the same Value
             int randomPick = Random.Range(0, memoryFieldsTemp.Count);
             memoryFieldsTemp[randomPick].SetFieldID(i);
-            memoryFieldsTemp[randomPick].SetLetter(letterPool[i]);
+            memoryFieldsTemp[randomPick].SetIcon(iconPool[i]);
             memoryFieldsTemp.RemoveAt(randomPick);
             
             randomPick = Random.Range(0, memoryFieldsTemp.Count);
             memoryFieldsTemp[randomPick].SetFieldID(i);
-            memoryFieldsTemp[randomPick].SetLetter(letterPool[i]);
+            memoryFieldsTemp[randomPick].SetIcon(iconPool[i]);
             memoryFieldsTemp.RemoveAt(randomPick);
         }
         
@@ -91,28 +98,33 @@ public class Lab : MonoBehaviour
         researchIndexToCompare[1] = -1;
         memoryFieldsToCompare.Clear();
         
-        
-        //Prepare Button_Tooltip
-        labButtonTMP.text = 
-            $"START RESEARCH:<br><b>{researchGoals[currentResearchIndex].ToString()}</b><br>({researchCost[currentResearchIndex]} PIPS/s)";
+        WriteResearchText($"RESEARCH: <b>{researchGoals[currentResearchIndex].ToString()}</b><br>COST: <b>{researchCost[currentResearchIndex]} PIPS/s</b>");
 
-        currentButtonText = labButtonTMP.text;
-        labButton.gameObject.GetComponent<Interactor_StartResearch>().SetActivity(true);
+        researchIsPrepared = false;
     }
 
-    void DefineLetterPool()
+    void WriteResearchText(string text)
     {
-        switch (currentResearchIndex)
-        {
-            case 0:
-                letterPool = new List<string> {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"};
-                break;
-            
-            case 1:
-                letterPool = new List<string> {"A", "a",  "B", "b", "N", "n", "X", "x", "Y", "y", "P", "p"};
-                break;
-        }
+        if (textChange != null) textChange.Kill();
         
+        textChange = labTMP.DOFade(0f, 0.2f)
+            .OnComplete(() =>
+        {
+            labTMP.text = text;
+            textChange = labTMP.DOFade(1f, 1f);
+        });
+       
+       
+    }
+    
+    void DefineIconPool()
+    {
+        iconPool = new List<Sprite>();
+        
+        for (int i = 0; i < 8; i++)
+        {
+            iconPool.Add(memoryIcons[i + (8 * currentResearchIndex)]);
+        }
     }
     
     #endregion
@@ -121,24 +133,16 @@ public class Lab : MonoBehaviour
 
     public void StartStopResearch()
     {
+        if (researchIsPrepared) return;
+        
         if (!researchIsActive) //Start Research
         {
             //Check if there is enough Pips to Start
             if (researchCost[currentResearchIndex] > CPU.instance.GetPips()) return;
             
-            labButtonTMP.text = $"Stop Research";
             researchIsActive = true;
-            researchCostCoroutine = StartCoroutine(ResearchCost());
-            
-            foreach (MemoryField nextMemory in memoryFields)
-            {
-                //Activate all Cards which are not yet researched
-                if (!nextMemory.GetSolvedState())
-                {
-                    if (printLog) Debug.Log($"Activate Memory Field {nextMemory.gameObject.name}");
-                    nextMemory.ActivateDeactivate(true);
-                }
-            }
+            researchIsPrepared = true;
+            StartCoroutine(ActivateMemoryButtons());
             
             if (printLog) Debug.Log("|--------------LAB RESEARCH STARTED --------------|");
             
@@ -147,17 +151,54 @@ public class Lab : MonoBehaviour
         else //Stop Research
         {
             researchIsActive = false;
+            researchIsPrepared = true;
             StopCoroutine(researchCostCoroutine); 
-            labButtonTMP.text = currentButtonText;
             
-            //Deactivate all Cards which are not yet researched
-            foreach (MemoryField nextMemory in memoryFields)
-            {
-                if (!nextMemory.GetSolvedState()) nextMemory.ActivateDeactivate(false);
-            }
+            StartCoroutine(DeactivateMemoryButtons());
+            WriteResearchText($"RESEARCH: <b>{researchGoals[currentResearchIndex].ToString()}</b><br>COST: <b>{researchCost[currentResearchIndex]} PIPS/s</b>");
             
             if (printLog) Debug.Log("|--------------LAB RESEARCH STOPPED--------------|");
         }
+    }
+
+    private IEnumerator ActivateMemoryButtons()
+    {
+        WriteResearchText($"PREPARING RESEARCH");
+        
+        foreach (Button_Memory nextMemory in memoryFields)
+        {
+            //Show and activate all Memory Buttons which are not yet researched
+            if (!nextMemory.GetSolvedState())
+            {
+                nextMemory.ShowHide(true);
+                
+                yield return new WaitForSeconds(0.15f);
+            }
+        }
+        
+        yield return new WaitForSeconds(0.5f);
+
+        foreach (Button_Memory nextMemory in memoryFields)
+        {
+            if (!nextMemory.GetSolvedState()) nextMemory.ActivateDeactivate(true);
+        }
+
+        researchIsPrepared = false;
+        researchCostCoroutine = StartCoroutine(ResearchCost());
+    }
+
+    private IEnumerator DeactivateMemoryButtons()
+    {
+        //Deactivate Memory Buttons and Hide those which are not solved
+        foreach (Button_Memory nextMemory in memoryFields)
+        {
+            nextMemory.ActivateDeactivate(false);
+            if (!nextMemory.GetSolvedState()) nextMemory.ShowHide(false);
+        }
+        
+        yield return new WaitForSeconds(0.5f);
+
+        researchIsPrepared = false;
     }
 
     //Send by MemoryCards
@@ -187,7 +228,7 @@ public class Lab : MonoBehaviour
                 Debug.Log($"Solved Cards with ID: {researchIndexToCompare[0]}");
                 ResetActiveMemoryFields();
                 researchSuccessCounter++;
-                if (researchSuccessCounter == 12) StartCoroutine(FinishResearch());
+                if (researchSuccessCounter == 8) StartCoroutine(ResearchSuccess());
             }
 
             else //Wrong Pair
@@ -203,28 +244,30 @@ public class Lab : MonoBehaviour
 
     }
     
-    IEnumerator FinishResearch()
+    IEnumerator ResearchSuccess()
     {
-        StartStopResearch();
+        researchIsActive = false;
+        researchIsPrepared = true;
+        StopCoroutine(researchCostCoroutine); 
+        
+        WriteResearchText($"research success!<br><b>{researchGoals[currentResearchIndex].ToString()}</b> unlocked.");
         
         researchSuccessCounter = 0;
         
-        //Prep Button_Tooltip
-        labButton.gameObject.GetComponent<Interactor_StartResearch>().SetActivity(false);
-        labButtonTMP.text = "RESEARCH SUCCESSFUL!";
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(2f);
         
-        foreach (MemoryField nextMemory in memoryFields)
+        foreach (Button_Memory nextMemory in memoryFields)
         {
+            nextMemory.ActivateDeactivate(false);
+            nextMemory.ShowHide(false);
             nextMemory.SetSolved(false);
-            yield return new WaitForSeconds(0.2f);
         }
         
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
 
         ProgressManager.instance.ResearchProgress(currentResearchIndex);
         
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(5f);
         
         currentResearchIndex++;
         PrepareNextResearch();
@@ -241,7 +284,7 @@ public class Lab : MonoBehaviour
         memoryFieldsToCompare.Clear();
     }
     
-    IEnumerator CloseMemoryFields(MemoryField _fieldId1, MemoryField _fieldId2)
+    IEnumerator CloseMemoryFields(Button_Memory _fieldId1, Button_Memory _fieldId2)
     {
         yield return new WaitForSeconds(1f);
         _fieldId1.SetSolved(false);
@@ -250,6 +293,7 @@ public class Lab : MonoBehaviour
 
     IEnumerator ResearchCost()
     {
+        
         while (researchIsActive)
         {
             if (printLog) Debug.Log("|--------------LAB RESEARCH COST UPDATE--------------|");
@@ -263,7 +307,11 @@ public class Lab : MonoBehaviour
             
             else
             {
+                
                 CPU.instance.ChangeResource(Resource.Pips, (double)-researchCost[currentResearchIndex]);
+                
+                currentResearchOverallCost += researchCost[currentResearchIndex];
+                labTMP.text = $"Overall cost: \n<b>{currentResearchOverallCost} PIPS</b>";
             }
             
             yield return new WaitForSeconds(1f);

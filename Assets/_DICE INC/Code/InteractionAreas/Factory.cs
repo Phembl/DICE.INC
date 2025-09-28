@@ -197,32 +197,7 @@ public class Factory : InteractionArea
     
     protected override void CheckProgress()
     {
-        /*
-        int dicemakerCount = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory, 0);
-        
-        //Unlock Speed
-        if (dicemakerCount >= dicemakerToUnlockSpeed &&
-            !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 1)) UnlockInteractor(1);
-        
-        //Unlock Efficiency
-        if(dicemakerCount >= dicemakerToUnlockEfficiency &&
-                !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 2)) UnlockInteractor(2);
-        
-        //Unlock Critical && Luck
-        if (dicemakerCount >= dicemakerToUnlockCritical &&
-                 !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 3))
-        {
-            UnlockInteractor(3);
-            ResourceManager.instance.UnlockResource(Resource.Luck);
-        }
-        
-        //Unlock Overdrive
-        if (dicemakerCount >= dicemakerToUnlockOverdrive &&
-                 !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 4))
-        {
-            UnlockInteractor(4);
-        }
-*/
+     
         factoryLevel =
             CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory, 0) +
             CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory, 1) +

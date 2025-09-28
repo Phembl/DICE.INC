@@ -155,16 +155,16 @@ public class GameManager : MonoBehaviour
         datacenterStartSettings.Add(startDatacenter1);
         datacenterStartSettings.Add(startDatacenter2); 
         datacenterStartSettings.Add(startDatacenter3);
-        stockmarket.InitializeInteractionArea(datacenterUnlocked, datacenterStartSettings);
+        datacenter.InitializeInteractionArea(datacenterUnlocked, datacenterStartSettings);
         Debug.Log("|----- FINISH INIT: Data Center -----|");
       
-        /*
+        
         //Init Lab
         Debug.Log("|----- START INIT: Lab -----|");
         lab.InitializeLab(startResearchProgress);
         Debug.Log("|----- FINISH INIT: Lab -----|");
         
-         */
+        
         
         
         #endregion

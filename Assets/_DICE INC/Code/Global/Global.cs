@@ -1,3 +1,5 @@
+using System.Collections;
+using TMPro;
 using UnityEngine;
 
 namespace DICEINC.Global
@@ -60,6 +62,18 @@ namespace DICEINC.Global
         public static bool Roll(float percentChance)
         {
             return Random.value < (percentChance / 100f);
+        }
+
+        public static IEnumerator WriteText(string text, TMP_Text textField)
+        {
+            textField.text = "";
+            
+            for (int i = 0; i < text.Length; i++)
+            {
+                textField.text += text[i];
+                yield return new WaitForSeconds(0.05f);
+            }
+            
         }
     }
    

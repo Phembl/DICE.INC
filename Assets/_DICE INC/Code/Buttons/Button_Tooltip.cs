@@ -1,22 +1,12 @@
 using DICEINC.Global;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class Button_Tooltip : MonoBehaviour
+public class Button_Tooltip : Button
 {
     [SerializeField] private InteractionAreaType interactionArea;
-    [SerializeField] private Sprite spritePressed;
-    
-    private Sprite spriteUnpressed;
-    
-    //Components
-    private Image bgImage;
-    
-    //State Tracking
-    private bool isActive;
-    
 
+    private bool tooltipActive;
+    
     void Start()
     {
         if (interactionArea == InteractionAreaType.None)
@@ -24,36 +14,27 @@ public class Button_Tooltip : MonoBehaviour
             Debug.LogError($"{name} InteractionAreaType is not set");
         }
         
-        bgImage = GetComponent<Image>();
-        spriteUnpressed = bgImage.sprite;
-      
+        isActive = true;
     }
-
-    void OnMouseDown()
+    
+    protected override void ButtonAction()
     {
-        bgImage.sprite = spritePressed;
-        
-    }
-
-    void OnMouseUp()
-    {
-        bgImage.sprite = spriteUnpressed;
-        
-        if (!isActive) //Open Tooltip
+        if (!tooltipActive) //Open Tooltip
         {
             if (TooltipManager.instance.GetWorkingStatus()) return; //Checks if the tooltip is currently being build
             
-            isActive = true;
+            tooltipActive = true;
             TooltipManager.instance.OpenTooltip(interactionArea);
-            
         }
         
         else //Close Tooltip
         {
             if (TooltipManager.instance.GetWorkingStatus()) return; //Checks if the tooltip is currently being build
             
-            isActive = false;
+            tooltipActive = false;
             TooltipManager.instance.CloseTooltip(); 
         }
     }
+    
+    
 }

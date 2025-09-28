@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8c41087fe80734b599b5434f66f65f88
+guid: a881a338324fe4ce69193b36d110f340
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -95,56 +95,12 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: Button_Research_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 730
-        height: 200
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e949414ba931b428f871c41525eb8d63
-      internalID: 2049487829
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Button_Research_1
-      rect:
-        serializedVersion: 2
-        x: 730
-        y: 0
-        width: 730
-        height: 200
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: cd23b71b031ba4c28b78d27c112ee228
-      internalID: 253441237
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 187a1a5ae1c334ee08ab8ff8986dec72
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -153,9 +109,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      Button_Research_0: 2049487829
-      Button_Research_1: 253441237
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
