@@ -56,24 +56,24 @@ public class GameManager : MonoBehaviour
     
     //Factory
     [SerializeField, FoldoutGroup("Factory")] private bool factoryUnlocked;
-    [SerializeField, FoldoutGroup("Factory")] private int startDicemaker;
-    [SerializeField, FoldoutGroup("Factory")] private int startSpeed;
-    [SerializeField, FoldoutGroup("Factory")] private int startEfficiency;
-    [SerializeField, FoldoutGroup("Factory")] private int startCritical;
+    [SerializeField, FoldoutGroup("Factory")] private int startWorker;
+    [SerializeField, FoldoutGroup("Factory")] private int startConveyor;
+    [SerializeField, FoldoutGroup("Factory")] private int startTools;
+    [SerializeField, FoldoutGroup("Factory")] private int startSurplus;
     [SerializeField, FoldoutGroup("Factory")] private int startOverdrive;
-    [SerializeField, FoldoutGroup("Factory")] private int startFactory6;
-    [SerializeField, FoldoutGroup("Factory")] private int startFactory7;
+    [SerializeField, FoldoutGroup("Factory")] private int startAIWorker;
+    [SerializeField, FoldoutGroup("Factory")] private int startMachineLearning;
     
     //Transformer
     [SerializeField, FoldoutGroup("Transformer")] private bool transformerUnlocked;
-    [SerializeField, FoldoutGroup("Transformer")] private int startTransformer1;
-    [SerializeField, FoldoutGroup("Transformer")] private int startTransformer2;
+    [SerializeField, FoldoutGroup("Transformer")] private int startCondenser;
+    [SerializeField, FoldoutGroup("Transformer")] private int startExtruder;
     
     //DiceWorld
     [SerializeField, FoldoutGroup("Technology")] private bool technologyUnlocked;
     [SerializeField, FoldoutGroup("Technology")] private int startSides;
     [SerializeField, FoldoutGroup("Technology")] private int startAdvantage;
-    [SerializeField, FoldoutGroup("Technology")] private int startHighRoller;
+    [SerializeField, FoldoutGroup("Technology")] private int startWeight;
     [SerializeField, FoldoutGroup("Technology")] private int startExplosive;
     
     //Stockmarket
@@ -83,9 +83,9 @@ public class GameManager : MonoBehaviour
     
     //DataCenter
     [SerializeField, FoldoutGroup("Datacenter")] private bool datacenterUnlocked;
-    [SerializeField, FoldoutGroup("Datacenter")] private int startDatacenter1;
-    [SerializeField, FoldoutGroup("Datacenter")] private int startDatacenter2;
-    [SerializeField, FoldoutGroup("Datacenter")] private int startDatacenter3;
+    [SerializeField, FoldoutGroup("Datacenter")] private int startParticleCannons;
+    [SerializeField, FoldoutGroup("Datacenter")] private int startAffinity;
+    [SerializeField, FoldoutGroup("Datacenter")] private int startThroughput;
     
     #endregion
     
@@ -113,21 +113,21 @@ public class GameManager : MonoBehaviour
         //Init Factory
         Debug.Log("|----- START INIT: Factory -----|");
         List <int> factoryStartSettings  = new List<int>();
-        factoryStartSettings.Add(startDicemaker);
-        factoryStartSettings.Add(startSpeed);
-        factoryStartSettings.Add(startEfficiency);
-        factoryStartSettings.Add(startCritical);
+        factoryStartSettings.Add(startWorker);
+        factoryStartSettings.Add(startConveyor);
+        factoryStartSettings.Add(startTools);
+        factoryStartSettings.Add(startSurplus);
         factoryStartSettings.Add(startOverdrive);
-        factoryStartSettings.Add(startFactory6);
-        factoryStartSettings.Add(startFactory7);
+        factoryStartSettings.Add(startAIWorker);
+        factoryStartSettings.Add(startMachineLearning);
         factory.InitializeInteractionArea(factoryUnlocked, factoryStartSettings);
         Debug.Log("|----- FINISH INIT: Factory -----|");
         
         //Init Transformer
         Debug.Log("|----- START INIT: Transformer -----|");
         List <int> transformerStartSettings  = new List<int>();
-        transformerStartSettings.Add(startTransformer1);
-        transformerStartSettings.Add(startTransformer2);
+        transformerStartSettings.Add(startCondenser);
+        transformerStartSettings.Add(startExtruder);
         transformer.InitializeInteractionArea(transformerUnlocked, transformerStartSettings);
         Debug.Log("|----- FINISH INIT: Transformer -----|");
         
@@ -136,7 +136,7 @@ public class GameManager : MonoBehaviour
         List <int> technologyStartSettings  = new List<int>();
         technologyStartSettings.Add(startSides);
         technologyStartSettings.Add(startAdvantage);
-        technologyStartSettings.Add(startHighRoller);
+        technologyStartSettings.Add(startWeight);
         technologyStartSettings.Add(startExplosive);
         technology.InitializeInteractionArea(technologyUnlocked, technologyStartSettings);
         Debug.Log("|----- FINISH INIT: Technology -----|");
@@ -152,9 +152,9 @@ public class GameManager : MonoBehaviour
         //Init Datacenter
         Debug.Log("|----- START INIT: Data Center -----|");
         List <int> datacenterStartSettings  = new List<int>();
-        datacenterStartSettings.Add(startDatacenter1);
-        datacenterStartSettings.Add(startDatacenter2); 
-        datacenterStartSettings.Add(startDatacenter3);
+        datacenterStartSettings.Add(startParticleCannons);
+        datacenterStartSettings.Add(startAffinity); 
+        datacenterStartSettings.Add(startThroughput);
         datacenter.InitializeInteractionArea(datacenterUnlocked, datacenterStartSettings);
         Debug.Log("|----- FINISH INIT: Data Center -----|");
       

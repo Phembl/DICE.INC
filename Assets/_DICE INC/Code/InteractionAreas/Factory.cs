@@ -52,17 +52,17 @@ public class Factory : InteractionArea
     [ShowInInspector, ReadOnly] private float efficiencyCurrent = 1f;
     
     [Header("Surplus")]
-    [SerializeField] private int criticalCostBase;
-    [SerializeField] private float criticalCostMult;
-    [SerializeField] private int criticalMax;
+    [SerializeField] private int surplusCostBase;
+    [SerializeField] private float surplusCostMult;
+    [SerializeField] private int surplusMax;
     [Space]
-    [SerializeField] private float criticalChanceBase;
-    [SerializeField] private float criticalChanceIncrease;
-    [SerializeField] private float criticalValueBase;
-    [SerializeField] private float criticalValueIncrease;
+    [SerializeField] private float surplusChanceBase;
+    [SerializeField] private float surplusChanceIncrease;
+    [SerializeField] private float surplusValueBase;
+    [SerializeField] private float surplusValueIncrease;
     [Space]
-    [ShowInInspector, ReadOnly] private float criticalChanceCurrent;
-    [ShowInInspector, ReadOnly] private float criticalValueCurrent;
+    [ShowInInspector, ReadOnly] private float surplusChanceCurrent;
+    [ShowInInspector, ReadOnly] private float surplusValueCurrent;
     
     [Header("Overdrive")]
     [SerializeField] private int costOverdriveBase;
@@ -115,7 +115,7 @@ public class Factory : InteractionArea
         costs.Add(workerCostBase);
         costs.Add(conveyorCostBase);
         costs.Add(toolsCostBase);
-        costs.Add(criticalCostBase);
+        costs.Add(surplusCostBase);
         costs.Add(costOverdriveBase);
         costs.Add(costAIWorkerBase);
         costs.Add(costSelfLearningBase);
@@ -130,7 +130,7 @@ public class Factory : InteractionArea
         costs.Add(workerCostMult);
         costs.Add(conveyorCostMult);
         costs.Add(toolsCostMult);
-        costs.Add(criticalCostMult);
+        costs.Add(surplusCostMult);
         costs.Add(costOverdriveMultiplier);
         costs.Add(costAIWorkerMultiplier);
         costs.Add(costSelfLearningMultiplier);
@@ -145,7 +145,7 @@ public class Factory : InteractionArea
         max.Add(workerMax);
         max.Add(conveyorMax);
         max.Add(toolsMax);
-        max.Add(criticalMax);
+        max.Add(surplusMax);
         max.Add(overdriveMax);
         max.Add(AIWorkerMax);
         max.Add(selfLearningMax);
@@ -182,9 +182,9 @@ public class Factory : InteractionArea
                 break;
             
             case 3: //Surplus
-                criticalChanceCurrent = criticalChanceBase + (criticalChanceIncrease * count);
-                criticalValueCurrent = criticalValueBase + (criticalValueIncrease * count);
-                if (printLog) Debug.Log($"Factory: Surplus upgraded: Value:{criticalValueCurrent}, Chance:{criticalChanceCurrent}%");
+                surplusChanceCurrent = surplusChanceBase + (surplusChanceIncrease * count);
+                surplusValueCurrent = surplusValueBase + (surplusValueIncrease * count);
+                if (printLog) Debug.Log($"Factory: Surplus upgraded: Value:{surplusValueCurrent}, Chance:{surplusChanceCurrent}%");
                 break;
             
             case 4: //Overdrive
@@ -234,7 +234,7 @@ public class Factory : InteractionArea
             
             if (printLog) Debug.Log("|--------------WORKSHOP PRODUCTION --------------|");
             if (printLog) Debug.Log($"{workerCurrent * efficiencyCurrent} dice will be produced.");
-            if (printLog) Debug.Log($"Critical Chance: {criticalChanceCurrent}.");
+            if (printLog) Debug.Log($"Critical Chance: {surplusChanceCurrent}.");
             if (printLog) Debug.Log($"Overdrive Chance: {overdriveChanceCurrent}.");
 
             
@@ -262,9 +262,9 @@ public class Factory : InteractionArea
             int diceCreated = (int)(workerCurrent * efficiencyCurrent);
             
             //Roll for Critical
-            if (Utility.Roll(criticalChanceCurrent))
+            if (Utility.Roll(surplusChanceCurrent))
             {
-                diceCreated = (int)(diceCreated * criticalValueCurrent);
+                diceCreated = (int)(diceCreated * surplusValueCurrent);
                 if (printLog) Debug.Log($"Critical Production: {diceCreated} have been produced");
             }
                
@@ -321,11 +321,11 @@ public class Factory : InteractionArea
         //Critical
         string criticalText = $"<br><br>???";
         float currentCriticalIncrease = 0f;
-        if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory,3) > 0) currentCriticalIncrease = (float)Math.Round(((criticalValueCurrent - 1) * 100), 2);
+        if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory,3) > 0) currentCriticalIncrease = (float)Math.Round(((surplusValueCurrent - 1) * 100), 2);
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 3))
         {
             criticalText = 
-                $"<br><br><b>CRITICAL:</b> <b>{criticalChanceCurrent}</b>% chance per cycle to increase production by <b>{currentCriticalIncrease}</b>%.";
+                $"<br><br><b>CRITICAL:</b> <b>{surplusChanceCurrent}</b>% chance per cycle to increase production by <b>{currentCriticalIncrease}</b>%.";
         }
         
         //Overdrive
