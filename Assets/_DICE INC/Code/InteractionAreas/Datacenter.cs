@@ -19,25 +19,25 @@ public class Datacenter : InteractionArea
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
     
     
-    [TitleGroup("Transformer")] 
+    [TitleGroup("Datacenter")] 
     [SerializeField] private float timeBetweenUpdates;
     [Space]
     
-    [Header("VALUE1")]
-    [SerializeField] private int value1CostBase;
-    [SerializeField] private float value1CostMult;
-    [SerializeField] private int value1Max;
+    [Header("Particle cannon")]
+    [SerializeField] private int particleCannonCostBase;
+    [SerializeField] private float particleCannonCostMult;
+    [SerializeField] private int particleCannonMax;
  
     
-    [Header("VALUE2")]
-    [SerializeField] private int value2CostBase;
-    [SerializeField] private float value2CostMult;
-    [SerializeField] private int value2Max;
+    [Header("Affinity")]
+    [SerializeField] private int affinityCostBase;
+    [SerializeField] private float affinityCostMult;
+    [SerializeField] private int affinityMax;
     
-    [Header("VALUE3")]
-    [SerializeField] private int value3CostBase;
-    [SerializeField] private float value3CostMult;
-    [SerializeField] private int value3Max;
+    [Header("Throughput")]
+    [SerializeField] private int throughputCostBase;
+    [SerializeField] private float throughputCostMult;
+    [SerializeField] private int throughputMax;
 
     
         
@@ -57,9 +57,9 @@ public class Datacenter : InteractionArea
     {
         List<int> costs = new List<int>();
         
-        costs.Add(value1CostBase);
-        costs.Add(value2CostBase);
-        costs.Add(value3CostBase);
+        costs.Add(particleCannonCostBase);
+        costs.Add(affinityCostBase);
+        costs.Add(throughputCostBase);
         
         return costs;
     }
@@ -68,9 +68,9 @@ public class Datacenter : InteractionArea
     {
         List<float> costs = new List<float>();
         
-        costs.Add(value1CostMult);
-        costs.Add(value2CostMult);
-        costs.Add(value3CostMult);
+        costs.Add(particleCannonCostMult);
+        costs.Add(affinityCostMult);
+        costs.Add(throughputCostMult);
         
         return costs;
     }
@@ -79,9 +79,9 @@ public class Datacenter : InteractionArea
     {
         List<int> max = new List<int>();
         
-        max.Add(value1Max);
-        max.Add(value2Max);
-        max.Add(value3Max);
+        max.Add(particleCannonMax);
+        max.Add(affinityMax);
+        max.Add(throughputMax);
         
         return max;
     }
@@ -99,10 +99,13 @@ public class Datacenter : InteractionArea
         
         switch (index)
         {
-            case 0: 
+            case 0: // Particle Cannon
                 break;
             
-            case 1: 
+            case 1: // Affinity
+                break;
+            
+            case 2:// Throughput
                 break;
             
         }
@@ -133,7 +136,7 @@ public class Datacenter : InteractionArea
                              
 
         //Value 1TT
-        string value1Tooltip = $"<br><br><b>VALUE1:</b>";
+        string value1Tooltip = $"<br><br><b>PARTICLE CANNON:</b> Increases the number of particles shot per shoot, increasing the number of traveling particles.";
         
         
         //Value 2 TT
@@ -141,7 +144,7 @@ public class Datacenter : InteractionArea
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Datacenter, 1))
         {
 
-            value2Tooltip = $"<br><br><b>Value 2:</b> ";
+            value2Tooltip = $"<br><br><b>AFFINITY:</b> Introduces a chance for a particle to increase its traveling speed after a collision.";
         }
         
         //Value 3 TT
@@ -149,7 +152,7 @@ public class Datacenter : InteractionArea
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Datacenter, 2))
         {
 
-            value3Tooltip = $"<br><br><b>Value 3:</b> ";
+            value3Tooltip = $"<br><br><b>THROUGHPUT:</b> Increase the number of shots before the area is cleared, increasing the collision chance and frequency.";
         }
         
         data.areaDescription += value1Tooltip + value2Tooltip +  value3Tooltip;

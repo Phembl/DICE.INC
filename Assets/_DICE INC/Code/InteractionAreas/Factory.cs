@@ -39,8 +39,8 @@ public class Factory : InteractionArea
     [SerializeField] private float conveyorCostMult;
     [SerializeField] private int conveyorMax;
     [Space]
-    [SerializeField] private float speedIncrease;
-    [ShowInInspector, ReadOnly] private float speedCurrent;
+    [SerializeField] private float productionSpeedIncrease;
+    [ShowInInspector, ReadOnly] private float productionSpeedCurrent;
     
     [Header("Tools")]
     [SerializeField] private int toolsCostBase;
@@ -168,28 +168,28 @@ public class Factory : InteractionArea
             case 0: //Workers
                 workerCurrent = count;
                 if (!workshopCycleActive) StartCoroutine(WorkShopCycle());
+                if (printLog) Debug.Log($"Factory: Worker added: Current workers:{workerCurrent}");
                 break;
             
             case 1: //Conveyor
-                speedCurrent = speedIncrease * count;
-                timerCurrent = timerBase - speedCurrent;
+                productionSpeedCurrent = productionSpeedIncrease * count;
+                timerCurrent = timerBase - productionSpeedCurrent;
                 timerCurrent = (float)Math.Round(timerCurrent, 2);
+                if (printLog) Debug.Log($"Factory: Conveyor added. Current production speed:{productionSpeedCurrent}. Current production time:{timerCurrent}");
                 break;
             
             case 2: //Tools
                 efficiencyCurrent = efficiencyBase + (efficiencyIncrease * count);
-                if (printLog) Debug.Log($"Factory: Efficiency upgraded: Current value:{efficiencyCurrent}");
+                if (printLog) Debug.Log($"Factory: Tools added: Current efficiency value:{efficiencyCurrent}");
                 break;
             
             case 3: //Surplus
-                surplusChanceCurrent = surplusChanceBase + (surplusChanceIncrease * count);
                 surplusValueCurrent = surplusValueBase + (surplusValueIncrease * count);
                 if (printLog) Debug.Log($"Factory: Surplus upgraded: Value:{surplusValueCurrent}, Chance:{surplusChanceCurrent}%");
                 break;
             
             case 4: //Overdrive
                 overdriveChanceCurrent = overdriveChanceBase + (overdriveChanceIncrease * count);
-                overdriveValueCurrent = overdriveValueBase + (overdriveValueIncrease * count);
                 if (printLog) Debug.Log($"Factory: Overdrive upgraded: Value:{overdriveValueCurrent}, Chance:{overdriveChanceCurrent}%");
                 break;
             
@@ -232,9 +232,9 @@ public class Factory : InteractionArea
         {
             float nextProductionTimer = timerCurrent;
             
-            if (printLog) Debug.Log("|--------------WORKSHOP PRODUCTION --------------|");
+            if (printLog) Debug.Log("|--------------FACTORY PRODUCTION --------------|");
             if (printLog) Debug.Log($"{workerCurrent * efficiencyCurrent} dice will be produced.");
-            if (printLog) Debug.Log($"Critical Chance: {surplusChanceCurrent}.");
+            if (printLog) Debug.Log($"Surplus Chance: {surplusChanceCurrent}.");
             if (printLog) Debug.Log($"Overdrive Chance: {overdriveChanceCurrent}.");
 
             
@@ -265,7 +265,7 @@ public class Factory : InteractionArea
             if (Utility.Roll(surplusChanceCurrent))
             {
                 diceCreated = (int)(diceCreated * surplusValueCurrent);
-                if (printLog) Debug.Log($"Critical Production: {diceCreated} have been produced");
+                if (printLog) Debug.Log($"Surplus Production: {diceCreated} have been produced");
             }
                
             
@@ -276,7 +276,7 @@ public class Factory : InteractionArea
             {
                 nextLoader.GetComponent<Image>().DOFade(0, 0.2f);
             }
-            if (printLog) Debug.Log("|--------------WORKSHOP PRODUCTION FINISHED--------------|");
+            if (printLog) Debug.Log("|--------------FACTORY PRODUCTION FINISHED--------------|");
             yield return new WaitForSeconds(0.2f);
             
             
@@ -296,36 +296,36 @@ public class Factory : InteractionArea
         
         
         data.areaTitle = "Factory";
-        data.areaDescription = "In the workshop, dicemaker produce dice." +
+        data.areaDescription = "In the factory, workers produce dice." +
                                $"<br>Currently, <b>{productionCount}</b> dice are produced every <b>{timerCurrent}</b> seconds.";
              
-        //Dicemaker
-        string dicemakerText = $"<br><br><b>DICEMAKER:</b> Produce <b>{workerCurrent}</b> dice.";
+        //Worker
+        string workerText = $"<br><br><b>WORKER:</b> Produce <b>{workerCurrent}</b> dice.";
         
-        //Speed
-        string speedText = $"<br><br>???)";
+        //Conveyor
+        string conveyorText = $"<br><br>???)";
         
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 1))
         {
-            speedText = $"<br><br><b>SPEED:</b> Every point decreases production time by <b>{speedIncrease}</b> seconds.";
+            conveyorText = $"<br><br><b>CONVEYOR:</b> Every conveyor decreases production time by <b>{productionSpeedIncrease}</b> seconds.";
         }
         
-        //Efficiency
-        string efficiencyText = $"<br><br>???)";
+        //Tools
+        string toolsText = $"<br><br>???)";
         
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 2))
         {
-            efficiencyText = $"<br><br><b>EFFICIENCY:</b> Every point increases production by: <b>{efficiencyIncrease * 100}</b>%.";
+            toolsText = $"<br><br><b>TOOLS:</b> Every tools increases production efficiency by: <b>{efficiencyIncrease * 100}</b>%.";
         }
         
-        //Critical
-        string criticalText = $"<br><br>???";
+        //Surplus
+        string surplusText = $"<br><br>???";
         float currentCriticalIncrease = 0f;
         if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory,3) > 0) currentCriticalIncrease = (float)Math.Round(((surplusValueCurrent - 1) * 100), 2);
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 3))
         {
-            criticalText = 
-                $"<br><br><b>CRITICAL:</b> <b>{surplusChanceCurrent}</b>% chance per cycle to increase production by <b>{currentCriticalIncrease}</b>%.";
+            surplusText = 
+                $"<br><br><b>SURPLUS:</b> <b>{surplusChanceCurrent}</b>% chance per cycle to increase production by <b>{currentCriticalIncrease}</b>%.";
         }
         
         //Overdrive
@@ -338,7 +338,7 @@ public class Factory : InteractionArea
                 $"<br><br><b>OVERDRIVE:</b> <b>{overdriveChanceCurrent}</b>% chance per cycle to decrease production time by <b>{currentOverdriveDecrease*(-1)}</b>%.";
         }
         
-        data.areaDescription += dicemakerText + speedText + efficiencyText + criticalText + overdriveText;
+        data.areaDescription += workerText + conveyorText + toolsText + surplusText + overdriveText;
         
        
         

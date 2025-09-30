@@ -23,16 +23,16 @@ public class Transformer : InteractionArea
     [SerializeField] private float timeBetweenUpdates;
     [Space]
     
-    [Header("VALUE1")]
-    [SerializeField] private int value1CostBase;
-    [SerializeField] private float value1CostMult;
-    [SerializeField] private int value1Max;
+    [Header("Condenser")]
+    [SerializeField] private int condenserCostBase;
+    [SerializeField] private float condenserCostMult;
+    [SerializeField] private int condenserMax;
  
     
-    [Header("VALUE2")]
-    [SerializeField] private int value2CostBase;
-    [SerializeField] private float value2CostMult;
-    [SerializeField] private int value2Max;
+    [Header("Extruder")]
+    [SerializeField] private int extruderCostBase;
+    [SerializeField] private float extruderCostMult;
+    [SerializeField] private int extruderMax;
     
     
         
@@ -52,8 +52,8 @@ public class Transformer : InteractionArea
     {
         List<int> costs = new List<int>();
         
-        costs.Add(value1CostBase);
-        costs.Add(value2CostBase);
+        costs.Add(condenserCostBase);
+        costs.Add(extruderCostBase);
         
         return costs;
     }
@@ -62,8 +62,8 @@ public class Transformer : InteractionArea
     {
         List<float> costs = new List<float>();
         
-        costs.Add(value1CostMult);
-        costs.Add(value2CostMult);
+        costs.Add(condenserCostMult);
+        costs.Add(extruderCostMult);
         
         return costs;
     }
@@ -72,8 +72,8 @@ public class Transformer : InteractionArea
     {
         List<int> max = new List<int>();
         
-        max.Add(value1Max);
-        max.Add(value2Max);
+        max.Add(condenserMax);
+        max.Add(extruderMax);
         
         return max;
     }
@@ -124,19 +124,19 @@ public class Transformer : InteractionArea
         data.areaDescription = "The transformer,";
                              
 
-        //Value 1TT
-        string value1Tooltip = $"<br><br><b>GROWTH VALUE1:</b>";
+        //Condenser
+        string condenserTooltip = $"<br><br><b>CONDENSER:</b>";
         
         
-        //Value 2 TT
-        string value2Tooltip = $"<br><br>???</b>)";
+        //Extruder
+        string extruderTooltip = $"<br><br>???</b>)";
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Transformer, 1))
         {
 
-            value2Tooltip = $"<br><br><b>Value 2:</b> ";
+            extruderTooltip = $"<br><br><b>EXTRUDER:</b> ";
         }
         
-        data.areaDescription += value1Tooltip + value2Tooltip;
+        data.areaDescription += condenserTooltip + extruderTooltip;
         
         return data;
     }

@@ -16,11 +16,11 @@ public class Technology : InteractionArea
     [TitleGroup("References")] 
     [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Technology;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
-    [SerializeField] private GameObject diceworldDisplay;
+    [SerializeField] private GameObject technologyDisplay;
     [SerializeField] private TMP_Text rollCounter;
     
     [TitleGroup("Technology")] 
-    [ShowInInspector, ReadOnly] private int diceworldLevel = 1;
+    [ShowInInspector, ReadOnly] private int technologyLevel = 1;
     [ShowInInspector, ReadOnly] private double rollsCurrent;
     [SerializeField] private double rollsGoalBase;
     [SerializeField] private double rollsGoalMult;
@@ -40,12 +40,12 @@ public class Technology : InteractionArea
     [Space]
     [ShowInInspector, ReadOnly] private int advantageCurrent;
     
-    [Header("High Roller")]
-    [SerializeField] private int highrollerCostBase;
-    [SerializeField] private float highrollerCostMult;
-    [SerializeField] private int highrollerMax;
+    [Header("Weight")]
+    [SerializeField] private int weightCostBase;
+    [SerializeField] private float weightCostMult;
+    [SerializeField] private int weightMax;
     [Space]
-    [ShowInInspector, ReadOnly] private int highrollerCurrent;
+    [ShowInInspector, ReadOnly] private int weightCurrent;
     
     [Header("Explosive")]
     [SerializeField] private int explosiveCostBase;
@@ -56,7 +56,7 @@ public class Technology : InteractionArea
     
     [Header("Progress")] 
     [SerializeField] private int levelToUnlockAdvantage;
-    [SerializeField] private int levelToUnlockHighRoller;
+    [SerializeField] private int levelToUnlockWeight;
     [SerializeField] private int levelToUnlockExplosive;
     
     
@@ -75,7 +75,7 @@ public class Technology : InteractionArea
         rollsGoalCurrent = rollsGoalBase;
         rollCounter.text = $"{rollsCurrent:N0}/{rollsGoalCurrent:N0}";
         
-        diceworldDisplay.transform.DOLocalMoveY(-470, 0);
+        technologyDisplay.transform.DOLocalMoveY(-470, 0);
     }
     
     protected override List<int> GetCostsBase()
@@ -84,7 +84,7 @@ public class Technology : InteractionArea
         
         costs.Add(sidesCostBase);
         costs.Add(advantageCostBase);
-        costs.Add(highrollerCostBase);
+        costs.Add(weightCostBase);
         costs.Add(explosiveCostBase);
         
         return costs;
@@ -96,7 +96,7 @@ public class Technology : InteractionArea
         
         costs.Add(sidesCostMult);
         costs.Add(advantageCostMult);
-        costs.Add(highrollerCostMult);
+        costs.Add(weightCostMult);
         costs.Add(explosiveCostMult);
         
         return costs;
@@ -108,7 +108,7 @@ public class Technology : InteractionArea
         
         max.Add(sidesMax);
         max.Add(advantageMax);
-        max.Add(highrollerMax);
+        max.Add(weightMax);
         max.Add(explosiveMax);
         
         return max;
@@ -136,8 +136,8 @@ public class Technology : InteractionArea
                 advantageCurrent = count;
                 break;
             
-            case 2: //HighRoller
-                highrollerCurrent = count;
+            case 2: //Weight
+                weightCurrent = count;
                 break;
             
             case 3: //Explosive
@@ -158,17 +158,17 @@ public class Technology : InteractionArea
         {
             //Account for overflow
             rollsCurrent -= rollsGoalCurrent;
-            diceworldLevel++;
+            technologyLevel++;
             
-            rollsGoalCurrent = Math.Round(rollsGoalBase * Math.Pow(rollsGoalMult, diceworldLevel));
+            rollsGoalCurrent = Math.Round(rollsGoalBase * Math.Pow(rollsGoalMult, technologyLevel));
 
             CPU.instance.ChangeResource(Resource.mDice, 1);
             
             CheckProgress();
         }
       
-        if (rollsCurrent > 0) diceworldDisplay.transform.DOLocalMoveY(GetDisplayY(), 0.2f);
-        else diceworldDisplay.transform.DOLocalMoveY(-470, 0.5f);
+        if (rollsCurrent > 0) technologyDisplay.transform.DOLocalMoveY(GetDisplayY(), 0.2f);
+        else technologyDisplay.transform.DOLocalMoveY(-470, 0.5f);
         
         rollCounter.text = $"{rollsCurrent:N0}/{rollsGoalCurrent:N0}";
 
@@ -184,15 +184,15 @@ public class Technology : InteractionArea
     
     protected override void CheckProgress()
     {
-        if (diceworldLevel >= levelToUnlockAdvantage && 
+        if (technologyLevel >= levelToUnlockAdvantage && 
             !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Technology, 1)) 
             UnlockInteractor(1);
         
-        if (diceworldLevel >= levelToUnlockHighRoller && 
+        if (technologyLevel >= levelToUnlockWeight && 
             !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Technology, 2)) 
             UnlockInteractor(2);
         
-        if (diceworldLevel >= levelToUnlockExplosive && 
+        if (technologyLevel >= levelToUnlockExplosive && 
             !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Technology, 3)) 
             UnlockInteractor(3);
     }
@@ -222,11 +222,11 @@ public class Technology : InteractionArea
         }
         
         //High Roller TT
-        string highrollerTooltip = $"<br><br>??? (Level to unlock: {levelToUnlockHighRoller})";
+        string highrollerTooltip = $"<br><br>??? (Level to unlock: {levelToUnlockWeight})";
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Technology, 2))
         {
             
-            highrollerTooltip = $"<br><br><b>HIGH ROLLER:</b> Each point.</b>";
+            highrollerTooltip = $"<br><br><b>WEIGHT:</b> Each point.</b>";
         }
         
         //Explosive TT
