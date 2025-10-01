@@ -17,10 +17,7 @@ public class Interactor : MonoBehaviour
     [Space]
     [ShowInInspector, ReadOnly] private int maxCount;
     [Space]
-    //[SerializeField] private Sprite spriteNormal;
-    //[SerializeField] private Sprite spriteHovered;
-    //[Space]
-    [SerializeField] private bool isShop;
+    [SerializeField] private bool dontShowCount;
     
     
     //Colors
@@ -43,6 +40,9 @@ public class Interactor : MonoBehaviour
     private int currentCount;
 
     private Coroutine clickAnim;
+
+    //Special Case
+    private bool isAIWorker;
     
     void OnEnable()
     {
@@ -69,7 +69,6 @@ public class Interactor : MonoBehaviour
     {
         
         colorActive = SettingsManager.instance.colorNormal;
-        //colorDark = SettingsManager.instance.colorDark;
         colorInactive = SettingsManager.instance.colorInactive;
         
         background = GetComponent<Image>();
@@ -78,7 +77,6 @@ public class Interactor : MonoBehaviour
         titleTMP = transform.GetChild(0).gameObject.GetComponent<TMP_Text>();
         costTMP = transform.GetChild(1).gameObject.GetComponent<TMP_Text>();
         
-        //background.sprite = spriteNormal;
         
         currentCost = _currentCost;
         maxCount = _maxCount;
@@ -89,9 +87,10 @@ public class Interactor : MonoBehaviour
             
         titleTMP.color = colorInactive;
         costTMP.color = colorInactive;
-        //background.color = colorInactive;
 
         isUnlocked = false;
+        
+        if (interactorName == "ai worker") isAIWorker = true;
         
         Debug.Log($"Interactor: {interactorName} is initialized.");
     }
@@ -150,7 +149,7 @@ public class Interactor : MonoBehaviour
         CheckAvailability();
     }
     
-    void CheckAvailability()
+    public void CheckAvailability()
     {
         if (!isUnlocked) return;
             
@@ -181,7 +180,12 @@ public class Interactor : MonoBehaviour
                 else isPurchasable = true;
                 break;
         }
-    
+
+        //AI Worker needs to additionally check if a normal worker is available to be purchasable
+        if (isAIWorker)
+        {
+            if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory,0) <= 0) isPurchasable = false;
+        }
         
         if (isPurchasable)
         {
@@ -282,7 +286,7 @@ public class Interactor : MonoBehaviour
         }
         
         //Show count only if not Import Interactor
-        if (isShop) titleTMP.text = interactorName;
+        if (dontShowCount) titleTMP.text = interactorName;
         else titleTMP.text = $"{interactorName}({currentCount.ToString()})";
     }
     #endregion

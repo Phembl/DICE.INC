@@ -26,6 +26,7 @@ public class Factory : InteractionArea
     [Space]
     [SerializeField] private float timerBase;
     [ShowInInspector, ReadOnly] private float timerCurrent;
+    [ShowInInspector, ReadOnly] private float productionCurrent;
     
     [Header("Worker")]
     [SerializeField] private int workerCostBase;
@@ -81,6 +82,9 @@ public class Factory : InteractionArea
     [SerializeField] private int costAIWorkerBase;
     [SerializeField] private float costAIWorkerMultiplier;
     [SerializeField] private int AIWorkerMax;
+    [SerializeField] private int AIWorkerDiceProduction;
+    [Space]
+    [ShowInInspector, ReadOnly] private int AIWorkerCurrent;
    
     
     [Header("Self Learning")]
@@ -168,6 +172,16 @@ public class Factory : InteractionArea
             case 0: //Workers
                 workerCurrent = count;
                 if (!workshopCycleActive) StartCoroutine(WorkShopCycle());
+                
+                //If AI Workers are unlocked and only one worker is currently there, update AI Worker availability
+                if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 5) &&
+                    count == 1)
+                {
+                    GetInteractor(5).CheckAvailability();
+                }
+                
+                GetInteractor(0).UpdateCount(CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory,0));
+                
                 if (printLog) Debug.Log($"Factory: Worker added: Current workers:{workerCurrent}");
                 break;
             
@@ -194,6 +208,14 @@ public class Factory : InteractionArea
                 break;
             
             case 5: // AI Worker
+                AIWorkerCurrent = count;
+                CPU.instance.IncreaseAreaInteractorCount(InteractionAreaType.Factory,0,-1);
+                workerCurrent--;
+                
+                GetInteractor(5).CheckAvailability();
+                //Update the Counter of the worker Interactor
+                GetInteractor(0).UpdateCount(CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory,0));
+                
                 break;
             
             case 6: // Self Learning
@@ -207,7 +229,8 @@ public class Factory : InteractionArea
     
     protected override void CheckProgress()
     {
-
+        productionCurrent = (workerCurrent + (AIWorkerCurrent * AIWorkerDiceProduction)) * efficiencyCurrent;
+        
         factoryLevel =
             CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory, 0) +
             CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory, 1) +
@@ -233,7 +256,7 @@ public class Factory : InteractionArea
             float nextProductionTimer = timerCurrent;
             
             if (printLog) Debug.Log("|--------------FACTORY PRODUCTION --------------|");
-            if (printLog) Debug.Log($"{workerCurrent * efficiencyCurrent} dice will be produced.");
+            if (printLog) Debug.Log($"{productionCurrent} dice will be produced.");
             if (printLog) Debug.Log($"Surplus Chance: {surplusChanceCurrent}.");
             if (printLog) Debug.Log($"Overdrive Chance: {overdriveChanceCurrent}.");
 
@@ -259,7 +282,7 @@ public class Factory : InteractionArea
                 yield return new WaitForSeconds(singleLoadTimer);
             }
             
-            int diceCreated = (int)(workerCurrent * efficiencyCurrent);
+            int diceCreated = (int)(productionCurrent);
             
             //Roll for Critical
             if (Utility.Roll(surplusChanceCurrent))

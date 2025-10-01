@@ -219,7 +219,7 @@ public abstract class InteractionArea : MonoBehaviour
     
     #region |-------------- INTERACTION --------------|
     
-    //Called by Import Interactors
+    //Called by Interactors
     public void Interaction(int index, Resource costResource)
     {
         //Pay Cost of interaction
@@ -244,6 +244,15 @@ public abstract class InteractionArea : MonoBehaviour
     
     protected abstract void RunInteraction(int index);
 
+    #endregion
+    
+    #region |-------------- HELPER --------------|
+
+    protected Interactor GetInteractor(int index)
+    {
+        return interactorHolder.GetChild(index).gameObject.GetComponent<Interactor>();
+    }
+    
     #endregion
     
 }
