@@ -55,8 +55,8 @@ public class Import : InteractionArea
         List<float> costs = new List<float>();
         
         costs.Add(1);
-        costs.Add(toolsCostMult);
-        costs.Add(dataCostMult);
+        costs.Add(1);
+        costs.Add(1);
         
         return costs;
     }
@@ -84,16 +84,18 @@ public class Import : InteractionArea
         switch (index)
         {
             case 0: //Buy DiceManager
-                CPU.instance.ChangeResource(Resource.Dice,1);
-                CheckProgress();
+                CPU.instance.PurchaseResource(Resource.Dice);
+                ProgressManager.instance.CheckResourceProgress(Resource.Dice);
                 break;
             
             case 1: //Buy Material
-                CPU.instance.ChangeResource(Resource.Material,1);
+                CPU.instance.PurchaseResource(Resource.Material);
+                ProgressManager.instance.CheckResourceProgress(Resource.Material);
                 break;
             
             case 2: //Buy Data
-                CPU.instance.ChangeResource(Resource.Data,1);
+                CPU.instance.PurchaseResource(Resource.Data);
+                ProgressManager.instance.CheckResourceProgress(Resource.Data);
                 break;
             
         }

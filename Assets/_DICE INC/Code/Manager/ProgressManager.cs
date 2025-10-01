@@ -14,6 +14,19 @@ public class ProgressManager : MonoBehaviour
     [SerializeField] private InteractionArea stockmarket;
     [SerializeField] private InteractionArea datacenter;
     
+    [SerializeField, FoldoutGroup("Resources"), Header("Dice")] private int diceCostIncrease1;
+    [SerializeField, FoldoutGroup("Resources")] private int diceCostIncrease2;
+    [SerializeField, FoldoutGroup("Resources")] private int diceCostIncrease3;
+    [SerializeField, FoldoutGroup("Resources")] private int diceCostIncrease4;
+    [SerializeField, FoldoutGroup("Resources"), Header("Material")] private int materialCostIncrease1;
+    [SerializeField, FoldoutGroup("Resources")] private int materialCostIncrease2;
+    [SerializeField, FoldoutGroup("Resources")] private int materialCostIncrease3;
+    [SerializeField, FoldoutGroup("Resources")] private int materialCostIncrease4;
+    [SerializeField, FoldoutGroup("Resources"), Header("Data")] private int dataCostIncrease1;
+    [SerializeField, FoldoutGroup("Resources")] private int dataCostIncrease2;
+    [SerializeField, FoldoutGroup("Resources")] private int dataCostIncrease3;
+    [SerializeField, FoldoutGroup("Resources")] private int dataCostIncrease4;
+    
     [SerializeField, FoldoutGroup("Factory")] private int unlockConveyorLvl;
     [SerializeField, FoldoutGroup("Factory")] private int unlockToolsLvl;
     [SerializeField, FoldoutGroup("Factory")] private int unlockSurplusLvl;
@@ -26,7 +39,8 @@ public class ProgressManager : MonoBehaviour
     {
         if  (instance == null) instance = this;
     }
-
+    
+    #region |-------------- RESEARCH PROGRESS --------------|
     public void ResearchProgress(int researchIndex)
     {
         switch (researchIndex)
@@ -56,7 +70,9 @@ public class ProgressManager : MonoBehaviour
                 break;
         }
     }
-
+    #endregion
+    
+    #region |-------------- AREA PROGRESS --------------|
     public void AreaProgress(InteractionAreaType area, int level)
     {
         if (printLog) Debug.Log($"Checking Progress for {area.ToString()} with level {level}.");
@@ -79,4 +95,33 @@ public class ProgressManager : MonoBehaviour
                 break;
         }
     }
+    
+    #endregion
+    
+    #region |-------------- RESOURCE COST PROGRESS --------------|
+
+    public void CheckResourceProgress(Resource resource)
+    {
+        switch (resource)
+        {
+            case Resource.Dice:
+                CheckDiceProgress();
+                break;
+            
+            case Resource.Material:
+                break;
+            
+            case Resource.Data:
+                break;
+        }
+    }
+
+    private void CheckDiceProgress()
+    {
+        double purchasedDice = CPU.instance.GetDicePurchased();
+    }
+    
+    
+    
+    #endregion
 }

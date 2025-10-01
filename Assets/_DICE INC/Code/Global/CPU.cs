@@ -23,6 +23,10 @@ public class CPU : MonoBehaviour
     private double mDiceTotal;
     private double dataTotal;
 
+    private double dicePurchased;
+    private double materialPurchased;
+    private double dataPurchased;
+
     private bool diceUnlocked;
     private bool materialUnlocked;
     private bool luckUnlocked;
@@ -49,12 +53,36 @@ public class CPU : MonoBehaviour
     public double GetMDiceTotal() => mDiceTotal;
     public double GetDataTotal() => dataTotal;
     
+    public double GetDicePurchased() => dicePurchased;
+    public double GetMaterialPurchased() => materialPurchased;
+    public double GetDataPurchased() => dataPurchased;
+    
     public static event Action OnPipsChanged;
     public static event Action OnDiceChanged;
     public static event Action OnMaterialChanged;
     public static event Action OnLuckChanged;
     public static event Action OnMDiceChanged;
     public static event Action OnDataChanged;
+
+    public void PurchaseResource(Resource resource)
+    {
+        switch (resource)
+        {
+            case Resource.Dice:
+                dicePurchased++;
+                break;
+            
+            case Resource.Material:
+                materialPurchased++;
+                break;
+            
+            case Resource.Data:
+                dataPurchased++;
+                break;
+        }
+        
+        ChangeResource(resource, 1);
+    }
 
     public void ChangeResource(Resource resource, double change)
     {
