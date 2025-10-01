@@ -4,13 +4,14 @@ using TMPro;
 using UnityEngine;
 using System.Linq;
 
-public class Dice : MonoBehaviour
+public class DiceManager : MonoBehaviour
 {
    [SerializeField] private TMP_Text diceRollCounter;
+   [SerializeField] private DiceTable diceTable;
 
    public bool printLog;
    
-   public static Dice instance;
+   public static DiceManager instance;
    private void Awake()
    {
       if (instance == null) instance = this;
@@ -26,9 +27,8 @@ public class Dice : MonoBehaviour
       int diceToRoll = (int)CPU.instance.GetDice();
       
       if (diceToRoll == 0) return;
-      
-      int diceUpperLimit = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Technology, 0) + 7; //Needs to be + 7 because of maxExclusive Random.Range
-      int diceLowerLimit = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Technology, 2) + 1; //Uses highRoller + 1, otherwise highRoller (1) would useless
+     
+      int diceSides = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Technology, 0) + 6;
       int advantageValue = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Technology, 1) + 1; //Uses Advantage + 1, because if Advantage = 0 it needs to simply roll 1 time
       float explosionChance = (float)CPU.instance.GetAreaInteractorCount(InteractionAreaType.Technology, 3);
       
@@ -36,70 +36,102 @@ public class Dice : MonoBehaviour
       int diceRolled = 0;
       int explosionCount = 0;
       int explosionVolume = 0;
+      int luckGenerated = 0;
       
-      
-      if (printLog) Debug.Log("|--------------DICE ROLLS --------------|");
-      if (printLog) Debug.Log($"Rolling {diceToRoll} Dice");
-      if (printLog) Debug.Log($"Every dice is rolled {advantageValue} times.");
-      if (printLog) Debug.Log($"Every dice rolls between {diceLowerLimit} and {diceUpperLimit - 1}.");
-      if (printLog) Debug.Log($"Chance for dice to explode: {explosionChance}%");
+     
+     if (printLog) Debug.Log("|--------------DICE ROLLS: --------------|");
+     if (printLog) Debug.Log($"Rolling {diceToRoll} dice");
+     if (printLog) Debug.Log($"Every dice has {diceSides} sides and is rolled {advantageValue} times.");
+     if (printLog) Debug.Log($"Chance for dice to explode: {explosionChance}%");
+     /*
+         List<int> diceResultsNew =  new List<int>();
+
+         for (int i = 0; i < diceToRoll; i++)
+         {
+            //Rolling every DiceManager Advantage-times
+            //Creating another int that stores all advantage rolls, then picking the highest
+            int[] advantageDiceResults = new int[advantageValue];
+
+            for (int advantageRoll = 0; advantageRoll < advantageValue; advantageRoll++)
+            {
+               //Here are the actual diceRolls
+               advantageDiceResults[advantageRoll] = Random.Range(diceLowerLimit, diceUpperLimit);
+            }
+
+            //Gets the highest result from Advantage rolls
+            int currentResult = advantageDiceResults.Max();
+            diceResultsNew.Add(currentResult);
+
+            //If Luck is unlocked and the dice result is >= 6: Add Luck
+            if (CPU.instance.GetLuckUnlockState() && currentResult >= 6)
+            {
+               CPU.instance.ChangeResource(Resource.Luck, 1);
+            }
+
+            diceRolled++;
+
+           //Roll for explosion (will always be false if explosion is not unlocked)
+            if (Utility.Roll(explosionChance))
+            {
+               int explosionGeneratedDice = Random.Range(1, 7);
+
+               //These are only for tracking
+               explosionCount++;
+               explosionVolume += explosionGeneratedDice;
+
+               diceToRoll += explosionGeneratedDice;
+            }
+
+
+
+         }
+
+           */
       
       List<int> diceResultsNew =  new List<int>();
       
       for (int i = 0; i < diceToRoll; i++)
       {
-         //Rolling every Dice Advantage-times
-         //Creating another int that stores all advantage rolls, then picking the highest
-         int[] advantageDiceResults = new int[advantageValue];
-         
-         for (int advantageRoll = 0; advantageRoll < advantageValue; advantageRoll++)
-         {
-            //Here are the actual diceRolls
-            advantageDiceResults[advantageRoll] = Random.Range(diceLowerLimit, diceUpperLimit);
-         }
-         
-         //Gets the highest result from Advantage rolls
-         int currentResult = advantageDiceResults.Max();
+         int currentResult = diceTable.GetDiceResult();
          diceResultsNew.Add(currentResult);
+         diceRolled++;
          
          //If Luck is unlocked and the dice result is >= 6: Add Luck
-         if (CPU.instance.GetLuckUnlockState() && currentResult >= 6)
+         if (currentResult >= 6)
          {
             CPU.instance.ChangeResource(Resource.Luck, 1);
+            luckGenerated++;
          }
-         
-         diceRolled++;
 
-        //Roll for explosion (will always be false if explosion is not unlocked)
+         
+         //Roll for explosion (will always be false if explosion is not unlocked)
          if (Utility.Roll(explosionChance))
          {
-            int explosionGeneratedDice = Random.Range(1, 7);
-            
+            int explosionGeneratedDice = diceTable.GetExplosionResult();
+
             //These are only for tracking
             explosionCount++;
             explosionVolume += explosionGeneratedDice;
-            
+
             diceToRoll += explosionGeneratedDice;
          }
-         
-         
-        
       }
-        
+
       int pipsGenerated = 0;
       for (int i = 0; i < diceResultsNew.Count; i++)
       {
          pipsGenerated += diceResultsNew[i];
       }
       
-      if (printLog) Debug.Log($"{explosionCount} dice exploded, adding {explosionVolume} new dice.");
-      if (printLog) Debug.Log($"Actually rolled dice: {diceResultsNew.Count} Dice");
+      //if (printLog) Debug.Log($"{explosionCount} dice exploded, adding {explosionVolume} new dice.");
+      if (printLog) Debug.Log($"Actually rolled dice: {diceResultsNew.Count}.");
       if (printLog) Debug.Log($"Result of rolled dice: {pipsGenerated} Pips.");
+      if (printLog) Debug.Log($"{luckGenerated} Luck has been generated.");
       
       //Check if Stockmarket is unlocked
       if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Stockmarket, 0))
       {
-         //Mult with Dice Roll Stockmarket value
+         //Mult with DiceManager Roll Stockmarket value
          pipsGenerated = (int)(pipsGenerated * CPU.instance.GetDiceRollStockValue());
          if (printLog) Debug.Log($"Result of rolled dice after stockmarket: {pipsGenerated} Pips.");
       }

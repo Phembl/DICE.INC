@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using Random = UnityEngine.Random;
 using DG.Tweening;
+using RNGNeeds;
 using UnityEngine.PlayerLoop;
 
 public class Technology : InteractionArea
@@ -18,6 +19,7 @@ public class Technology : InteractionArea
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
     [SerializeField] private GameObject technologyDisplay;
     [SerializeField] private TMP_Text rollCounter;
+    [SerializeField] private DiceTable diceTable;
     
     [TitleGroup("Technology")] 
     [ShowInInspector, ReadOnly] private int technologyLevel = 1;
@@ -129,7 +131,7 @@ public class Technology : InteractionArea
         {
             case 0: //Sides
                 sidesCurrent = count;
-                CheckProgress();
+                diceTable.AddSide();
                 break;
             
             case 1: //Advantage
@@ -138,6 +140,7 @@ public class Technology : InteractionArea
             
             case 2: //Weight
                 weightCurrent = count;
+                diceTable.AdjustWeight();
                 break;
             
             case 3: //Explosive
@@ -145,6 +148,8 @@ public class Technology : InteractionArea
                 break;
             
         }
+        
+        CheckProgress();
     }
 
     //Run by DiceManager when dice are rolled

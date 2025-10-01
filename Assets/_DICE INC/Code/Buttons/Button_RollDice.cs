@@ -12,7 +12,7 @@ public class Button_RollDice : Button
     
     protected override void ButtonAction()
     {
-        if (CPU.instance.GetDice() > 0) Dice.instance.RollDice();
+        if (CPU.instance.GetDice() > 0) DiceManager.instance.RollDice();
     }
     
     

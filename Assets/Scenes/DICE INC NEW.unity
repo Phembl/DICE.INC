@@ -633,6 +633,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: worker
+      objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
       value: Interactor_Factory_Worker
@@ -746,6 +750,10 @@ PrefabInstance:
     - target: {fileID: 4696456407366371276, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: conveyor
       objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
@@ -1276,7 +1284,7 @@ GameObject:
   m_Component:
   - component: {fileID: 171753370}
   m_Layer: 5
-  m_Name: Stockmarket_Screen
+  m_Name: Stockmarket_Display
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1317,7 +1325,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4225958089476428264, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: interactorName
-      value: TBA
+      value: Particle Cannon
       objectReference: {fileID: 0}
     - target: {fileID: 4696456407366371276, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Pivot.x
@@ -1399,9 +1407,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: Particle cannon
+      objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
-      value: Interactor_Datacenter_1
+      value: Interactor_Datacenter_ParticleCannon#
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1588,7 +1600,7 @@ GameObject:
   - component: {fileID: 200372734}
   - component: {fileID: 200372733}
   m_Layer: 5
-  m_Name: Datacenter_Display
+  m_Name: Datacenter_Interactor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2202,15 +2214,15 @@ MonoBehaviour:
   printLog: 0
   thisInteractionAreaType: 7
   timeBetweenUpdates: 0
-  value1CostBase: 1
-  value1CostMult: 1
-  value1Max: -1
-  value2CostBase: 1
-  value2CostMult: 1
-  value2Max: -1
-  value3CostBase: 1
-  value3CostMult: 1
-  value3Max: -1
+  particleCannonCostBase: 0
+  particleCannonCostMult: 0
+  particleCannonMax: 0
+  affinityCostBase: 0
+  affinityCostMult: 0
+  affinityMax: 0
+  throughputCostBase: 0
+  throughputCostMult: 0
+  throughputMax: 0
 --- !u!1 &272438277
 GameObject:
   m_ObjectHideFlags: 0
@@ -3612,8 +3624,12 @@ PrefabInstance:
     m_TransformParent: {fileID: 487608624}
     m_Modifications:
     - target: {fileID: 4225958089476428264, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: costResource
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4225958089476428264, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: interactorName
-      value: TBA
+      value: Condenser
       objectReference: {fileID: 0}
     - target: {fileID: 4225958089476428264, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: interactionArea
@@ -3699,9 +3715,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: condenser
+      objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
-      value: Interactor_Transformer_1
+      value: Interactor_Transformer_Condenser
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4003,6 +4023,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5881403665071850297, guid: adc255dd8b46c497aa5eed48a5003291, type: 3}
+      propertyPath: m_text
+      value: luck
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4046,11 +4070,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2619051130183034267, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 444
+      value: 999
       objectReference: {fileID: 0}
     - target: {fileID: 2619051130183034267, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -442
+      value: -668
       objectReference: {fileID: 0}
     - target: {fileID: 3204341030181159174, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_Pivot.x
@@ -4158,7 +4182,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6666049488332877283, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 870
+      value: 549
       objectReference: {fileID: 0}
     - target: {fileID: 6666049488332877283, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -4518,7 +4542,7 @@ GameObject:
   - component: {fileID: 487608626}
   - component: {fileID: 487608625}
   m_Layer: 5
-  m_Name: Transformer_Display
+  m_Name: Transformer_Interactors
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4599,6 +4623,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 682457047}
     m_Modifications:
+    - target: {fileID: 3711621452476658306, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 486.2
+      objectReference: {fileID: 0}
     - target: {fileID: 4225958089476428264, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: costResource
       value: 5
@@ -4690,6 +4718,10 @@ PrefabInstance:
     - target: {fileID: 4696456407366371276, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: machine learning
       objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
@@ -5035,6 +5067,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5881403665071850297, guid: adc255dd8b46c497aa5eed48a5003291, type: 3}
+      propertyPath: m_text
+      value: material
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5082,7 +5118,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2619051130183034267, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -442
+      value: 946
       objectReference: {fileID: 0}
     - target: {fileID: 3204341030181159174, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_Pivot.x
@@ -5174,19 +5210,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6666049488332877283, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_Pivot.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6666049488332877283, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6666049488332877283, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6666049488332877283, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 1074.89
+      value: 1074.8901
       objectReference: {fileID: 0}
     - target: {fileID: 6666049488332877283, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -5194,7 +5230,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6666049488332877283, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 62.120117
+      value: -73
       objectReference: {fileID: 0}
     - target: {fileID: 9211635885494710670, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchorMax.y
@@ -5898,9 +5934,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: advantage
+      objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
-      value: Interactor_Technology_2
+      value: Interactor_Technology_Advantage
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5963,38 +6003,38 @@ MonoBehaviour:
   startDiceRollTotal: 0
   startResearchProgress: 0
   startPips: 0
-  startDice: 0
+  startDice: 1
   startMaterial: 0
   startLuck: 0
-  startMDice: 0
+  startMDice: 100
   startData: 0
   importUnlocked: 1
   startDiceImport: 0
   startMaterialImport: 0
   startDataImport: 0
   factoryUnlocked: 0
-  startDicemaker: 0
-  startSpeed: 0
-  startEfficiency: 0
-  startCritical: 0
+  startWorker: 0
+  startConveyor: 0
+  startTools: 0
+  startSurplus: 0
   startOverdrive: 0
-  startFactory6: 0
-  startFactory7: 0
+  startAIWorker: 0
+  startMachineLearning: 0
   transformerUnlocked: 0
-  startTransformer1: 0
-  startTransformer2: 0
-  technologyUnlocked: 0
+  startCondenser: 0
+  startExtruder: 0
+  technologyUnlocked: 1
   startSides: 0
   startAdvantage: 0
-  startHighRoller: 0
+  startWeight: 0
   startExplosive: 0
   stockmarketUnlocked: 0
   startGrowthStock: 0
   startMarketCap: 0
   datacenterUnlocked: 0
-  startDatacenter1: 0
-  startDatacenter2: 0
-  startDatacenter3: 0
+  startParticleCannons: 0
+  startAffinity: 0
+  startThroughput: 0
 --- !u!114 &625926000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6099,6 +6139,10 @@ PrefabInstance:
     - target: {fileID: 4927310413855728146, guid: adc255dd8b46c497aa5eed48a5003291, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5881403665071850297, guid: adc255dd8b46c497aa5eed48a5003291, type: 3}
+      propertyPath: m_text
+      value: Data
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6238,7 +6282,7 @@ GameObject:
   - component: {fileID: 682457049}
   - component: {fileID: 682457048}
   m_Layer: 5
-  m_Name: Factory_Screen
+  m_Name: Factory_Interactors
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6349,25 +6393,26 @@ MonoBehaviour:
   interactorGO: {fileID: 2090099093}
   printLog: 0
   thisInteractionAreaType: 5
-  diceworldDisplay: {fileID: 214842685}
+  technologyDisplay: {fileID: 214842685}
   rollCounter: {fileID: 1511384630}
+  diceTable: {fileID: 1125702135}
   rollsGoalBase: 50
   rollsGoalMult: 3.8
   sidesCostBase: 1
   sidesCostMult: 1
-  sidesMax: 5
+  sidesMax: 10
   advantageCostBase: 1
   advantageCostMult: 1
   advantageMax: 5
-  highrollerCostBase: 1
-  highrollerCostMult: 1
-  highrollerMax: 5
+  weightCostBase: 1
+  weightCostMult: 1
+  weightMax: 10
   explosiveCostBase: 1
   explosiveCostMult: 1
-  explosiveMax: 5
-  levelToUnlockAdvantage: 2
-  levelToUnlockHighRoller: 3
-  levelToUnlockExplosive: 4
+  explosiveMax: 10
+  levelToUnlockAdvantage: 0
+  levelToUnlockWeight: 0
+  levelToUnlockExplosive: 0
 --- !u!4 &690977111
 Transform:
   m_ObjectHideFlags: 0
@@ -6757,8 +6802,12 @@ PrefabInstance:
     m_TransformParent: {fileID: 487608624}
     m_Modifications:
     - target: {fileID: 4225958089476428264, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: costResource
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4225958089476428264, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: interactorName
-      value: TBA
+      value: Extruder
       objectReference: {fileID: 0}
     - target: {fileID: 4225958089476428264, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: interactionArea
@@ -6844,9 +6893,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: extruder
+      objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
-      value: Interactor_Transformer_2
+      value: Interactor_Transformer_Extruder
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7117,6 +7170,10 @@ PrefabInstance:
     - target: {fileID: 4696456407366371276, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: surplus
       objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
@@ -7505,6 +7562,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: Data
+      objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
       value: Interactor_Import_Data
@@ -7786,9 +7847,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: sides
+      objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
-      value: Interactor_Technology_1
+      value: Interactor_Technology_Sides
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8361,7 +8426,7 @@ GameObject:
   - component: {fileID: 1039009444}
   - component: {fileID: 1039009443}
   m_Layer: 5
-  m_Name: Stockmarket_Display
+  m_Name: Stockmarket_Interactor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8788,6 +8853,259 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f85e06a1adef4af69700db636e17904, type: 3}
+--- !u!1 &1125702134
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1125702136}
+  - component: {fileID: 1125702135}
+  m_Layer: 0
+  m_Name: Dice_Table
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1125702135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1125702134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b259b68f2a6984528b5abf9c5c76132d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  diceResult:
+    m_PLID: 0c18c076-adc7-4687-bc70-9cb860a55040
+    m_ProbabilityItems:
+    - m_Value: 1
+      m_BaseProbability: 0.16666666
+      m_Enabled: 1
+      m_Locked: 0
+      m_InfluenceSpread: {x: 0, y: 1}
+      m_InfluenceProvider: {fileID: 0}
+      m_InvertInfluence: 0
+      m_DepletableItem: 1
+      m_Units: 1
+      m_MaxUnits: 1
+      m_Weight: 100
+    - m_Value: 2
+      m_BaseProbability: 0.16666666
+      m_Enabled: 1
+      m_Locked: 0
+      m_InfluenceSpread: {x: 0, y: 1}
+      m_InfluenceProvider: {fileID: 0}
+      m_InvertInfluence: 0
+      m_DepletableItem: 1
+      m_Units: 1
+      m_MaxUnits: 1
+      m_Weight: 100
+    - m_Value: 3
+      m_BaseProbability: 0.16666667
+      m_Enabled: 1
+      m_Locked: 0
+      m_InfluenceSpread: {x: 0, y: 1}
+      m_InfluenceProvider: {fileID: 0}
+      m_InvertInfluence: 0
+      m_DepletableItem: 1
+      m_Units: 1
+      m_MaxUnits: 1
+      m_Weight: 100
+    - m_Value: 4
+      m_BaseProbability: 0.16666667
+      m_Enabled: 1
+      m_Locked: 0
+      m_InfluenceSpread: {x: 0, y: 1}
+      m_InfluenceProvider: {fileID: 0}
+      m_InvertInfluence: 0
+      m_DepletableItem: 1
+      m_Units: 1
+      m_MaxUnits: 1
+      m_Weight: 100
+    - m_Value: 5
+      m_BaseProbability: 0.16666667
+      m_Enabled: 1
+      m_Locked: 0
+      m_InfluenceSpread: {x: 0, y: 1}
+      m_InfluenceProvider: {fileID: 0}
+      m_InvertInfluence: 0
+      m_DepletableItem: 1
+      m_Units: 1
+      m_MaxUnits: 1
+      m_Weight: 100
+    - m_Value: 6
+      m_BaseProbability: 0.16666666
+      m_Enabled: 1
+      m_Locked: 0
+      m_InfluenceSpread: {x: 0, y: 1}
+      m_InfluenceProvider: {fileID: 0}
+      m_InvertInfluence: 0
+      m_DepletableItem: 1
+      m_Units: 1
+      m_MaxUnits: 1
+      m_Weight: 100
+    m_PreventRepeat: 0
+    m_ShuffleIterations: 1
+    m_PickCountMin: 1
+    m_PickCountMax: 1
+    m_LinkPickCounts: 1
+    m_MaintainPickCountIfDisabled: 0
+    m_PickCountCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_Seed: 0
+    m_KeepSeed: 0
+    m_PickHistory:
+      m_History: []
+      m_Capacity: 1000
+    m_LastPickCount: 0
+    m_SelectionMethodID: LSMRegular
+    m_ListName: 
+    m_DepletableList: 0
+    m_WeightsPriority: 0
+    m_BaseWeight: 100
+  explosionResult:
+    m_PLID: eb2466f5-41d1-48df-91f5-4b5793ce2da5
+    m_ProbabilityItems:
+    - m_Value: 2
+      m_BaseProbability: 0.30383748
+      m_Enabled: 1
+      m_Locked: 0
+      m_InfluenceSpread: {x: 0, y: 1}
+      m_InfluenceProvider: {fileID: 0}
+      m_InvertInfluence: 0
+      m_DepletableItem: 1
+      m_Units: 1
+      m_MaxUnits: 1
+      m_Weight: 152
+    - m_Value: 3
+      m_BaseProbability: 0.2564332
+      m_Enabled: 1
+      m_Locked: 0
+      m_InfluenceSpread: {x: 0, y: 1}
+      m_InfluenceProvider: {fileID: 0}
+      m_InvertInfluence: 0
+      m_DepletableItem: 1
+      m_Units: 1
+      m_MaxUnits: 1
+      m_Weight: 128
+    - m_Value: 4
+      m_BaseProbability: 0.21580139
+      m_Enabled: 1
+      m_Locked: 0
+      m_InfluenceSpread: {x: 0, y: 1}
+      m_InfluenceProvider: {fileID: 0}
+      m_InvertInfluence: 0
+      m_DepletableItem: 1
+      m_Units: 1
+      m_MaxUnits: 1
+      m_Weight: 108
+    - m_Value: 5
+      m_BaseProbability: 0.14356676
+      m_Enabled: 1
+      m_Locked: 0
+      m_InfluenceSpread: {x: 0, y: 1}
+      m_InfluenceProvider: {fileID: 0}
+      m_InvertInfluence: 0
+      m_DepletableItem: 1
+      m_Units: 1
+      m_MaxUnits: 1
+      m_Weight: 72
+    - m_Value: 6
+      m_BaseProbability: 0.080361255
+      m_Enabled: 1
+      m_Locked: 0
+      m_InfluenceSpread: {x: 0, y: 1}
+      m_InfluenceProvider: {fileID: 0}
+      m_InvertInfluence: 0
+      m_DepletableItem: 1
+      m_Units: 1
+      m_MaxUnits: 1
+      m_Weight: 40
+    m_PreventRepeat: 0
+    m_ShuffleIterations: 1
+    m_PickCountMin: 1
+    m_PickCountMax: 1
+    m_LinkPickCounts: 1
+    m_MaintainPickCountIfDisabled: 0
+    m_PickCountCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_Seed: 0
+    m_KeepSeed: 0
+    m_PickHistory:
+      m_History: []
+      m_Capacity: 1000
+    m_LastPickCount: 0
+    m_SelectionMethodID: LSMRegular
+    m_ListName: 
+    m_DepletableList: 0
+    m_WeightsPriority: 0
+    m_BaseWeight: 100
+--- !u!4 &1125702136
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1125702134}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1187004635}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1148148874
 GameObject:
   m_ObjectHideFlags: 0
@@ -8990,6 +9308,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   diceRollCounter: {fileID: 522784820}
+  diceTable: {fileID: 1125702135}
   printLog: 1
 --- !u!4 &1187004635
 Transform:
@@ -9003,7 +9322,8 @@ Transform:
   m_LocalPosition: {x: 1000, y: 1000, z: 1000}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1125702136}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1191276571
@@ -9207,6 +9527,10 @@ PrefabInstance:
     - target: {fileID: 4696456407366371276, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: material
       objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
@@ -10058,6 +10382,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: overdrive
+      objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
       value: Interactor_Factory_Overdrive
@@ -10137,8 +10465,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorNormal: {r: 0.8745098, g: 0.9764706, b: 0.9843137, a: 1}
-  colorDark: {r: 0.14901961, g: 0.16862746, b: 0.22745098, a: 1}
-  colorInactive: {r: 0.14901961, g: 0.16862746, b: 0.22745098, a: 1}
+  colorDark: {r: 0.21568628, g: 0.30980393, b: 0.44705883, a: 1}
+  colorInactive: {r: 0.21568628, g: 0.30980393, b: 0.44705883, a: 1}
 --- !u!4 &1357151949
 Transform:
   m_ObjectHideFlags: 0
@@ -10223,7 +10551,7 @@ GameObject:
   - component: {fileID: 1373955366}
   - component: {fileID: 1373955365}
   m_Layer: 5
-  m_Name: Technology_Screen
+  m_Name: Technology_Interactor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10486,7 +10814,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2619051130183034267, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 42
+      value: -591
       objectReference: {fileID: 0}
     - target: {fileID: 3204341030181159174, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_Pivot.x
@@ -10578,15 +10906,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6666049488332877283, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_Pivot.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6666049488332877283, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6666049488332877283, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6666049488332877283, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_SizeDelta.y
@@ -10594,7 +10922,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6666049488332877283, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 69
       objectReference: {fileID: 0}
     - target: {fileID: 8459749387850413404, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_text
@@ -10661,7 +10989,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4225958089476428264, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: interactorName
-      value: TBA
+      value: throughput
       objectReference: {fileID: 0}
     - target: {fileID: 4696456407366371276, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Pivot.x
@@ -10743,9 +11071,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: throughput
+      objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
-      value: Interactor_Datacenter_3
+      value: Interactor_Datacenter_Throughput
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10868,7 +11200,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4225958089476428264, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: interactorName
-      value: TBA
+      value: Affinity
       objectReference: {fileID: 0}
     - target: {fileID: 4696456407366371276, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Pivot.x
@@ -10950,9 +11282,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: affinity
+      objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
-      value: Interactor_Datacenter_2
+      value: Interactor_Datacenter_Affinity
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -11454,9 +11790,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: 'Explosive
+
+'
+      objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
-      value: Interactor_Technology_3
+      value: Interactor_Technology_Explosive
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -11698,7 +12040,7 @@ GameObject:
   - component: {fileID: 1575773772}
   - component: {fileID: 1575773771}
   m_Layer: 5
-  m_Name: Import_Screen
+  m_Name: Import_Interactor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12192,9 +12534,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: growth stock
+      objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
-      value: Interactor_Stockmarket_1
+      value: Interactor_Stockmarket_GrowthStock
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12447,6 +12793,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: ai worker
+      objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
       value: Interactor_Factory_AIWorker
@@ -12654,6 +13004,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5881403665071850297, guid: adc255dd8b46c497aa5eed48a5003291, type: 3}
+      propertyPath: m_text
+      value: mDICE
+      objectReference: {fileID: 0}
+    - target: {fileID: 5881403665071850297, guid: adc255dd8b46c497aa5eed48a5003291, type: 3}
+      propertyPath: m_fontStyle
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12758,6 +13116,10 @@ PrefabInstance:
     - target: {fileID: 4696456407366371276, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: tools
       objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
@@ -12979,9 +13341,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: weight
+      objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
-      value: Interactor_Technology_3
+      value: Interactor_Technology_Weight
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -13652,18 +14018,18 @@ MonoBehaviour:
   conveyorCostBase: 5
   conveyorCostMult: 1.05
   conveyorMax: 100
-  speedIncrease: 0.04
+  productionSpeedIncrease: 0
   toolsCostBase: 40
   toolsCostMult: 1.03
   toolsMax: -1
   efficiencyIncrease: 0.22
-  criticalCostBase: 2
-  criticalCostMult: 1.06
-  criticalMax: 15
-  criticalChanceBase: 1.8
-  criticalChanceIncrease: 0.2
-  criticalValueBase: 9.5
-  criticalValueIncrease: 0.5
+  surplusCostBase: 0
+  surplusCostMult: 0
+  surplusMax: 0
+  surplusChanceBase: 0
+  surplusChanceIncrease: 0
+  surplusValueBase: 0
+  surplusValueIncrease: 0
   costOverdriveBase: 50
   costOverdriveMultiplier: 1.9
   overdriveMax: 15
@@ -14350,12 +14716,12 @@ MonoBehaviour:
   printLog: 0
   thisInteractionAreaType: 4
   timeBetweenUpdates: 0
-  value1CostBase: 1
-  value1CostMult: 1
-  value1Max: -1
-  value2CostBase: 1
-  value2CostMult: 1
-  value2Max: -1
+  condenserCostBase: 0
+  condenserCostMult: 0
+  condenserMax: 0
+  extruderCostBase: 0
+  extruderCostMult: 0
+  extruderMax: 0
 --- !u!1 &1992266991
 GameObject:
   m_ObjectHideFlags: 0
@@ -14935,9 +15301,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: market cap
+      objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
-      value: Interactor_Stockmarket_2
+      value: Interactor_Stockmarket_MarketCap
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -15570,6 +15940,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5881403665071850297, guid: adc255dd8b46c497aa5eed48a5003291, type: 3}
+      propertyPath: m_text
+      value: pips
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -15674,6 +16048,10 @@ PrefabInstance:
     - target: {fileID: 4696456407366371276, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: m_text
+      value: dice
       objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name

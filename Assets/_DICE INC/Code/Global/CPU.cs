@@ -73,7 +73,7 @@ public class CPU : MonoBehaviour
                 if (change > 0) diceTotal += change;
                 if (diceCurrent < 0) diceCurrent = 0;
                 OnDiceChanged?.Invoke();
-                if (printLog) Debug.Log($"Dice changed to {diceCurrent}");
+                if (printLog) Debug.Log($"DiceManager changed to {diceCurrent}");
                 break;
             
             case Resource.Material:
@@ -332,7 +332,7 @@ public class CPU : MonoBehaviour
     #region |-------------- STATISTICS TRACKING --------------|
     
     //Statistics Tracking
-    //Dice Rolled
+    //DiceManager Rolled
     private int diceRolledTotal;
     
     public int GetDiceRolledTotal() => diceRolledTotal;
@@ -345,7 +345,7 @@ public class CPU : MonoBehaviour
     
     public static event Action OnDiceRollTotalChanged;
     
-    //Dice Roll StockValue (unlocked through StockMarket)
+    //DiceManager Roll StockValue (unlocked through StockMarket)
 
     private float diceRollStockValue = 1;
     

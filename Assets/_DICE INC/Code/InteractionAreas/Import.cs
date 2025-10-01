@@ -12,7 +12,7 @@ public class Import : InteractionArea
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
     
     [TitleGroup("Import")] 
-    [Header("Dice")]
+    [Header("DiceManager")]
     [SerializeField] private int diceCostBase;
     [SerializeField] private int diceMax;
     [Header("Material")]
@@ -83,7 +83,7 @@ public class Import : InteractionArea
         
         switch (index)
         {
-            case 0: //Buy Dice
+            case 0: //Buy DiceManager
                 CPU.instance.ChangeResource(Resource.Dice,1);
                 CheckProgress();
                 break;

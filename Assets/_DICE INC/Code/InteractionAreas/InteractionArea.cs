@@ -183,7 +183,7 @@ public abstract class InteractionArea : MonoBehaviour
         
         if (interactionAreaType == InteractionAreaType.Import)
         {
-            //If the interactor is Import-> Dice, the cost are updated from the subclass
+            //If the interactor is Import-> DiceManager, the cost are updated from the subclass
             if (index == 0) return;
         }
         
@@ -205,12 +205,12 @@ public abstract class InteractionArea : MonoBehaviour
     }
 
     
-    //This is called from the Import child class with the current Dice cost
+    //This is called from the Import child class with the current DiceManager cost
     protected void ShopCostUpdateDice(int newCost)
     {
         if (interactionAreaType != InteractionAreaType.Import) return;
         
-        //Dice
+        //DiceManager
         costBase[0] = newCost;
         areaInteractors[0].UpdatePrice((double)costBase[0]);
         costCurrent[0] = (double)costBase[0];

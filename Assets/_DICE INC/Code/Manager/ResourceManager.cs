@@ -64,11 +64,11 @@ public class ResourceManager : MonoBehaviour
         diceTitleTMP = resourceHolder.GetChild(1).transform.GetChild(0).GetComponent<TMP_Text>();
         diceCounterTMP = resourceHolder.GetChild(1).transform.GetChild(1).GetComponent<TMP_Text>();
         
-        materialTitleTMP = resourceHolder.GetChild(2).transform.GetChild(0).GetComponent<TMP_Text>();
-        materialCounterTMP = resourceHolder.GetChild(2).transform.GetChild(1).GetComponent<TMP_Text>();
+        materialTitleTMP = resourceHolder.GetChild(3).transform.GetChild(0).GetComponent<TMP_Text>();
+        materialCounterTMP = resourceHolder.GetChild(3).transform.GetChild(1).GetComponent<TMP_Text>();
     
-        luckTitleTMP = resourceHolder.GetChild(3).transform.GetChild(0).GetComponent<TMP_Text>();
-        luckCounterTMP = resourceHolder.GetChild(3).transform.GetChild(1).GetComponent<TMP_Text>();
+        luckTitleTMP = resourceHolder.GetChild(2).transform.GetChild(0).GetComponent<TMP_Text>();
+        luckCounterTMP = resourceHolder.GetChild(2).transform.GetChild(1).GetComponent<TMP_Text>();
     
         mDiceTitleTMP = resourceHolder.GetChild(4).transform.GetChild(0).GetComponent<TMP_Text>();
         mDiceCounterTMP = resourceHolder.GetChild(4).transform.GetChild(1).GetComponent<TMP_Text>();
@@ -115,7 +115,7 @@ public class ResourceManager : MonoBehaviour
                 diceCounterTMP.text = "0";
                 diceTitleTMP.color = colorActive;
                 diceCounterTMP.color = colorActive;
-                Debug.Log("Resource: Dice are now unlocked");
+                Debug.Log("Resource: DiceManager are now unlocked");
                 CPU.instance.UnlockDice();
                 break;
             

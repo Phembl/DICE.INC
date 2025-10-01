@@ -188,7 +188,103 @@ MonoBehaviour:
   DrawerSettings:
   - DrawerID: d6ab0d2a-bc83-41fa-8035-cb7107870870
     Created: 638937106748185030
-    Modified: 638937971423929540
+    Modified: 638949154190039200
+    DrawerOptionSection: 0
+    StripeHeight: 2
+    PalettePath: Default
+    ReverseColorOrder: 0
+    DimColors: 1
+    Monochrome: 0
+    MonochromeColor: {r: 1, g: 0.78, b: 0.4, a: 1}
+    ShowIndex: 0
+    ShowInfo: 1
+    ShowPercentage: 1
+    ShowWeights: 0
+    StripeHeightPixels: 50
+    StripePercentageDigits: 0
+    VisualizeDepletableItems: 0
+    HideListEntries: 0
+    ItemPercentageDigits: 2
+    TestPercentageDigits: 2
+    ColorizePreviewBars: 1
+    NormalizePreviewBars: 0
+    TestColorizeSensitivity: 3
+    SpreadColorizeSensitivity: 2
+    ElementInfoSpace: 0.5
+    ShowInfluenceToggle: 0
+    ShowSpreadOnBars: 0
+    SpreadPercentageDigits: 1
+    DepletableListAction: 0
+    SetUnitsValue: 1
+    SetMaxUnitsValue: 1
+    SetDepletableValue: 1
+  - DrawerID: 0c18c076-adc7-4687-bc70-9cb860a55040
+    Created: 638949051244251510
+    Modified: 638949157427358370
+    DrawerOptionSection: 4
+    StripeHeight: 2
+    PalettePath: Seasons/Autumn
+    ReverseColorOrder: 0
+    DimColors: 1
+    Monochrome: 0
+    MonochromeColor: {r: 1, g: 0.78, b: 0.4, a: 1}
+    ShowIndex: 0
+    ShowInfo: 1
+    ShowPercentage: 1
+    ShowWeights: 0
+    StripeHeightPixels: 50
+    StripePercentageDigits: 0
+    VisualizeDepletableItems: 0
+    HideListEntries: 0
+    ItemPercentageDigits: 2
+    TestPercentageDigits: 2
+    ColorizePreviewBars: 1
+    NormalizePreviewBars: 0
+    TestColorizeSensitivity: 3
+    SpreadColorizeSensitivity: 2
+    ElementInfoSpace: 0.5
+    ShowInfluenceToggle: 0
+    ShowSpreadOnBars: 0
+    SpreadPercentageDigits: 1
+    DepletableListAction: 0
+    SetUnitsValue: 1
+    SetMaxUnitsValue: 1
+    SetDepletableValue: 1
+  - DrawerID: 021d25ba-9cc4-4aef-81f5-d1ffe61b572d
+    Created: 638949055983960740
+    Modified: 638949055983961260
+    DrawerOptionSection: 0
+    StripeHeight: 2
+    PalettePath: Default
+    ReverseColorOrder: 0
+    DimColors: 1
+    Monochrome: 0
+    MonochromeColor: {r: 1, g: 0.78, b: 0.4, a: 1}
+    ShowIndex: 0
+    ShowInfo: 1
+    ShowPercentage: 1
+    ShowWeights: 0
+    StripeHeightPixels: 50
+    StripePercentageDigits: 0
+    VisualizeDepletableItems: 0
+    HideListEntries: 0
+    ItemPercentageDigits: 2
+    TestPercentageDigits: 2
+    ColorizePreviewBars: 1
+    NormalizePreviewBars: 0
+    TestColorizeSensitivity: 3
+    SpreadColorizeSensitivity: 2
+    ElementInfoSpace: 0.5
+    ShowInfluenceToggle: 0
+    ShowSpreadOnBars: 0
+    SpreadPercentageDigits: 1
+    DepletableListAction: 0
+    SetUnitsValue: 1
+    SetMaxUnitsValue: 1
+    SetDepletableValue: 1
+  - DrawerID: eb2466f5-41d1-48df-91f5-4b5793ce2da5
+    Created: 638949154583406150
+    Modified: 638949157427729590
     DrawerOptionSection: 0
     StripeHeight: 2
     PalettePath: Default
