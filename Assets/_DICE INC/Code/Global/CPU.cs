@@ -155,6 +155,8 @@ public class CPU : MonoBehaviour
         areaUnlockStates[(int)area] = true;
     }
     
+    public bool GetAreaUnlockState(InteractionAreaType area) => areaUnlockStates[(int)area];
+    
     #endregion
     #region |-------------- INTERACTION TRACKING --------------|
     

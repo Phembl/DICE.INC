@@ -20,19 +20,32 @@ public class Transformer : InteractionArea
     
     
     [TitleGroup("Transformer")] 
-    [SerializeField] private float timeBetweenUpdates;
-    [Space]
+    [ShowInInspector, ReadOnly] private int destroyedDice;
+    [ShowInInspector, ReadOnly] private int currentFragments;
+    [ShowInInspector, ReadOnly] private int fragmentsMin = 1;
+    [ShowInInspector, ReadOnly] private int fragmentsMax = 10;
+    [SerializeField] private int fragmentsNeededBase = 100;
+    [ShowInInspector, ReadOnly] private int fragmentsNeededCurrent = 100;
+    [ShowInInspector, ReadOnly] private int materialProduced = 1;
+    [Space] 
+    [SerializeField] private int[] unlockLevels; 
+    
     
     [Header("Condenser")]
+    [ShowInInspector, ReadOnly] private int condenserCurrent;
+    [Space]
     [SerializeField] private int condenserCostBase;
     [SerializeField] private float condenserCostMult;
     [SerializeField] private int condenserMax;
- 
     
     [Header("Extruder")]
+    [ShowInInspector, ReadOnly] private int extruderCurrent;
+    [Space]
     [SerializeField] private int extruderCostBase;
     [SerializeField] private float extruderCostMult;
     [SerializeField] private int extruderMax;
+   
+    
     
     
         
@@ -92,26 +105,64 @@ public class Transformer : InteractionArea
         switch (index)
         {
             case 0: 
+                condenserCurrent = count;
+                fragmentsNeededCurrent = fragmentsNeededBase - condenserCurrent;
                 break;
             
             case 1: 
+                extruderCurrent = count;
+                materialProduced = 1 + count;
                 break;
             
         }
     }
-
-    
-
-       
     
     protected override void CheckProgress()
     {
-        level =
-            CPU.instance.GetAreaInteractorCount(thisInteractionAreaType, 0) +
-            CPU.instance.GetAreaInteractorCount(thisInteractionAreaType, 1);
+        //Unlock Interactors based on level
+        for (int i = 0; i < unlockLevels.Length; i++)
+        {
+            if (level >= unlockLevels[i] &&
+                !CPU.instance.GetInteractorUnlockState(thisInteractionAreaType, i))
+            {
+                UnlockInteractor(i);
+            }
+        }
         
     }
-    
+
+    public void TriggerTransformer(int dice)
+    {
+        if (printLog) Debug.Log($"Transformer: Received {dice} dice to transform.");
+        
+        destroyedDice += dice;
+
+        //For each Dice roll fragments
+        for (int i = 0; i < dice; i++)
+        {
+            int fragmentsProduced = Random.Range(fragmentsMin, fragmentsMax);
+            currentFragments += fragmentsProduced;
+        }
+        
+        if (printLog) Debug.Log($"Transformer: Current fragments are {currentFragments}.");
+
+        if (currentFragments >= fragmentsNeededCurrent)
+        {
+            if (printLog) Debug.Log($"Transformer: Fragments reached {fragmentsNeededCurrent}. Now producing {materialProduced} material.");
+            
+            //Produce Material
+            currentFragments -= fragmentsNeededCurrent;
+            if (currentFragments < 0) currentFragments = 0;
+            
+            if (printLog) Debug.Log($"Transformer: New current fragments are {currentFragments}.");
+            
+            CPU.instance.ChangeResource(Resource.Material, materialProduced);
+            
+            level++;
+            CheckProgress();
+        }
+        
+    }
     
     #endregion
     
@@ -121,20 +172,23 @@ public class Transformer : InteractionArea
     {
         TooltipData data = new TooltipData();
         
-        data.areaTitle = "Transformer";
-        data.areaDescription = "The transformer,";
+        data.areaTitle = data.areaTitle = thisInteractionAreaType.ToString();
+        data.areaDescription = $"The transformer destroys every tenth dice produced in the factory to generate between <b>{fragmentsMin}</b> and <b>{fragmentsMax}</b> fragments." +
+                               $"<br>From <b>{fragmentsNeededCurrent}</b> fragments <b>{materialProduced}</b> material is generated. ";
                              
 
         //Condenser
-        string condenserTooltip = $"<br><br><b>CONDENSER:</b>";
-        
+        string condenserTooltip = $"";
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Transformer, 0))
+        {
+            condenserTooltip = $"<br><br><b>CONDENSER:</b> Every condenser reduced the amount of fragments needed to generate material by <b>1</b>.";
+        }
         
         //Extruder
-        string extruderTooltip = $"<br><br>???</b>)";
+        string extruderTooltip = $"";
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Transformer, 1))
         {
-
-            extruderTooltip = $"<br><br><b>EXTRUDER:</b> ";
+            extruderTooltip = $"<br><br><b>EXTRUDER:</b> Every Extruder increases the amount of generated materials by <b>100</b>%.";
         }
         
         data.areaDescription += condenserTooltip + extruderTooltip;

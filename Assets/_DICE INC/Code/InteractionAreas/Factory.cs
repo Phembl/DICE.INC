@@ -20,13 +20,14 @@ public class Factory : InteractionArea
     [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Factory;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
     [SerializeField] private Transform factoryLoader;
-    [Space] 
-    [SerializeField] private int[] unlockLevels; 
+    [SerializeField] private Transformer transformer;
 
     [TitleGroup("Factory")] 
     [SerializeField] private float timerBase;
     [ShowInInspector, ReadOnly] private float timerCurrent;
     [ShowInInspector, ReadOnly] private float productionCurrent;
+    [Space] 
+    [SerializeField] private int[] unlockLevels; 
     
     [Header("Worker")]
     [SerializeField] private int workerCostBase;
@@ -68,8 +69,8 @@ public class Factory : InteractionArea
     [ShowInInspector, ReadOnly] private float surplusValueCurrent;
     
     [Header("Overdrive")]
-    [SerializeField] private int costOverdriveBase;
-    [SerializeField] private float costOverdriveMultiplier;
+    [SerializeField] private int overdriveCostBase;
+    [SerializeField] private float overdriveCostMultiplier;
     [SerializeField] private int overdriveMax;
     [Space]
     [SerializeField] private float overdriveChanceBase;
@@ -81,8 +82,8 @@ public class Factory : InteractionArea
     [ShowInInspector, ReadOnly] private float overdriveValueCurrent;
     
     [Header("AI Worker")]
-    [SerializeField] private int costAIWorkerBase;
-    [SerializeField] private float costAIWorkerMultiplier;
+    [SerializeField] private int AIWorkerCostBase;
+    [SerializeField] private float AIWorkerCostMultiplier;
     [SerializeField] private int AIWorkerMax;
     [SerializeField] private int AIWorkerDiceProduction;
     [Space]
@@ -90,11 +91,13 @@ public class Factory : InteractionArea
    
     
     [Header("Self Learning")]
-    [SerializeField] private int costSelfLearningBase;
-    [SerializeField] private float costSelfLearningMultiplier;
+    [SerializeField] private int selfLearningCostBase;
+    [SerializeField] private float selfLearningCostMultiplier;
     [SerializeField] private int selfLearningMax;
-    
-    
+    [Space]
+    [ShowInInspector, ReadOnly] private int selfLearningCurrent;
+
+    private int diceUntilTransformer;
     
     #endregion
     
@@ -122,9 +125,9 @@ public class Factory : InteractionArea
         costs.Add(conveyorCostBase);
         costs.Add(toolsCostBase);
         costs.Add(surplusCostBase);
-        costs.Add(costOverdriveBase);
-        costs.Add(costAIWorkerBase);
-        costs.Add(costSelfLearningBase);
+        costs.Add(overdriveCostBase);
+        costs.Add(AIWorkerCostBase);
+        costs.Add(selfLearningCostBase);
         
         return costs;
     }
@@ -137,9 +140,9 @@ public class Factory : InteractionArea
         costs.Add(conveyorCostMult);
         costs.Add(toolsCostMult);
         costs.Add(surplusCostMult);
-        costs.Add(costOverdriveMultiplier);
-        costs.Add(costAIWorkerMultiplier);
-        costs.Add(costSelfLearningMultiplier);
+        costs.Add(overdriveCostMultiplier);
+        costs.Add(AIWorkerCostMultiplier);
+        costs.Add(selfLearningCostMultiplier);
         
         return costs;
     }
@@ -301,6 +304,21 @@ public class Factory : InteractionArea
                 if (printLog) Debug.Log($"Surplus Production: {diceCreated} have been produced");
             }
                
+            //Check for Transformer interaction
+            if (CPU.instance.GetAreaUnlockState(InteractionAreaType.Transformer))
+            {
+                //Gives every tenth produced die over to the Transformer
+                diceUntilTransformer += diceCreated;
+                int diceToTransform = diceUntilTransformer / 10;
+                diceUntilTransformer %= 10;
+                
+                //Reduce the number of actually produced dice by the number given to transform
+                diceCreated -= diceToTransform;
+                
+                if (diceToTransform > 0) transformer.TriggerTransformer(diceToTransform);
+                
+                if (printLog) Debug.Log($"Factory: Transformer receives: {diceToTransform} dice to transform. Dice until Transformer now: {diceUntilTransformer}");
+            }
             
             CPU.instance.ChangeResource(Resource.Dice, diceCreated);
             
@@ -309,6 +327,8 @@ public class Factory : InteractionArea
             {
                 nextLoader.GetComponent<Image>().DOFade(0, 0.2f);
             }
+            
+            
             if (printLog) Debug.Log("|--------------FACTORY PRODUCTION FINISHED--------------|");
             yield return new WaitForSeconds(0.2f);
             

@@ -6008,7 +6008,7 @@ MonoBehaviour:
   startResearchProgress: 0
   startPips: 5000
   startDice: 40
-  startMaterial: 0
+  startMaterial: 1
   startLuck: 0
   startMDice: 100
   startData: 50000
@@ -6017,17 +6017,17 @@ MonoBehaviour:
   startMaterialImport: 0
   startDataImport: 0
   factoryUnlocked: 1
-  startWorker: 100
-  startConveyor: 20
+  startWorker: 16
+  startConveyor: 200
   startTools: 20
   startSurplus: 0
   startOverdrive: 0
   startAIWorker: 0
   startMachineLearning: 0
-  transformerUnlocked: 0
-  startCondenser: 0
-  startExtruder: 0
-  technologyUnlocked: 1
+  transformerUnlocked: 1
+  startCondenser: 10
+  startExtruder: 10
+  technologyUnlocked: 0
   startSides: 0
   startAdvantage: 0
   startWeight: 0
@@ -9596,7 +9596,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2619051130183034267, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 179
+      value: -119
       objectReference: {fileID: 0}
     - target: {fileID: 3204341030181159174, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_Pivot.x
@@ -9704,7 +9704,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6666049488332877283, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -194
       objectReference: {fileID: 0}
     - target: {fileID: 8459749387850413404, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_text
@@ -14055,8 +14055,9 @@ MonoBehaviour:
   printLog: 0
   thisInteractionAreaType: 3
   factoryLoader: {fileID: 1550192372}
-  unlockLevels: 00000000050000000a0000000f00000014000000190000001e000000
+  transformer: {fileID: 1951630509}
   timerBase: 10
+  unlockLevels: 00000000050000000a0000000f00000014000000190000001e000000
   workerCostBase: 250
   workerCostMult: 1.03
   workerMax: -1
@@ -14074,18 +14075,18 @@ MonoBehaviour:
   surplusChanceBase: 2
   surplusValueBase: 2
   surplusValueIncrease: 0.15
-  costOverdriveBase: 50
-  costOverdriveMultiplier: 1.8
+  overdriveCostBase: 0
+  overdriveCostMultiplier: 0
   overdriveMax: 15
   overdriveChanceBase: 1
   overdriveChanceIncrease: 0.22
   overdriveValueBase: 5
-  costAIWorkerBase: 100
-  costAIWorkerMultiplier: 1.2
+  AIWorkerCostBase: 0
+  AIWorkerCostMultiplier: 0
   AIWorkerMax: -1
   AIWorkerDiceProduction: 100
-  costSelfLearningBase: 500
-  costSelfLearningMultiplier: 2
+  selfLearningCostBase: 0
+  selfLearningCostMultiplier: 0
   selfLearningMax: -1
 --- !u!1 &1899903177
 GameObject:
@@ -14759,13 +14760,14 @@ MonoBehaviour:
   interactorGO: {fileID: 275615278}
   printLog: 0
   thisInteractionAreaType: 4
-  timeBetweenUpdates: 0
-  condenserCostBase: 0
-  condenserCostMult: 0
-  condenserMax: 0
-  extruderCostBase: 0
-  extruderCostMult: 0
-  extruderMax: 0
+  fragmentsNeededBase: 100
+  unlockLevels: 0a00000064000000
+  condenserCostBase: 114
+  condenserCostMult: 1.1
+  condenserMax: 50
+  extruderCostBase: 386
+  extruderCostMult: 1.1
+  extruderMax: -1
 --- !u!1 &1992266991
 GameObject:
   m_ObjectHideFlags: 0
