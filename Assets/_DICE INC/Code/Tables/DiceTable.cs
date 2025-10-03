@@ -7,7 +7,7 @@ using UnityEngine;
 public class DiceTable : MonoBehaviour
 {
     private int currentSides = 6;
-    private float weightMod = 0.001f;
+    private float weightMod;
     
     public ProbabilityList<int> diceResult;
     public ProbabilityList<int> explosionResult;
@@ -20,6 +20,22 @@ public class DiceTable : MonoBehaviour
         return results.Max();
     }
 
+    public void InitializeDiceTable(int _diceSides, float _weightMod)
+    {
+        currentSides += _diceSides;
+        weightMod = _weightMod;
+
+        //If this is initialized with some weight already purchased, calculate start weight
+        int weightCount = CPU.instance.GetAreaInteractorCount(InteractionAreaType.Technology, 2);
+        if (weightCount > 0)
+        {
+            for (int i = 0; i < weightCount; i++)
+            {
+                AdjustWeight();
+            }
+        }
+    }
+    
     public void AddSide()
     {
         currentSides++;

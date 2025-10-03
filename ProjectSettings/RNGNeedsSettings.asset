@@ -220,7 +220,7 @@ MonoBehaviour:
     SetDepletableValue: 1
   - DrawerID: 0c18c076-adc7-4687-bc70-9cb860a55040
     Created: 638949051244251510
-    Modified: 638949160945718960
+    Modified: 638950927717844220
     DrawerOptionSection: 4
     StripeHeight: 2
     PalettePath: Seasons/Autumn
@@ -284,7 +284,7 @@ MonoBehaviour:
     SetDepletableValue: 1
   - DrawerID: eb2466f5-41d1-48df-91f5-4b5793ce2da5
     Created: 638949154583406150
-    Modified: 638949160946212430
+    Modified: 638950927718324830
     DrawerOptionSection: 0
     StripeHeight: 2
     PalettePath: Default

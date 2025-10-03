@@ -23,10 +23,10 @@ public class Datacenter : InteractionArea
     [SerializeField] private float timeBetweenUpdates;
     [Space]
     
-    [Header("Particle cannon")]
-    [SerializeField] private int particleCannonCostBase;
-    [SerializeField] private float particleCannonCostMult;
-    [SerializeField] private int particleCannonMax;
+    [Header("Generator")]
+    [SerializeField] private int generatorCostBase;
+    [SerializeField] private float generatorCostMult;
+    [SerializeField] private int generatorMax;
  
     
     [Header("Affinity")]
@@ -57,7 +57,7 @@ public class Datacenter : InteractionArea
     {
         List<int> costs = new List<int>();
         
-        costs.Add(particleCannonCostBase);
+        costs.Add(generatorCostBase);
         costs.Add(affinityCostBase);
         costs.Add(throughputCostBase);
         
@@ -68,7 +68,7 @@ public class Datacenter : InteractionArea
     {
         List<float> costs = new List<float>();
         
-        costs.Add(particleCannonCostMult);
+        costs.Add(generatorCostMult);
         costs.Add(affinityCostMult);
         costs.Add(throughputCostMult);
         
@@ -79,7 +79,7 @@ public class Datacenter : InteractionArea
     {
         List<int> max = new List<int>();
         
-        max.Add(particleCannonMax);
+        max.Add(generatorMax);
         max.Add(affinityMax);
         max.Add(throughputMax);
         
@@ -131,12 +131,12 @@ public class Datacenter : InteractionArea
     {
         TooltipData data = new TooltipData();
         
-        data.areaTitle = "Data center";
+        data.areaTitle = thisInteractionAreaType.ToString();
         data.areaDescription = "The data center,";
                              
 
-        //Value 1TT
-        string value1Tooltip = $"<br><br><b>PARTICLE CANNON:</b> Increases the number of particles shot per shoot, increasing the number of traveling particles.";
+        //Generator
+        string value1Tooltip = $"<br><br><b>GENERATOR:</b> Increases the number of particles shot per shoot, increasing the number of traveling particles.";
         
         
         //Value 2 TT

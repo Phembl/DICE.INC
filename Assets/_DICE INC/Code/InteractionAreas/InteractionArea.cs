@@ -22,6 +22,7 @@ public abstract class InteractionArea : MonoBehaviour
     [SerializeField] protected bool printLog;
     
     protected bool areaUnlocked;
+    [ShowInInspector, ReadOnly] protected int level;
    
     private List<int> costBase = new List<int>();
     private List<float> costMult = new List<float>();
@@ -57,7 +58,7 @@ public abstract class InteractionArea : MonoBehaviour
             }
         }
         
-        InitSubClass();
+        //InitSubClass();
 
         costBase = GetCostsBase();
         costCurrent = costBase.Select(i => (double)i).ToList(); //Converts Base Cost List to current Cost List
@@ -84,6 +85,8 @@ public abstract class InteractionArea : MonoBehaviour
             //This writes the initial count values of the InteractionAreas Interactors into the CPU
             CPU.instance.InitInteractorCountList(interactionAreaType, startValues[i]);
         }
+        
+        InitSubClass();
 
         for (int i = 0; i < startValues.Count; i++)
         {
@@ -133,10 +136,10 @@ public abstract class InteractionArea : MonoBehaviour
         areaUnlocked = true;
         
         CPU.instance.SetAreaUnlockState(interactionAreaType);
-        UnlockInteractor(0);
         canvasGroup.DOFade(1, 0.5f);
 
         OnAreaUnlock();
+        CheckProgress();
     }
 
     protected virtual void OnAreaUnlock()
@@ -206,14 +209,33 @@ public abstract class InteractionArea : MonoBehaviour
 
     
     //This is called from the Import child class with the current DiceManager cost
-    protected void ShopCostUpdateDice(int newCost)
+    protected void ImportCostUpdate(Resource resource, int newCost)
     {
         if (interactionAreaType != InteractionAreaType.Import) return;
+
+        int resourceIndex = -1;
         
-        //DiceManager
-        costBase[0] = newCost;
-        areaInteractors[0].UpdatePrice((double)costBase[0]);
-        costCurrent[0] = (double)costBase[0];
+        switch (resource)
+        {
+            case Resource.Dice:
+                resourceIndex = 0;
+                break;
+            
+            case Resource.Material:
+                resourceIndex = 1;
+                break;
+            
+            case Resource.Data:
+                resourceIndex = 2;
+                break;
+        }
+        
+        costBase[resourceIndex] = newCost;
+        areaInteractors[resourceIndex].UpdatePrice((double)costBase[resourceIndex]);
+        costCurrent[resourceIndex] = (double)costBase[resourceIndex];
+        
+        //Dice
+      
     }
     #endregion
     

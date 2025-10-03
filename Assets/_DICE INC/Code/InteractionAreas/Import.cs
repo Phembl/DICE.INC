@@ -83,55 +83,57 @@ public class Import : InteractionArea
         
         switch (index)
         {
-            case 0: //Buy DiceManager
+            case 0: //Buy Dice
                 CPU.instance.PurchaseResource(Resource.Dice);
-                ProgressManager.instance.CheckResourceProgress(Resource.Dice);
+                ProgressManager.instance.GetResourceCost(Resource.Dice);
                 break;
             
             case 1: //Buy Material
                 CPU.instance.PurchaseResource(Resource.Material);
-                ProgressManager.instance.CheckResourceProgress(Resource.Material);
+                ProgressManager.instance.GetResourceCost(Resource.Material);
                 break;
             
             case 2: //Buy Data
                 CPU.instance.PurchaseResource(Resource.Data);
-                ProgressManager.instance.CheckResourceProgress(Resource.Data);
+                ProgressManager.instance.GetResourceCost(Resource.Data);
                 break;
             
         }
     }
 
+  
     protected override void CheckProgress()
     {
-        double totalDicePurchased = 
-            CPU.instance.GetAreaInteractorCount(InteractionAreaType.Import, 0) + CPU.instance.GetAreaInteractorCount(InteractionAreaType.Import, 1) * 100;
-        
-        if (totalDicePurchased >= diceCostIncrease1 && diceCostLevel == 1)
-                    
-        {
-            diceCostLevel = 2;
-            ShopCostUpdateDice(diceCostLevel);
-        }
+        /*
+      double totalDicePurchased =
+          CPU.instance.GetAreaInteractorCount(InteractionAreaType.Import, 0) + CPU.instance.GetAreaInteractorCount(InteractionAreaType.Import, 1) * 100;
 
-        else if (totalDicePurchased >= diceCostIncrease2 && diceCostLevel == 2)
-        {
-            diceCostLevel = 3;
-            ShopCostUpdateDice(diceCostLevel);
-        }
+      if (totalDicePurchased >= diceCostIncrease1 && diceCostLevel == 1)
 
-        else if (totalDicePurchased >= diceCostIncrease3 && diceCostLevel == 3)
-        {
-            diceCostLevel = 4;
-            ShopCostUpdateDice(diceCostLevel);
-        }
-        
-        else if (totalDicePurchased >= diceCostIncrease4 && diceCostLevel == 4)
-        {
-            diceCostLevel = 5;
-            ShopCostUpdateDice(diceCostLevel);
-        }
-        
-    }
+      {
+          diceCostLevel = 2;
+          ImportCostUpdate(diceCostLevel);
+      }
+
+      else if (totalDicePurchased >= diceCostIncrease2 && diceCostLevel == 2)
+      {
+          diceCostLevel = 3;
+          ImportCostUpdate(diceCostLevel);
+      }
+
+      else if (totalDicePurchased >= diceCostIncrease3 && diceCostLevel == 3)
+      {
+          diceCostLevel = 4;
+          ImportCostUpdate(diceCostLevel);
+      }
+
+      else if (totalDicePurchased >= diceCostIncrease4 && diceCostLevel == 4)
+      {
+          diceCostLevel = 5;
+          ImportCostUpdate(diceCostLevel);
+      }
+*/
+  }
 
   
 

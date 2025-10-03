@@ -27,6 +27,8 @@ public class Technology : InteractionArea
     [SerializeField] private double rollsGoalBase;
     [SerializeField] private double rollsGoalMult;
     [ShowInInspector, ReadOnly] private double rollsGoalCurrent;
+    [Space] 
+    [SerializeField] private int[] unlockLevels; 
     
     [Header("Sides")]
     [SerializeField] private int sidesCostBase;
@@ -47,6 +49,7 @@ public class Technology : InteractionArea
     [SerializeField] private float weightCostMult;
     [SerializeField] private int weightMax;
     [Space]
+    [SerializeField] private float weightMod;
     [ShowInInspector, ReadOnly] private int weightCurrent;
     
     [Header("Explosive")]
@@ -55,12 +58,10 @@ public class Technology : InteractionArea
     [SerializeField] private int explosiveMax;
     [Space]
     [ShowInInspector, ReadOnly] private int explosiveCurrent;
-    
-    [Header("Progress")] 
-    [SerializeField] private int levelToUnlockAdvantage;
-    [SerializeField] private int levelToUnlockWeight;
-    [SerializeField] private int levelToUnlockExplosive;
-    
+
+    //Display Update
+    private Coroutine displayMovement;
+    private bool isUpgrading;
     
     public static Technology instance;
     private void Awake()
@@ -69,7 +70,7 @@ public class Technology : InteractionArea
     }
 
     
-  #region |-------------- INIT --------------|
+    #region |-------------- INIT --------------|
 
     protected override void InitSubClass()
     {
@@ -77,7 +78,9 @@ public class Technology : InteractionArea
         rollsGoalCurrent = rollsGoalBase;
         rollCounter.text = $"{rollsCurrent:N0}/{rollsGoalCurrent:N0}";
         
-        technologyDisplay.transform.DOLocalMoveY(-470, 0);
+        technologyDisplay.transform.DOLocalMoveY(-579, 0);
+        
+        diceTable.InitializeDiceTable(CPU.instance.GetAreaInteractorCount(InteractionAreaType.Technology, 0), weightMod);
     }
     
     protected override List<int> GetCostsBase()
@@ -119,7 +122,6 @@ public class Technology : InteractionArea
    
     #endregion
     
-    
     #region |-------------- INDIVIDUAL FUNCTIONS --------------|
     
     
@@ -155,54 +157,73 @@ public class Technology : InteractionArea
     //Run by DiceManager when dice are rolled
     public void UpdateRollCounter(int lastRolls)
     {
-        if (!areaUnlocked) return;
+        if (!areaUnlocked || isUpgrading) return;
         
         rollsCurrent += lastRolls;
         
+        //Make sure that rolls do not overflow
         if (rollsCurrent >= rollsGoalCurrent)
         {
-            //Account for overflow
-            rollsCurrent -= rollsGoalCurrent;
-            technologyLevel++;
-            
-            rollsGoalCurrent = Math.Round(rollsGoalBase * Math.Pow(rollsGoalMult, technologyLevel));
-
-            CPU.instance.ChangeResource(Resource.mDice, 1);
-            
-            CheckProgress();
+            isUpgrading = true;
+            rollsCurrent = rollsGoalCurrent;
         }
-      
-        if (rollsCurrent > 0) technologyDisplay.transform.DOLocalMoveY(GetDisplayY(), 0.2f);
-        else technologyDisplay.transform.DOLocalMoveY(-470, 0.5f);
         
+        //Move Display
         rollCounter.text = $"{rollsCurrent:N0}/{rollsGoalCurrent:N0}";
+        if (displayMovement != null) StopCoroutine(displayMovement);
+        StartCoroutine(DisplayMovement());
+        
+    }
 
+    IEnumerator DisplayMovement()
+    {
+        technologyDisplay.transform.DOLocalMoveY(GetDisplayY(), 0.25f).SetEase(Ease.InQuad);
+        yield return new WaitForSeconds(0.25f);
+        
+        if (isUpgrading)
+        {
+            yield return new WaitForSeconds(0.25f);
+            //Reset display
+            rollCounter.text = $"Goal reached.";
+            yield return new WaitForSeconds(0.25f);
+            technologyDisplay.transform.DOLocalMoveY(-579, 2f).SetEase(Ease.OutQuad);
+            yield return new WaitForSeconds(2.2f);
+            
+            //Add Resources
+            CPU.instance.ChangeResource(Resource.mDice, 1);
+            level++;
+            CheckProgress();
+            
+            //New rolls Goal
+            rollsGoalCurrent = Math.Round(rollsGoalBase * Math.Pow(rollsGoalMult, level));
+            rollsCurrent = 0;
+            
+            rollCounter.text = $"{rollsCurrent:N0}/{rollsGoalCurrent:N0}";
+            
+            isUpgrading = false;
+        }
     }
 
     float GetDisplayY()
     {
         float t = Mathf.InverseLerp(0f, (float)rollsGoalCurrent, (float)rollsCurrent);
-        float nextDisplayY = Mathf.Lerp(-470f, 0f, t);
+        float nextDisplayY = Mathf.Lerp(-579f, 0f, t);
         
         return nextDisplayY;
     }
     
     protected override void CheckProgress()
     {
-        if (technologyLevel >= levelToUnlockAdvantage && 
-            !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Technology, 1)) 
-            UnlockInteractor(1);
-        
-        if (technologyLevel >= levelToUnlockWeight && 
-            !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Technology, 2)) 
-            UnlockInteractor(2);
-        
-        if (technologyLevel >= levelToUnlockExplosive && 
-            !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Technology, 3)) 
-            UnlockInteractor(3);
+        //Unlock Interactors based on level
+        for (int i = 0; i < unlockLevels.Length; i++)
+        {
+            if (level >= unlockLevels[i] &&
+                !CPU.instance.GetInteractorUnlockState(thisInteractionAreaType, i))
+            {
+                UnlockInteractor(i);
+            }
+        }
     }
-    
-    
     
     #endregion
     
@@ -212,34 +233,38 @@ public class Technology : InteractionArea
     {
         TooltipData data = new TooltipData();
         
-        data.areaTitle = "Technology";
-        data.areaDescription = "In the diceworld, the";
+        data.areaTitle = data.areaTitle = thisInteractionAreaType.ToString();
+        data.areaDescription = $"Technology is used to improve dice performance. To do that, dice rolls are evaluated to generate mega-dice(mDice) which can be used to increase different dice-aspects." +
+                               $"<br><br>Rolls needed to generate the next mDice: <b>{rollsGoalCurrent - rollsCurrent}</b>." +
+                               $"<br><br><b>WARNING: Overflowing rolls can not be taken into consideration as roll data needs to be evaluated first!</b>";
 
         //Extra Sides TT
-        string extrasidesTooltip = "<br><br><b>EXTRA SIDES:</b>";
+        string extrasidesTooltip = "";
+        if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Technology, 0))
+        {
+            extrasidesTooltip = $"<br><br><b>SIDES</b>: Adds a side to each dice. Currently all dice have <b>{sidesCurrent + 6}</b> sides.";
+        }
         
         //Advantage TT
-        string advantageTooltip = $"<br><br>??? (Level to unlock: {levelToUnlockAdvantage})";
+        string advantageTooltip = $"";
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Technology, 1))
         {
-            
-            advantageTooltip = $"<br><br><b>ADVANTAGE:</b> Each point.</b>";
+            advantageTooltip = $"<br><br><b>ADVANTAGE:</b> Adds an extra dice to every roll. The highest result will be used. Currently <b>{advantageCurrent}</b> extra dice are rolled.";
         }
         
         //High Roller TT
-        string highrollerTooltip = $"<br><br>??? (Level to unlock: {levelToUnlockWeight})";
+        string highrollerTooltip = $"";
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Technology, 2))
         {
             
-            highrollerTooltip = $"<br><br><b>WEIGHT:</b> Each point.</b>";
+            highrollerTooltip = $"<br><br><b>WEIGHT:</b> Weights each dice towards higher results by <b>{weightMod * 100}%</b>.</b>";
         }
         
         //Explosive TT
-        string explosiveTooltip = $"<br><br>??? (Level to unlock: {levelToUnlockExplosive})";
+        string explosiveTooltip = $"";
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Technology, 3))
         {
-            
-            explosiveTooltip = $"<br><br><b>EXPLOSIVE:</b> Each point.</b>";
+            explosiveTooltip = $"<br><br><b>EXPLOSIVE:</b> Introduces a chance that a dice explodes when rolled, generating <b>2-6</b> extra dice. Current explosion chance per roll: <b>{explosiveCurrent * 100}%</b></b>";
         }
         
         

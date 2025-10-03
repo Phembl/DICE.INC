@@ -106,8 +106,9 @@ public class Transformer : InteractionArea
     
     protected override void CheckProgress()
     {
-        
-        
+        level =
+            CPU.instance.GetAreaInteractorCount(thisInteractionAreaType, 0) +
+            CPU.instance.GetAreaInteractorCount(thisInteractionAreaType, 1);
         
     }
     

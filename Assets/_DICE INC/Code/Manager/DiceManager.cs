@@ -43,50 +43,7 @@ public class DiceManager : MonoBehaviour
      if (printLog) Debug.Log($"Rolling {diceToRoll} dice");
      if (printLog) Debug.Log($"Every dice has {diceSides} sides and is rolled {advantageValue} times.");
      if (printLog) Debug.Log($"Chance for dice to explode: {explosionChance}%");
-     /*
-         List<int> diceResultsNew =  new List<int>();
-
-         for (int i = 0; i < diceToRoll; i++)
-         {
-            //Rolling every DiceManager Advantage-times
-            //Creating another int that stores all advantage rolls, then picking the highest
-            int[] advantageDiceResults = new int[advantageValue];
-
-            for (int advantageRoll = 0; advantageRoll < advantageValue; advantageRoll++)
-            {
-               //Here are the actual diceRolls
-               advantageDiceResults[advantageRoll] = Random.Range(diceLowerLimit, diceUpperLimit);
-            }
-
-            //Gets the highest result from Advantage rolls
-            int currentResult = advantageDiceResults.Max();
-            diceResultsNew.Add(currentResult);
-
-            //If Luck is unlocked and the dice result is >= 6: Add Luck
-            if (CPU.instance.GetLuckUnlockState() && currentResult >= 6)
-            {
-               CPU.instance.ChangeResource(Resource.Luck, 1);
-            }
-
-            diceRolled++;
-
-           //Roll for explosion (will always be false if explosion is not unlocked)
-            if (Utility.Roll(explosionChance))
-            {
-               int explosionGeneratedDice = Random.Range(1, 7);
-
-               //These are only for tracking
-               explosionCount++;
-               explosionVolume += explosionGeneratedDice;
-
-               diceToRoll += explosionGeneratedDice;
-            }
-
-
-
-         }
-
-           */
+     
       
       List<int> diceResultsNew =  new List<int>();
       

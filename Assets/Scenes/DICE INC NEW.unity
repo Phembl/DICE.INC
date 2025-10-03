@@ -1325,8 +1325,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4225958089476428264, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: interactorName
-      value: Particle Cannon
+      value: generator
       objectReference: {fileID: 0}
+    - target: {fileID: 4225958089476428264, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: interactionArea
+      value: 
+      objectReference: {fileID: 272257916}
     - target: {fileID: 4696456407366371276, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1409,11 +1413,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6592539899629421267, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_text
-      value: Particle cannon
+      value: generator
       objectReference: {fileID: 0}
     - target: {fileID: 7735209683383580948, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Name
-      value: Interactor_Datacenter_ParticleCannon#
+      value: Interactor_Datacenter_Generator
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1950,7 +1954,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -510}
+  m_AnchoredPosition: {x: 0, y: -579}
   m_SizeDelta: {x: 476, y: 579}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &214842687
@@ -2214,9 +2218,9 @@ MonoBehaviour:
   printLog: 0
   thisInteractionAreaType: 7
   timeBetweenUpdates: 0
-  particleCannonCostBase: 0
-  particleCannonCostMult: 0
-  particleCannonMax: 0
+  generatorCostBase: 0
+  generatorCostMult: 0
+  generatorMax: 0
   affinityCostBase: 0
   affinityCostMult: 0
   affinityMax: 0
@@ -6003,7 +6007,7 @@ MonoBehaviour:
   startDiceRollTotal: 0
   startResearchProgress: 0
   startPips: 5000
-  startDice: 1
+  startDice: 40
   startMaterial: 0
   startLuck: 0
   startMDice: 100
@@ -6013,12 +6017,12 @@ MonoBehaviour:
   startMaterialImport: 0
   startDataImport: 0
   factoryUnlocked: 1
-  startWorker: 5
-  startConveyor: 0
-  startTools: 0
+  startWorker: 100
+  startConveyor: 20
+  startTools: 20
   startSurplus: 0
   startOverdrive: 0
-  startAIWorker: 1
+  startAIWorker: 0
   startMachineLearning: 0
   transformerUnlocked: 0
   startCondenser: 0
@@ -6032,7 +6036,7 @@ MonoBehaviour:
   startGrowthStock: 0
   startMarketCap: 0
   datacenterUnlocked: 0
-  startParticleCannons: 0
+  startGenerator: 0
   startAffinity: 0
   startThroughput: 0
 --- !u!114 &625926000
@@ -6398,6 +6402,7 @@ MonoBehaviour:
   diceTable: {fileID: 1125702135}
   rollsGoalBase: 50
   rollsGoalMult: 3.8
+  unlockLevels: 01000000020000000300000004000000
   sidesCostBase: 1
   sidesCostMult: 1
   sidesMax: 10
@@ -6407,12 +6412,10 @@ MonoBehaviour:
   weightCostBase: 1
   weightCostMult: 1
   weightMax: 10
+  weightMod: 0.001
   explosiveCostBase: 1
   explosiveCostMult: 1
   explosiveMax: 10
-  levelToUnlockAdvantage: 0
-  levelToUnlockWeight: 0
-  levelToUnlockExplosive: 0
 --- !u!4 &690977111
 Transform:
   m_ObjectHideFlags: 0
@@ -10810,7 +10813,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1237623829819733475, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 400
+      value: 800
       objectReference: {fileID: 0}
     - target: {fileID: 1237623829819733475, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -10925,8 +10928,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6666049488332877283, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 1600
+      objectReference: {fileID: 0}
+    - target: {fileID: 6666049488332877283, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 1074.89
+      value: 694.73
+      objectReference: {fileID: 0}
+    - target: {fileID: 6666049488332877283, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 405
       objectReference: {fileID: 0}
     - target: {fileID: 6666049488332877283, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -10957,16 +10968,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9211635885494710670, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 1494.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 9211635885494710670, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 950.41
+      value: 570.25
       objectReference: {fileID: 0}
     - target: {fileID: 9211635885494710670, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 400
+      value: 800
       objectReference: {fileID: 0}
     - target: {fileID: 9211635885494710670, guid: f1e690e1d94e44342a115a2cdbc6fa68, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -579.68506
+      value: -389.605
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10999,6 +11014,10 @@ PrefabInstance:
       propertyPath: interactorName
       value: throughput
       objectReference: {fileID: 0}
+    - target: {fileID: 4225958089476428264, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: interactionArea
+      value: 
+      objectReference: {fileID: 272257916}
     - target: {fileID: 4696456407366371276, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -11210,6 +11229,10 @@ PrefabInstance:
       propertyPath: interactorName
       value: Affinity
       objectReference: {fileID: 0}
+    - target: {fileID: 4225958089476428264, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
+      propertyPath: interactionArea
+      value: 
+      objectReference: {fileID: 272257916}
     - target: {fileID: 4696456407366371276, guid: bce75f431ea664ec78f9b98e0ddef2d5, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -13620,6 +13643,7 @@ MonoBehaviour:
   diceCostIncrease2: 3000
   diceCostIncrease3: 10000
   diceCostIncrease4: 30000
+  diceCostIncrease: 
   materialCostIncrease1: 100
   materialCostIncrease2: 500
   materialCostIncrease3: 1200
@@ -14028,9 +14052,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactorHolder: {fileID: 682457047}
   interactorGO: {fileID: 650753632}
-  printLog: 1
+  printLog: 0
   thisInteractionAreaType: 3
   factoryLoader: {fileID: 1550192372}
+  unlockLevels: 00000000050000000a0000000f00000014000000190000001e000000
   timerBase: 10
   workerCostBase: 250
   workerCostMult: 1.03
@@ -14043,20 +14068,18 @@ MonoBehaviour:
   toolsCostMult: 1.03
   toolsMax: -1
   efficiencyIncrease: 0.22
-  surplusCostBase: 0
-  surplusCostMult: 0
-  surplusMax: 0
-  surplusChanceBase: 0
-  surplusChanceIncrease: 0
-  surplusValueBase: 0
-  surplusValueIncrease: 0
+  surplusCostBase: 15
+  surplusCostMult: 1.1
+  surplusMax: -1
+  surplusChanceBase: 2
+  surplusValueBase: 2
+  surplusValueIncrease: 0.15
   costOverdriveBase: 50
-  costOverdriveMultiplier: 1.9
+  costOverdriveMultiplier: 1.8
   overdriveMax: 15
-  overdriveChanceBase: 5
-  overdriveChanceIncrease: 0.15
-  overdriveValueBase: 3
-  overdriveValueIncrease: 0.2
+  overdriveChanceBase: 1
+  overdriveChanceIncrease: 0.22
+  overdriveValueBase: 5
   costAIWorkerBase: 100
   costAIWorkerMultiplier: 1.2
   AIWorkerMax: -1

@@ -14,25 +14,35 @@ public class ProgressManager : MonoBehaviour
     [SerializeField] private InteractionArea stockmarket;
     [SerializeField] private InteractionArea datacenter;
     
+    #region |-------------- PROGRESS SETTINGS --------------|
+    //Resources
     [SerializeField, FoldoutGroup("Resources"), Header("Dice")] private int diceCostIncrease1;
     [SerializeField, FoldoutGroup("Resources")] private int diceCostIncrease2;
     [SerializeField, FoldoutGroup("Resources")] private int diceCostIncrease3;
     [SerializeField, FoldoutGroup("Resources")] private int diceCostIncrease4;
+    [SerializeField, FoldoutGroup("Resources")] private int[] diceCostIncrease;
+    
     [SerializeField, FoldoutGroup("Resources"), Header("Material")] private int materialCostIncrease1;
     [SerializeField, FoldoutGroup("Resources")] private int materialCostIncrease2;
     [SerializeField, FoldoutGroup("Resources")] private int materialCostIncrease3;
     [SerializeField, FoldoutGroup("Resources")] private int materialCostIncrease4;
+    
     [SerializeField, FoldoutGroup("Resources"), Header("Data")] private int dataCostIncrease1;
     [SerializeField, FoldoutGroup("Resources")] private int dataCostIncrease2;
     [SerializeField, FoldoutGroup("Resources")] private int dataCostIncrease3;
     [SerializeField, FoldoutGroup("Resources")] private int dataCostIncrease4;
     
+    
+    //Factory
     [SerializeField, FoldoutGroup("Factory")] private int unlockConveyorLvl;
     [SerializeField, FoldoutGroup("Factory")] private int unlockToolsLvl;
     [SerializeField, FoldoutGroup("Factory")] private int unlockSurplusLvl;
     [SerializeField, FoldoutGroup("Factory")] private int unlockOverdriveLvl;
     [SerializeField, FoldoutGroup("Factory")] private int unlockAIWorkersLvl;
     [SerializeField, FoldoutGroup("Factory")] private int unlockMachineLearningLvl;
+    private int factoryLevel;
+    
+    #endregion
     
     public static ProgressManager instance;
     private void Awake()
@@ -72,40 +82,18 @@ public class ProgressManager : MonoBehaviour
     }
     #endregion
     
-    #region |-------------- AREA PROGRESS --------------|
-    public void AreaProgress(InteractionAreaType area, int level)
-    {
-        if (printLog) Debug.Log($"Checking Progress for {area.ToString()} with level {level}.");
-        
-        switch (area)
-        {
-            case InteractionAreaType.Factory:
-                if (level >= unlockConveyorLvl && !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 1)) 
-                    factory.UnlockInteractor(1);
-                if (level >= unlockToolsLvl && !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 2)) 
-                    factory.UnlockInteractor(2);
-                if (level >= unlockSurplusLvl && !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 3)) 
-                    factory.UnlockInteractor(3);
-                if (level >= unlockOverdriveLvl && !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 4)) 
-                    factory.UnlockInteractor(4);
-                if (level >= unlockAIWorkersLvl && !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 5))
-                    factory.UnlockInteractor(5);
-                if (level >= unlockMachineLearningLvl && !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 6))
-                    factory.UnlockInteractor(6);
-                break;
-        }
-    }
-    
-    #endregion
+   
     
     #region |-------------- RESOURCE COST PROGRESS --------------|
 
-    public void CheckResourceProgress(Resource resource)
+    public int GetResourceCost(Resource resource)
     {
+        int cost = -1;
+        
         switch (resource)
         {
             case Resource.Dice:
-                CheckDiceProgress();
+                //cost = CheckDiceCost();
                 break;
             
             case Resource.Material:
@@ -114,13 +102,18 @@ public class ProgressManager : MonoBehaviour
             case Resource.Data:
                 break;
         }
+        
+        return cost;
     }
 
-    private void CheckDiceProgress()
+    /*
+    private int CheckDiceCost()
     {
         double purchasedDice = CPU.instance.GetDicePurchased();
+        
+        if (purchasedDice < diceCostIncrease1) 
     }
-    
+    */
     
     
     #endregion

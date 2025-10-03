@@ -83,7 +83,7 @@ public class GameManager : MonoBehaviour
     
     //DataCenter
     [SerializeField, FoldoutGroup("Datacenter")] private bool datacenterUnlocked;
-    [SerializeField, FoldoutGroup("Datacenter")] private int startParticleCannons;
+    [SerializeField, FoldoutGroup("Datacenter")] private int startGenerator;
     [SerializeField, FoldoutGroup("Datacenter")] private int startAffinity;
     [SerializeField, FoldoutGroup("Datacenter")] private int startThroughput;
     
@@ -152,7 +152,7 @@ public class GameManager : MonoBehaviour
         //Init Datacenter
         Debug.Log("|----- START INIT: Data Center -----|");
         List <int> datacenterStartSettings  = new List<int>();
-        datacenterStartSettings.Add(startParticleCannons);
+        datacenterStartSettings.Add(startGenerator);
         datacenterStartSettings.Add(startAffinity); 
         datacenterStartSettings.Add(startThroughput);
         datacenter.InitializeInteractionArea(datacenterUnlocked, datacenterStartSettings);
