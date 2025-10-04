@@ -17,7 +17,7 @@ public class Transformer : InteractionArea
     [TitleGroup("References")] 
     [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Transformer;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
-    
+    [SerializeField] private TMP_Text counterTMP;
     
     [TitleGroup("Transformer")] 
     [ShowInInspector, ReadOnly] private int destroyedDice;
@@ -137,7 +137,7 @@ public class Transformer : InteractionArea
         
         destroyedDice += dice;
 
-        //For each Dice roll fragments
+        //For each Dice, roll fragments
         for (int i = 0; i < dice; i++)
         {
             int fragmentsProduced = Random.Range(fragmentsMin, fragmentsMax);
@@ -146,6 +146,7 @@ public class Transformer : InteractionArea
         
         if (printLog) Debug.Log($"Transformer: Current fragments are {currentFragments}.");
 
+        //Check for enough fragments
         if (currentFragments >= fragmentsNeededCurrent)
         {
             if (printLog) Debug.Log($"Transformer: Fragments reached {fragmentsNeededCurrent}. Now producing {materialProduced} material.");
@@ -161,6 +162,8 @@ public class Transformer : InteractionArea
             level++;
             CheckProgress();
         }
+        
+        counterTMP.text = $"{currentFragments}/<br>{fragmentsNeededCurrent}";
         
     }
     
