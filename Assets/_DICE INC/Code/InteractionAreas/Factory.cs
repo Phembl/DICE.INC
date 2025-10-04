@@ -24,8 +24,12 @@ public class Factory : InteractionArea
 
     [TitleGroup("Factory")] 
     [SerializeField] private float timerBase;
+    [SerializeField] private float efficiencyBase;
     [ShowInInspector, ReadOnly] private float timerCurrent;
-    [ShowInInspector, ReadOnly] private float productionCurrent;
+    [ShowInInspector, ReadOnly] private int productionCurrent => (int)((workerCurrent + (AIWorkerCurrent * AIWorkerDiceProduction)) * efficiencyCurrent);
+    [ShowInInspector, ReadOnly] private float efficiencyCurrent;
+    [ShowInInspector, ReadOnly] private float productionSpeedCurrent;
+    
     [Space] 
     [SerializeField] private int[] unlockLevels; 
     
@@ -35,25 +39,27 @@ public class Factory : InteractionArea
     [SerializeField] private int workerMax;
     [Space]
     [ShowInInspector, ReadOnly] private int workerCurrent;
+
     
     [Header("Conveyor")]
     [SerializeField] private int conveyorCostBase;
     [SerializeField] private float conveyorCostMult;
     [SerializeField] private int conveyorMax;
+    [SerializeField] private float conveyorSpeedIncrease;
     [Space]
     [ShowInInspector, ReadOnly] private int conveyorCurrent;
-    [SerializeField] private float productionSpeedIncrease;
-    [ShowInInspector, ReadOnly] private float productionSpeedCurrent;
+
     
     [Header("Tools")]
     [SerializeField] private int toolsCostBase;
     [SerializeField] private float toolsCostMult;
     [SerializeField] private int toolsMax;
+    [SerializeField] private float toolsEfficiencyIncrease;
     [Space]
     [ShowInInspector, ReadOnly] private int toolsCurrent;
-    [SerializeField] private float efficiencyIncrease;
-    private float efficiencyBase = 1f;
-    [ShowInInspector, ReadOnly] private float efficiencyCurrent = 1f;
+    
+    
+
     
     [Header("Surplus")]
     [SerializeField] private int surplusCostBase;
@@ -88,12 +94,12 @@ public class Factory : InteractionArea
     [SerializeField] private int AIWorkerDiceProduction;
     [Space]
     [ShowInInspector, ReadOnly] private int AIWorkerCurrent;
-   
     
     [Header("Self Learning")]
     [SerializeField] private int selfLearningCostBase;
     [SerializeField] private float selfLearningCostMultiplier;
     [SerializeField] private int selfLearningMax;
+    [SerializeField] private float selfLearningEfficiencyIncrease;
     [Space]
     [ShowInInspector, ReadOnly] private int selfLearningCurrent;
 
@@ -191,7 +197,7 @@ public class Factory : InteractionArea
             
             case 1: //Conveyor
                 conveyorCurrent = count;
-                productionSpeedCurrent = productionSpeedIncrease * count;
+                productionSpeedCurrent = conveyorSpeedIncrease * count;
                 timerCurrent = timerBase - productionSpeedCurrent;
                 timerCurrent = (float)Math.Round(timerCurrent, 2);
                 if (printLog) Debug.Log($"Factory: Conveyor added. Current production speed:{productionSpeedCurrent}. Current production time:{timerCurrent}");
@@ -199,7 +205,7 @@ public class Factory : InteractionArea
             
             case 2: //Tools
                 toolsCurrent = count;
-                efficiencyCurrent = efficiencyBase + (efficiencyIncrease * count);
+                efficiencyCurrent = efficiencyBase + (toolsEfficiencyIncrease * count);
                 if (printLog) Debug.Log($"Factory: Tools added: Current efficiency value:{efficiencyCurrent}");
                 break;
             
@@ -227,6 +233,10 @@ public class Factory : InteractionArea
                 break;
             
             case 6: // Self Learning
+                selfLearningCurrent = count;
+                
+                
+                if (printLog) Debug.Log($"Factory: Self learning updated: Current self learning:{selfLearningCurrent}");
                 break;
             
         }
@@ -237,8 +247,6 @@ public class Factory : InteractionArea
     
     protected override void CheckProgress()
     {
-        productionCurrent = (workerCurrent + (AIWorkerCurrent * AIWorkerDiceProduction)) * efficiencyCurrent;
-        
         level =
             CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory, 0) +
             CPU.instance.GetAreaInteractorCount(InteractionAreaType.Factory, 1) +
@@ -261,6 +269,7 @@ public class Factory : InteractionArea
       
     }
     
+    
     private IEnumerator WorkShopCycle()
     {
         workshopCycleActive = true;
@@ -269,21 +278,22 @@ public class Factory : InteractionArea
             float nextProductionTimer = timerCurrent;
             
             if (printLog) Debug.Log("|--------------FACTORY PRODUCTION --------------|");
-            if (printLog) Debug.Log($"Production started. Baseline: {productionCurrent} dice will be produced.");
-            if (printLog) Debug.Log($"Surplus Chance: {surplusChanceCurrent}.");
-            if (printLog) Debug.Log($"Overdrive Chance: {overdriveChanceCurrent}.");
+            if (printLog) Debug.Log($"Production started. Worker will produce: <b>{workerCurrent}</b> dice, AI Worker will produce: <b>{AIWorkerCurrent * AIWorkerDiceProduction}</b> dice.");
+            if (printLog) Debug.Log($"Efficiency is: <b>{efficiencyCurrent * 100}</b>%, baseline production will be: <b>{productionCurrent}</b> dice.");
+            if (printLog) Debug.Log($"Surplus Chance: <b>{surplusChanceCurrent * 100}</b>%");
+            if (printLog) Debug.Log($"Overdrive Chance: <b>{overdriveChanceCurrent * 100}</b>%");
 
             
             //Roll for Overdrive
             if (Utility.Roll(overdriveChanceCurrent))
             {
                 nextProductionTimer /= overdriveValueCurrent;
-                if (printLog) Debug.Log($"Overdrive Production: current production cycle time is {nextProductionTimer}");
+                if (printLog) Debug.Log($"Overdrive Production: current production cycle time is <b>{nextProductionTimer}</b>.");
             }
             
             else
             {
-                if (printLog) Debug.Log($"Current production cycle time is {nextProductionTimer}");
+                if (printLog) Debug.Log($"Current production cycle time is <b>{nextProductionTimer}</b>.");
             }
             
             //Loading Screen (This is the actual Wait Time for production)
@@ -301,7 +311,11 @@ public class Factory : InteractionArea
             if (Utility.Roll(surplusChanceCurrent))
             {
                 diceCreated = (int)(diceCreated * surplusValueCurrent);
-                if (printLog) Debug.Log($"Surplus Production: {diceCreated} have been produced");
+                if (printLog) Debug.Log($"Surplus Production: <b>{diceCreated}</b> dice have been produced");
+            }
+            else
+            {
+                if (printLog) Debug.Log($"Factory: <b>{diceCreated}</b> dice have been produced");
             }
                
             //Check for Transformer interaction
@@ -317,10 +331,18 @@ public class Factory : InteractionArea
                 
                 if (diceToTransform > 0) transformer.TriggerTransformer(diceToTransform);
                 
-                if (printLog) Debug.Log($"Factory: Transformer receives: {diceToTransform} dice to transform. Dice until Transformer now: {diceUntilTransformer}");
+                if (printLog) Debug.Log($"Factory: Transformer receives: <b>{diceToTransform}</b> dice to transform. Dice until Transformer now: {diceUntilTransformer}");
             }
             
             CPU.instance.ChangeResource(Resource.Dice, diceCreated);
+            
+            //Increase self learning efficiency
+            if (selfLearningCurrent > 0)
+            {
+                efficiencyCurrent += (selfLearningCurrent * selfLearningEfficiencyIncrease) * AIWorkerCurrent;
+                if (printLog) Debug.Log($"Factory: Efficiency increased through self learning by <b>{(selfLearningCurrent * selfLearningEfficiencyIncrease) * AIWorkerCurrent}</b>");
+            }
+          
             
             //Restart
             foreach (Transform nextLoader in factoryLoader)
@@ -358,7 +380,7 @@ public class Factory : InteractionArea
         
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 1))
         {
-            conveyorTooltip = $"<br><br><b>CONVEYOR:</b> Every conveyor decreases production time by <b>{productionSpeedIncrease}</b> seconds.";
+            conveyorTooltip = $"<br><br><b>CONVEYOR:</b> Every conveyor decreases production time by <b>{conveyorSpeedIncrease}</b> seconds.";
         }
         
         //Tools
@@ -366,7 +388,7 @@ public class Factory : InteractionArea
         
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 2))
         {
-            toolsTooltip = $"<br><br><b>TOOLS:</b> Every tool increases production efficiency by: <b>{efficiencyIncrease * 100}</b>%.";
+            toolsTooltip = $"<br><br><b>TOOLS:</b> Every tool increases production efficiency by: <b>{toolsEfficiencyIncrease * 100}</b>%.";
         }
         
         //Surplus
@@ -394,7 +416,7 @@ public class Factory : InteractionArea
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 4))
         {
             AIWorkerTooltip =
-                $"<br><br><b>AI Worker:</b> Every AI Worker produces <b>{AIWorkerDiceProduction}</b> dice per second. Costs one worker to purchase";
+                $"<br><br><b>AI WORKER:</b> Every AI Worker produces <b>{AIWorkerDiceProduction}</b> dice per second. Costs one worker to purchase";
         }
         
         //Machine Learning
@@ -402,7 +424,7 @@ public class Factory : InteractionArea
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 4))
         {
             machineLearningTooltip =
-                $"<br><br><b>MACHINE LEARNING:</b> <b>{overdriveChanceCurrent}</b>.";
+                $"<br><br><b>MACHINE LEARNING:</b> Increases the production efficiency every cycle by <b>{selfLearningEfficiencyIncrease * 100}%</b> per AI worker.";
         }
         
         data.areaDescription += workerTooltip + conveyorTooltip + toolsTooltip + surplusTooltip + overdriveTooltip + AIWorkerTooltip + machineLearningTooltip;
