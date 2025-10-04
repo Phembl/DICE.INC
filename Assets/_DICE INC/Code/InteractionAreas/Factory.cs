@@ -95,19 +95,19 @@ public class Factory : InteractionArea
     [Space]
     [ShowInInspector, ReadOnly] private int AIWorkerCurrent;
     
-    [Header("Self Learning")]
-    [SerializeField] private int selfLearningCostBase;
-    [SerializeField] private float selfLearningCostMultiplier;
-    [SerializeField] private int selfLearningMax;
-    [SerializeField] private float selfLearningEfficiencyIncrease;
+    [Header("Machine Learning")]
+    [SerializeField] private int machineLearningCostBase;
+    [SerializeField] private float machineLearningCostMultiplier;
+    [SerializeField] private int machineLearningMax;
+    [SerializeField] private float machineLearningEfficiencyIncrease;
     [Space]
-    [ShowInInspector, ReadOnly] private int selfLearningCurrent;
+    [ShowInInspector, ReadOnly] private int machineLearningCurrent;
 
     private int diceUntilTransformer;
     
     #endregion
     
-    private bool workshopCycleActive;
+    private bool factoryCycleActive;
     
     
     #region |-------------- INIT --------------|
@@ -133,7 +133,7 @@ public class Factory : InteractionArea
         costs.Add(surplusCostBase);
         costs.Add(overdriveCostBase);
         costs.Add(AIWorkerCostBase);
-        costs.Add(selfLearningCostBase);
+        costs.Add(machineLearningCostBase);
         
         return costs;
     }
@@ -148,7 +148,7 @@ public class Factory : InteractionArea
         costs.Add(surplusCostMult);
         costs.Add(overdriveCostMultiplier);
         costs.Add(AIWorkerCostMultiplier);
-        costs.Add(selfLearningCostMultiplier);
+        costs.Add(machineLearningCostMultiplier);
         
         return costs;
     }
@@ -163,7 +163,7 @@ public class Factory : InteractionArea
         max.Add(surplusMax);
         max.Add(overdriveMax);
         max.Add(AIWorkerMax);
-        max.Add(selfLearningMax);
+        max.Add(machineLearningMax);
         
         return max;
     }
@@ -181,7 +181,7 @@ public class Factory : InteractionArea
         {
             case 0: //Workers
                 workerCurrent = count;
-                if (!workshopCycleActive) StartCoroutine(WorkShopCycle());
+                if (!factoryCycleActive) StartCoroutine(WorkShopCycle());
                 
                 //If AI Workers are unlocked and only one worker is currently there, update AI Worker availability
                 if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 5) &&
@@ -233,10 +233,10 @@ public class Factory : InteractionArea
                 break;
             
             case 6: // Self Learning
-                selfLearningCurrent = count;
+                machineLearningCurrent = count;
                 
                 
-                if (printLog) Debug.Log($"Factory: Self learning updated: Current self learning:{selfLearningCurrent}");
+                if (printLog) Debug.Log($"Factory: Self learning updated: Current self learning:{machineLearningCurrent}");
                 break;
             
         }
@@ -272,8 +272,8 @@ public class Factory : InteractionArea
     
     private IEnumerator WorkShopCycle()
     {
-        workshopCycleActive = true;
-        while (workshopCycleActive)
+        factoryCycleActive = true;
+        while (factoryCycleActive)
         {
             float nextProductionTimer = timerCurrent;
             
@@ -337,10 +337,10 @@ public class Factory : InteractionArea
             CPU.instance.ChangeResource(Resource.Dice, diceCreated);
             
             //Increase self learning efficiency
-            if (selfLearningCurrent > 0)
+            if (machineLearningCurrent > 0)
             {
-                efficiencyCurrent += (selfLearningCurrent * selfLearningEfficiencyIncrease) * AIWorkerCurrent;
-                if (printLog) Debug.Log($"Factory: Efficiency increased through self learning by <b>{(selfLearningCurrent * selfLearningEfficiencyIncrease) * AIWorkerCurrent}</b>");
+                efficiencyCurrent += (machineLearningCurrent * machineLearningEfficiencyIncrease) * AIWorkerCurrent;
+                if (printLog) Debug.Log($"Factory: Efficiency increased through machine learning by <b>{(machineLearningCurrent * machineLearningEfficiencyIncrease) * AIWorkerCurrent}</b>");
             }
           
             
@@ -424,7 +424,7 @@ public class Factory : InteractionArea
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 4))
         {
             machineLearningTooltip =
-                $"<br><br><b>MACHINE LEARNING:</b> Increases the production efficiency every cycle by <b>{selfLearningEfficiencyIncrease * 100}%</b> per AI worker.";
+                $"<br><br><b>MACHINE LEARNING:</b> Increases the production efficiency every cycle by <b>{machineLearningEfficiencyIncrease * 100}%</b> per AI worker.";
         }
         
         data.areaDescription += workerTooltip + conveyorTooltip + toolsTooltip + surplusTooltip + overdriveTooltip + AIWorkerTooltip + machineLearningTooltip;
