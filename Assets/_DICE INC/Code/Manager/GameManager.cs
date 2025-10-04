@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     #region |-------------- REFERENCES --------------|
     [SerializeField, FoldoutGroup("References")] private CPU cpu;
     [SerializeField, FoldoutGroup("References")] private Lab lab;
+    [SerializeField, FoldoutGroup("References")] private ResourceManager resourceManager;
     [SerializeField, FoldoutGroup("References")] private InteractionArea import;
     [SerializeField, FoldoutGroup("References")] private InteractionArea factory;
     [SerializeField, FoldoutGroup("References")] private InteractionArea transformer;
@@ -38,12 +39,18 @@ public class GameManager : MonoBehaviour
     [SerializeField, FoldoutGroup("Settings")] private int startDiceRollTotal;
     [SerializeField, FoldoutGroup("Settings")] private int startResearchProgress;
     [Space]
-    [SerializeField, FoldoutGroup("Settings")] private int startPips;
-    [SerializeField, FoldoutGroup("Settings")] private int startDice;
-    [SerializeField, FoldoutGroup("Settings")] private int startMaterial;
-    [SerializeField, FoldoutGroup("Settings")] private int startLuck;
-    [SerializeField, FoldoutGroup("Settings")] private int startMDice;
-    [SerializeField, FoldoutGroup("Settings")] private int startData;
+    [SerializeField, FoldoutGroup("Resources")] private bool pipsUnlocked;
+    [SerializeField, FoldoutGroup("Resources")] private bool diceUnlocked;
+    [SerializeField, FoldoutGroup("Resources")] private bool materialUnlocked;
+    [SerializeField, FoldoutGroup("Resources")] private bool luckUnlocked;
+    [SerializeField, FoldoutGroup("Resources")] private bool mDiceUnlocked;
+    [SerializeField, FoldoutGroup("Resources")] private bool dataUnlocked;
+    [SerializeField, FoldoutGroup("Resources")] private int startPips;
+    [SerializeField, FoldoutGroup("Resources")] private int startDice;
+    [SerializeField, FoldoutGroup("Resources")] private int startMaterial;
+    [SerializeField, FoldoutGroup("Resources")] private int startLuck;
+    [SerializeField, FoldoutGroup("Resources")] private int startMDice;
+    [SerializeField, FoldoutGroup("Resources")] private int startData;
     
     #endregion
     
@@ -172,6 +179,36 @@ public class GameManager : MonoBehaviour
         
         
         CPU.instance.ChangeDiceRolledTotal(startDiceRollTotal);
+        
+        if (pipsUnlocked) resourceManager.UnlockResource(Resource.Pips);
+        else resourceManager.LockResource(Resource.Pips);
+
+        if (diceUnlocked)
+        {
+            resourceManager.UnlockResource(Resource.Dice);
+            import.UnlockInteractor(0);
+        }
+        else resourceManager.LockResource(Resource.Dice);
+
+        if (materialUnlocked)
+        {
+            resourceManager.UnlockResource(Resource.Material);
+            import.UnlockInteractor(1);
+        }
+        else resourceManager.LockResource(Resource.Material);
+        
+        if (luckUnlocked) resourceManager.UnlockResource(Resource.Luck);
+        else resourceManager.LockResource(Resource.Luck);
+        
+        if (mDiceUnlocked) resourceManager.UnlockResource(Resource.mDice);
+        else resourceManager.LockResource(Resource.mDice);
+
+        if (dataUnlocked)
+        {
+            resourceManager.UnlockResource(Resource.Data);
+            import.UnlockInteractor(2);
+        }
+        else resourceManager.LockResource(Resource.Data);
         
         if (startPips > 0) CPU.instance.ChangeResource(Resource.Pips, startPips);
         if (startDice > 0) CPU.instance.ChangeResource(Resource.Dice, startDice);

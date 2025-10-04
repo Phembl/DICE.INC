@@ -209,7 +209,7 @@ public abstract class InteractionArea : MonoBehaviour
 
     
     //This is called from the Import child class with the current DiceManager cost
-    protected void ImportCostUpdate(Resource resource, int newCost)
+    protected void ImportCostUpdate(Resource resource, double newCost)
     {
         if (interactionAreaType != InteractionAreaType.Import) return;
 
@@ -230,9 +230,9 @@ public abstract class InteractionArea : MonoBehaviour
                 break;
         }
         
-        costBase[resourceIndex] = newCost;
-        areaInteractors[resourceIndex].UpdatePrice((double)costBase[resourceIndex]);
-        costCurrent[resourceIndex] = (double)costBase[resourceIndex];
+        costBase[resourceIndex] = (int)newCost;
+        areaInteractors[resourceIndex].UpdatePrice(costBase[resourceIndex]);
+        costCurrent[resourceIndex] = costBase[resourceIndex];
         
         //Dice
       

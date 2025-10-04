@@ -12,31 +12,44 @@ public class Import : InteractionArea
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
     
     [TitleGroup("Import")] 
-    [Header("DiceManager")]
+    [Header("Dice")]
     [SerializeField] private int diceCostBase;
-    [SerializeField] private int diceMax;
+    //[SerializeField] private float diceCostIncreaseFactor;
+    [SerializeField] private int diceCostIncreasePurchase;
+    [SerializeField] private float diceCostIncreasePurchaseFactor;
+    [Space]
+    [ShowInInspector, ReadOnly] private double diceCostCurrent;
+    [ShowInInspector, ReadOnly] private double diceCostIncreaseNext;
+    [ShowInInspector, ReadOnly] private int diceCostLevel;
+    
     [Header("Material")]
-    [SerializeField] private int toolsCostBase;
-    [SerializeField] private float toolsCostMult;
-    [SerializeField] private int toolsMax;
+    [SerializeField] private int materialCostBase;
+    [SerializeField] private float materialCostIncreaseFactor;
+    [SerializeField] private int materialCostIncreasePurchase;
+    [SerializeField] private float materialCostIncreasePurchaseFactor;
+    [Space]
+    [ShowInInspector, ReadOnly] private double materialCostCurrent;
+    [ShowInInspector, ReadOnly] private double materialCostIncreaseNext;
+    [ShowInInspector, ReadOnly] private int materialCostLevel;
+    
     [Header("Data")]
     [SerializeField] private int dataCostBase;
-    [SerializeField] private float dataCostMult;
-    [SerializeField] private int dataMax;
-    [Header("Progress")]
-    [SerializeField] private int diceCostIncrease1;
-    [SerializeField] private int diceCostIncrease2;
-    [SerializeField] private int diceCostIncrease3;
-    [SerializeField] private int diceCostIncrease4;
-
-
-    private int diceCostLevel = 1;
+    [SerializeField] private float dataCostIncreaseFactor;
+    [SerializeField] private int dataCostIncreasePurchase;
+    [SerializeField] private float dataCostIncreasePurchaseFactor;
+    [Space]
+    [ShowInInspector, ReadOnly] private double dataCostCurrent;
+    [ShowInInspector, ReadOnly] private double dataCostIncreaseNext;
+    [ShowInInspector, ReadOnly] private int dataCostLevel;
+    
     
     #region |-------------- INIT --------------|
 
     protected override void InitSubClass()
     {
-      
+      CheckDiceCost();
+      CheckMaterialCost();
+      CheckDataCost();
     }
     
     protected override List<int> GetCostsBase()
@@ -44,7 +57,7 @@ public class Import : InteractionArea
         List<int> costs = new List<int>();
         
         costs.Add(diceCostBase);
-        costs.Add(toolsCostBase);
+        costs.Add(materialCostBase);
         costs.Add(dataCostBase);
         
         return costs;
@@ -65,9 +78,9 @@ public class Import : InteractionArea
     {
         List<int> max = new List<int>();
         
-        max.Add(diceMax);
-        max.Add(toolsMax);
-        max.Add(dataMax);
+        max.Add(-1);
+        max.Add(-1);
+        max.Add(-1);
         
         return max;
     }
@@ -85,55 +98,108 @@ public class Import : InteractionArea
         {
             case 0: //Buy Dice
                 CPU.instance.PurchaseResource(Resource.Dice);
-                ProgressManager.instance.GetResourceCost(Resource.Dice);
+                CheckDiceCost();
                 break;
             
             case 1: //Buy Material
                 CPU.instance.PurchaseResource(Resource.Material);
-                ProgressManager.instance.GetResourceCost(Resource.Material);
+                CheckMaterialCost();
                 break;
             
             case 2: //Buy Data
                 CPU.instance.PurchaseResource(Resource.Data);
-                ProgressManager.instance.GetResourceCost(Resource.Data);
+                CheckDataCost();
                 break;
             
         }
+        
     }
 
   
     protected override void CheckProgress()
     {
-        /*
-      double totalDicePurchased =
-          CPU.instance.GetAreaInteractorCount(InteractionAreaType.Import, 0) + CPU.instance.GetAreaInteractorCount(InteractionAreaType.Import, 1) * 100;
+        
+    }
 
-      if (totalDicePurchased >= diceCostIncrease1 && diceCostLevel == 1)
+    void CheckDiceCost()
+    {
+        double dicePurchased = CPU.instance.GetDicePurchased();
 
-      {
-          diceCostLevel = 2;
-          ImportCostUpdate(diceCostLevel);
-      }
+        if (dicePurchased >= diceCostIncreaseNext)
+        {
+            if (printLog) Debug.Log($"Import: Updating Dice Cost. Current cost: {diceCostCurrent}");
+            
+            if (diceCostLevel == 0)
+            {
+                diceCostCurrent = 1;
+                diceCostIncreaseNext = diceCostIncreasePurchase;
+            }
+            else
+            {
+                //Dice Cost is always incremented by 1
+                diceCostCurrent = diceCostBase + (1 * diceCostLevel);
+                diceCostIncreaseNext = diceCostIncreasePurchase * (diceCostIncreasePurchaseFactor * diceCostLevel);
+            }
+            
+            ImportCostUpdate(Resource.Dice, diceCostCurrent);
+            diceCostLevel++;
+           
+            
+            if (printLog) Debug.Log($"Import: Updating Dice Cost. New cost: {diceCostCurrent}");
+        }
+    }
+    
+    void CheckMaterialCost()
+    {
+        double materialPurchased = CPU.instance.GetMaterialPurchased();
 
-      else if (totalDicePurchased >= diceCostIncrease2 && diceCostLevel == 2)
-      {
-          diceCostLevel = 3;
-          ImportCostUpdate(diceCostLevel);
-      }
+        if (materialPurchased >= materialCostIncreaseNext)
+        {
+            if (printLog) Debug.Log($"Import: Updating Material Cost. Current cost: {materialCostCurrent}");
+            
+            if (materialCostLevel == 0)
+            {
+                materialCostCurrent = materialCostBase;
+                materialCostIncreaseNext = materialCostIncreasePurchase;
+            }
+            else
+            {
+                materialCostCurrent = materialCostBase * (materialCostIncreaseFactor * materialCostLevel);
+                materialCostIncreaseNext = materialCostIncreasePurchase * (materialCostIncreasePurchaseFactor * materialCostLevel);
+            }
+            
+            ImportCostUpdate(Resource.Material, materialCostCurrent);
+            materialCostLevel++;
+            
+            if (printLog) Debug.Log($"Import: Updating Material Cost. New cost: {materialCostCurrent}");
+        }
+    }
+    
+    void CheckDataCost()
+    {
+        double dataPurchased = CPU.instance.GetDataPurchased();
 
-      else if (totalDicePurchased >= diceCostIncrease3 && diceCostLevel == 3)
-      {
-          diceCostLevel = 4;
-          ImportCostUpdate(diceCostLevel);
-      }
-
-      else if (totalDicePurchased >= diceCostIncrease4 && diceCostLevel == 4)
-      {
-          diceCostLevel = 5;
-          ImportCostUpdate(diceCostLevel);
-      }
-*/
-  }
+        if (dataPurchased >= dataCostIncreaseNext)
+        {
+            if (printLog) Debug.Log($"Import: Updating Data Cost. Current cost: {dataCostCurrent}");
+            
+            if (dataCostLevel == 0)
+            {
+                dataCostCurrent = dataCostBase;
+                dataCostIncreaseNext = dataCostIncreasePurchase;
+            }
+            else
+            {
+                dataCostCurrent = dataCostBase * (dataCostIncreaseFactor * dataCostLevel);
+                dataCostIncreaseNext = dataCostIncreasePurchase * (dataCostIncreasePurchaseFactor * dataCostLevel);
+            }
+            
+            ImportCostUpdate(Resource.Data, dataCostCurrent);
+            dataCostLevel++;
+            
+            if (printLog) Debug.Log($"Import: Updating Data Cost. New cost: {dataCostCurrent}");
+        }
+    }
 
   
 
