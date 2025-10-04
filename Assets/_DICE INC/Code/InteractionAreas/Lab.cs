@@ -210,7 +210,7 @@ public class Lab : MonoBehaviour
             researchIndexToCompare[0] = _researchID;
             memoryFields[_index].SetSolved(true);
             memoryFieldsToCompare.Add(memoryFields[_index]);
-            Debug.Log($"Research: Current ID: {_researchID}");
+            if (printLog) Debug.Log($"Research: Current ID: {_researchID}");
         }
         
         else if (researchIndexToCompare[1] == -1)
@@ -220,12 +220,12 @@ public class Lab : MonoBehaviour
             researchIndexToCompare[1] = _researchID;
             memoryFields[_index].SetSolved(true);
             memoryFieldsToCompare.Add(memoryFields[_index]);
-            Debug.Log($"Research: Second card has ID: {_researchID}");
+            if (printLog) Debug.Log($"Research: Second card has ID: {_researchID}");
 
             if (researchIndexToCompare[0] == researchIndexToCompare[1]) //Correct Pair
             {
                 // Solved two cards
-                Debug.Log($"Solved Cards with ID: {researchIndexToCompare[0]}");
+                if (printLog) Debug.Log($"Solved Cards with ID: {researchIndexToCompare[0]}");
                 ResetActiveMemoryFields();
                 researchSuccessCounter++;
                 if (researchSuccessCounter == 8) StartCoroutine(ResearchSuccess());
@@ -234,7 +234,7 @@ public class Lab : MonoBehaviour
             else //Wrong Pair
             {
                 //Reset research Compare
-                Debug.Log($"Failed to solve cards with: {researchIndexToCompare[0]}");
+                if (printLog) Debug.Log($"Failed to solve cards with: {researchIndexToCompare[0]}");
                 StartCoroutine(CloseMemoryFields
                     (memoryFieldsToCompare[0], memoryFieldsToCompare[1]));
                 ResetActiveMemoryFields();

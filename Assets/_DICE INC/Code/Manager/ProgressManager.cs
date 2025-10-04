@@ -30,10 +30,9 @@ public class ProgressManager : MonoBehaviour
     {
         switch (researchIndex)
         {
-            case 0: //Unlock Material & Factory
+            case 0: //Unlock Luck & Factory
                 factory.UnlockArea();
-                ResourceManager.instance.UnlockResource(Resource.Material);
-                import.UnlockInteractor(1);
+                UnlockResource(Resource.Luck);
                 break;
 
             case 1:
@@ -55,9 +54,37 @@ public class ProgressManager : MonoBehaviour
                 break;
         }
     }
+    
+    #endregion
+    
+    #region |-------------- UNLOCKS --------------|
+
+    public void UnlockResource(Resource resource)
+    {
+        switch (resource)
+        {
+            
+            case Resource.Dice:
+                ResourceManager.instance.UnlockResource(Resource.Dice);
+                import.UnlockInteractor(0);
+                break;
+            
+            case Resource.Luck:
+                ResourceManager.instance.UnlockResource(Resource.Luck);
+                break;
+            
+            case Resource.Material:
+                ResourceManager.instance.UnlockResource(Resource.Material);
+                import.UnlockInteractor(1);
+                break;
+                
+        }
+    }
+    
+    #endregion
 }
 
-    #endregion
+   
     
    
     

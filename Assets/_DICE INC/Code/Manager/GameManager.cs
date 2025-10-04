@@ -185,8 +185,7 @@ public class GameManager : MonoBehaviour
 
         if (diceUnlocked)
         {
-            resourceManager.UnlockResource(Resource.Dice);
-            import.UnlockInteractor(0);
+            ProgressManager.instance.UnlockResource(Resource.Dice);
         }
         else resourceManager.LockResource(Resource.Dice);
 

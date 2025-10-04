@@ -264,7 +264,7 @@ public class Technology : InteractionArea
         string explosiveTooltip = $"";
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Technology, 3))
         {
-            explosiveTooltip = $"<br><br><b>EXPLOSIVE:</b> Introduces a chance that a dice explodes when rolled, generating <b>2-6</b> extra dice. Current explosion chance per roll: <b>{explosiveCurrent * 100}%</b></b>";
+            explosiveTooltip = $"<br><br><b>EXPLOSIVE:</b> Introduces a chance that a dice explodes when rolled, generating <b>2-6</b> extra dice. Current explosion chance per roll: <b>{explosiveCurrent}%</b></b>";
         }
         
         

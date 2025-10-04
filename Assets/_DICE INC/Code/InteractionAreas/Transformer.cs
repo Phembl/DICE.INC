@@ -107,6 +107,7 @@ public class Transformer : InteractionArea
             case 0: 
                 condenserCurrent = count;
                 fragmentsNeededCurrent = fragmentsNeededBase - condenserCurrent;
+                counterTMP.text = $"{currentFragments}/<br>{fragmentsNeededCurrent}";
                 break;
             
             case 1: 

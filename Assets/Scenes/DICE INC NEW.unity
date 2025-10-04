@@ -6008,30 +6008,30 @@ MonoBehaviour:
   datacenter: {fileID: 272257916}
   startDiceRollTotal: 0
   startResearchProgress: 0
-  pipsUnlocked: 0
+  pipsUnlocked: 1
   diceUnlocked: 1
-  materialUnlocked: 1
+  materialUnlocked: 0
   luckUnlocked: 0
   mDiceUnlocked: 0
-  dataUnlocked: 1
-  startPips: 5000
-  startDice: 40
+  dataUnlocked: 0
+  startPips: 1
+  startDice: 0
   startMaterial: 0
   startLuck: 0
-  startMDice: 100
+  startMDice: 0
   startData: 0
   importUnlocked: 1
   startDiceImport: 0
   startMaterialImport: 0
   startDataImport: 0
   factoryUnlocked: 1
-  startWorker: 16
-  startConveyor: 200
+  startWorker: 0
+  startConveyor: 0
   startTools: 0
   startSurplus: 0
   startOverdrive: 0
-  startAIWorker: 5
-  startMachineLearning: 5
+  startAIWorker: 0
+  startMachineLearning: 0
   transformerUnlocked: 0
   startCondenser: 0
   startExtruder: 0
@@ -6409,7 +6409,7 @@ MonoBehaviour:
   rollCounter: {fileID: 1511384630}
   diceTable: {fileID: 1125702135}
   rollsGoalBase: 50
-  rollsGoalMult: 3.8
+  rollsGoalMult: 2.8
   unlockLevels: 01000000020000000300000004000000
   sidesCostBase: 1
   sidesCostMult: 1
@@ -7425,7 +7425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2467a15e4631f46b2a015dbb300312d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  printLog: 1
+  printLog: 0
   importManager: {fileID: 1992266993}
   importCanvas: {fileID: 478453489}
   importTooltip: {fileID: 178386955}
@@ -9456,7 +9456,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   diceRollCounter: {fileID: 522784820}
   diceTable: {fileID: 1125702135}
-  printLog: 1
+  printLog: 0
 --- !u!4 &1187004635
 Transform:
   m_ObjectHideFlags: 0
@@ -13772,7 +13772,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54df76e9c993348bd9a8b946b97c3f9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  printLog: 1
+  printLog: 0
   import: {fileID: 1992266993}
   factory: {fileID: 1859983091}
   transformer: {fileID: 1951630509}
@@ -14179,36 +14179,36 @@ MonoBehaviour:
   transformer: {fileID: 1951630509}
   timerBase: 10
   efficiencyBase: 1
-  unlockLevels: 00000000050000000a0000000f00000014000000190000001e000000
-  workerCostBase: 250
-  workerCostMult: 1.03
+  unlockLevels: 00000000030000000700000014000000140000001400000019000000
+  workerCostBase: 150
+  workerCostMult: 1.06
   workerMax: -1
-  conveyorCostBase: 5
-  conveyorCostMult: 1.05
+  conveyorCostBase: 2
+  conveyorCostMult: 1.11
   conveyorMax: 200
-  conveyorSpeedIncrease: 0.03
-  toolsCostBase: 40
-  toolsCostMult: 1.03
+  conveyorSpeedIncrease: 0.06
+  toolsCostBase: 20
+  toolsCostMult: 1.08
   toolsMax: -1
   toolsEfficiencyIncrease: 0.22
-  surplusCostBase: 15
-  surplusCostMult: 1.1
+  surplusCostBase: 12
+  surplusCostMult: 1.4
   surplusMax: -1
-  surplusChanceBase: 2
-  surplusValueBase: 2
+  surplusChanceBase: 3
+  surplusValueBase: 1
   surplusValueIncrease: 0.15
-  overdriveCostBase: 0
-  overdriveCostMultiplier: 0
-  overdriveMax: 15
-  overdriveChanceBase: 1
+  overdriveCostBase: 12
+  overdriveCostMultiplier: 1.4
+  overdriveMax: 20
+  overdriveChanceBase: 0
   overdriveChanceIncrease: 0.22
-  overdriveValueBase: 5
+  overdriveTimePercent: 0.2
   AIWorkerCostBase: 13
   AIWorkerCostMultiplier: 1.1
   AIWorkerMax: -1
   AIWorkerDiceProduction: 100
-  machineLearningCostBase: 550
-  machineLearningCostMultiplier: 1.6
+  machineLearningCostBase: 115
+  machineLearningCostMultiplier: 1.3
   machineLearningMax: -1
   machineLearningEfficiencyIncrease: 0.001
 --- !u!1 &1899903177
@@ -14885,11 +14885,11 @@ MonoBehaviour:
   thisInteractionAreaType: 4
   counterTMP: {fileID: 1018561622}
   fragmentsNeededBase: 100
-  unlockLevels: 0a00000064000000
-  condenserCostBase: 114
-  condenserCostMult: 1.04
+  unlockLevels: 0a0000001e000000
+  condenserCostBase: 66
+  condenserCostMult: 1.1
   condenserMax: 50
-  extruderCostBase: 386
+  extruderCostBase: 129
   extruderCostMult: 1.12
   extruderMax: -1
 --- !u!1 &1992266991
@@ -14938,18 +14938,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactorHolder: {fileID: 1575773770}
   interactorGO: {fileID: 478453486}
-  printLog: 1
+  printLog: 0
   thisInteractionAreaType: 1
   diceCostBase: 1
-  diceCostIncreasePurchase: 150
-  diceCostIncreasePurchaseFactor: 4
+  diceCostIncreasePurchase: 1000
+  diceCostIncreasePurchaseFactor: 2.5
   materialCostBase: 5
-  materialCostIncreaseFactor: 7
-  materialCostIncreasePurchase: 12
-  materialCostIncreasePurchaseFactor: 3
+  materialCostIncreaseFactor: 2.2
+  materialCostIncreasePurchase: 120
+  materialCostIncreasePurchaseFactor: 4
   dataCostBase: 50
   dataCostIncreaseFactor: 3.5
-  dataCostIncreasePurchase: 8
+  dataCostIncreasePurchase: 80
   dataCostIncreasePurchaseFactor: 6
 --- !u!1 &1997650644
 GameObject:

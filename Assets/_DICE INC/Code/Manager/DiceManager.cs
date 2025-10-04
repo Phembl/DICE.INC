@@ -105,7 +105,8 @@ public class DiceManager : MonoBehaviour
 
    void UpdateRollCounter()
    {
-      diceRollCounter.text = CPU.instance.GetDiceRolledTotal().ToString();
+      diceRollCounter.text = 
+         $"DICE ROLLED: <b>{CPU.instance.GetDiceRolledTotal().ToString()}</b>";
    }
    
 }
