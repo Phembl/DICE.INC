@@ -21,6 +21,7 @@ public class Factory : InteractionArea
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
     [SerializeField] private Transform factoryLoader;
     [SerializeField] private Transformer transformer;
+    [SerializeField] private TMP_Text tempTransformerTMP;
 
     [TitleGroup("Factory")] 
     [SerializeField] private float timerBase;
@@ -101,6 +102,7 @@ public class Factory : InteractionArea
     [ShowInInspector, ReadOnly] private int machineLearningCurrent;
 
     private int diceUntilTransformer;
+    private float percentageDiceTransformer;
     
     #endregion
     
@@ -328,17 +330,30 @@ public class Factory : InteractionArea
             //Check for Transformer interaction
             if (CPU.instance.GetAreaUnlockState(InteractionAreaType.Transformer))
             {
-                //Gives every tenth produced die over to the Transformer
-                diceUntilTransformer += diceCreated;
-                int diceToTransform = diceUntilTransformer / 10;
-                diceUntilTransformer %= 10;
+             
+                int diceNeeded = transformer.GetDiceNeeded();
                 
-                //Reduce the number of actually produced dice by the number given to transform
-                diceCreated -= diceToTransform;
+                float percentageProduced = (float)diceCreated / diceNeeded;
+                percentageProduced = (float)Math.Round(percentageProduced * 100f,2);
                 
-                if (diceToTransform > 0) transformer.TriggerTransformer(diceToTransform);
+                percentageDiceTransformer += percentageProduced;
                 
-                if (printLog) Debug.Log($"Factory: Transformer receives: <b>{diceToTransform}</b> dice to transform. Dice until Transformer now: {diceUntilTransformer}");
+                if (percentageDiceTransformer >= 100)
+                {
+                    //TODO: Update Counter Display.
+                    
+                    int materialProduced = (int)percentageDiceTransformer / 100;
+
+                    percentageDiceTransformer = ((percentageDiceTransformer / 100) % 1f) * 100;
+                    percentageDiceTransformer = (float)Math.Round(percentageDiceTransformer, 2);
+                    
+                    if (printLog) Debug.Log($"Factory: Transformer receives <b>{materialProduced}</b> material to produce.");
+                    transformer.TriggerTransformer(materialProduced);
+                    
+                }
+                
+                tempTransformerTMP.text = $"{percentageDiceTransformer}%";
+                
             }
             
             CPU.instance.ChangeResource(Resource.Dice, diceCreated);

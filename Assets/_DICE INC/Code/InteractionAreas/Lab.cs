@@ -14,7 +14,11 @@ public class Lab : MonoBehaviour
     [SerializeField] private Transform labMemoryHolder;
     //[SerializeField] private GameObject labButton;
     [SerializeField] private TMP_Text labTMP;
+    [SerializeField] private Image researchButtonImage;
+    [SerializeField] private Sprite researchButtonDeactivate;
+    private Sprite researchButtonActivate;
     [SerializeField] private Sprite[] memoryIcons;
+
     [Space] 
     
     [Header("Settings")]
@@ -53,6 +57,8 @@ public class Lab : MonoBehaviour
     {
         currentResearchIndex = startResearchIndex;
         currentResearchOverallCost = 0;
+
+        researchButtonActivate = researchButtonImage.sprite;
         
         //Save & Deactivate all memory fields
         for (int i = 0; i < labMemoryHolder.childCount; i++)
@@ -75,7 +81,7 @@ public class Lab : MonoBehaviour
         //MemoryFieldsUsed is used as a temp container to store and remove the memoryFields for randomization
         foreach (Button_Memory nextMemory in memoryFields)
         {
-            //nextMemory.SetSolved(false);
+            //nextMemory.ShowIcon(false);
             memoryFieldsTemp.Add(nextMemory);
         }
         
@@ -144,6 +150,8 @@ public class Lab : MonoBehaviour
             researchIsPrepared = true;
             StartCoroutine(ActivateMemoryButtons());
             
+            researchButtonImage.sprite = researchButtonDeactivate;
+            
             if (printLog) Debug.Log("|--------------LAB RESEARCH STARTED --------------|");
             
         }
@@ -156,6 +164,8 @@ public class Lab : MonoBehaviour
             
             StartCoroutine(DeactivateMemoryButtons());
             WriteResearchText($"RESEARCH: <b>{researchGoals[currentResearchIndex].ToString()}</b><br>COST: <b>{researchCost[currentResearchIndex]} PIPS/s</b>");
+            
+            researchButtonImage.sprite = researchButtonActivate;
             
             if (printLog) Debug.Log("|--------------LAB RESEARCH STOPPED--------------|");
         }
@@ -208,7 +218,7 @@ public class Lab : MonoBehaviour
         {
             //First Card
             researchIndexToCompare[0] = _researchID;
-            memoryFields[_index].SetSolved(true);
+            memoryFields[_index].ShowIcon(true);
             memoryFieldsToCompare.Add(memoryFields[_index]);
             if (printLog) Debug.Log($"Research: Current ID: {_researchID}");
         }
@@ -218,7 +228,7 @@ public class Lab : MonoBehaviour
         {
             //Second Card
             researchIndexToCompare[1] = _researchID;
-            memoryFields[_index].SetSolved(true);
+            memoryFields[_index].ShowIcon(true);
             memoryFieldsToCompare.Add(memoryFields[_index]);
             if (printLog) Debug.Log($"Research: Second card has ID: {_researchID}");
 
@@ -226,6 +236,8 @@ public class Lab : MonoBehaviour
             {
                 // Solved two cards
                 if (printLog) Debug.Log($"Solved Cards with ID: {researchIndexToCompare[0]}");
+                memoryFieldsToCompare[0].SetSolvedState(true);
+                memoryFieldsToCompare[1].SetSolvedState(true);
                 ResetActiveMemoryFields();
                 researchSuccessCounter++;
                 if (researchSuccessCounter == 8) StartCoroutine(ResearchSuccess());
@@ -260,7 +272,7 @@ public class Lab : MonoBehaviour
         {
             nextMemory.ActivateDeactivate(false);
             nextMemory.ShowHide(false);
-            nextMemory.SetSolved(false);
+            nextMemory.ShowIcon(false);
         }
         
         yield return new WaitForSeconds(1f);
@@ -287,8 +299,8 @@ public class Lab : MonoBehaviour
     IEnumerator CloseMemoryFields(Button_Memory _fieldId1, Button_Memory _fieldId2)
     {
         yield return new WaitForSeconds(1f);
-        _fieldId1.SetSolved(false);
-        _fieldId2.SetSolved(false);
+        _fieldId1.ShowIcon(false);
+        _fieldId2.ShowIcon(false);
     }
 
     IEnumerator ResearchCost()

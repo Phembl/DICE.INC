@@ -17,16 +17,13 @@ public class Transformer : InteractionArea
     [TitleGroup("References")] 
     [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Transformer;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
-    [SerializeField] private TMP_Text counterTMP;
     
     [TitleGroup("Transformer")] 
-    [ShowInInspector, ReadOnly] private int destroyedDice;
-    [ShowInInspector, ReadOnly] private int currentFragments;
-    [ShowInInspector, ReadOnly] private int fragmentsMin = 1;
-    [ShowInInspector, ReadOnly] private int fragmentsMax = 10;
-    [SerializeField] private int fragmentsNeededBase = 100;
-    [ShowInInspector, ReadOnly] private int fragmentsNeededCurrent = 100;
-    [ShowInInspector, ReadOnly] private int materialProduced = 1;
+    [SerializeField] private int diceNeededBase = 100;
+    [SerializeField] private int materialProducedBase = 1;
+    [ShowInInspector, ReadOnly] private int diceNeededCurrent;
+    public int GetDiceNeeded() => diceNeededCurrent;
+    [ShowInInspector, ReadOnly] private int materialProducedCurrent;
     [Space] 
     [SerializeField] private int[] unlockLevels; 
     
@@ -44,16 +41,14 @@ public class Transformer : InteractionArea
     [SerializeField] private int extruderCostBase;
     [SerializeField] private float extruderCostMult;
     [SerializeField] private int extruderMax;
-   
-    
-    
     
         
     #region |-------------- INIT --------------|
 
     protected override void InitSubClass()
     {
-        
+        diceNeededCurrent = diceNeededBase;
+        materialProducedCurrent = materialProducedBase;
     }
 
     protected override void OnAreaUnlock()
@@ -106,13 +101,11 @@ public class Transformer : InteractionArea
         {
             case 0: 
                 condenserCurrent = count;
-                fragmentsNeededCurrent = fragmentsNeededBase - condenserCurrent;
-                counterTMP.text = $"{currentFragments}/<br>{fragmentsNeededCurrent}";
+                diceNeededCurrent = diceNeededBase - condenserCurrent;
                 break;
             
             case 1: 
                 extruderCurrent = count;
-                materialProduced = 1 + count;
                 break;
             
         }
@@ -121,6 +114,7 @@ public class Transformer : InteractionArea
     protected override void CheckProgress()
     {
         //Unlock Interactors based on level
+        //Level increases on transformed dice
         for (int i = 0; i < unlockLevels.Length; i++)
         {
             if (level >= unlockLevels[i] &&
@@ -132,9 +126,17 @@ public class Transformer : InteractionArea
         
     }
 
-    public void TriggerTransformer(int dice)
+    public void TriggerTransformer(int _material)
     {
-        if (printLog) Debug.Log($"Transformer: Received {dice} dice to transform.");
+        
+        int materialsProduced = _material * (extruderCurrent + 1);
+        CPU.instance.ChangeResource(Resource.Material, materialsProduced);
+        
+        if (printLog) Debug.Log($"Transformer: Received {_material} material to produce. With {extruderCurrent} extruders, {materialsProduced} materials produced.");
+        
+        level++;
+        
+        /*
         
         destroyedDice += dice;
 
@@ -148,24 +150,23 @@ public class Transformer : InteractionArea
         if (printLog) Debug.Log($"Transformer: Current fragments are {currentFragments}.");
 
         //Check for enough fragments
-        if (currentFragments >= fragmentsNeededCurrent)
+        if (currentFragments >= diceNeededCurrent)
         {
-            if (printLog) Debug.Log($"Transformer: Fragments reached {fragmentsNeededCurrent}. Now producing {materialProduced} material.");
+            if (printLog) Debug.Log($"Transformer: Fragments reached {diceNeededCurrent}. Now producing {materialProducedCurrent} material.");
             
             //Produce Material
-            currentFragments -= fragmentsNeededCurrent;
+            currentFragments -= diceNeededCurrent;
             if (currentFragments < 0) currentFragments = 0;
             
             if (printLog) Debug.Log($"Transformer: New current fragments are {currentFragments}.");
             
-            CPU.instance.ChangeResource(Resource.Material, materialProduced);
+            CPU.instance.ChangeResource(Resource.Material, materialProducedCurrent);
             
             level++;
             CheckProgress();
         }
         
-        counterTMP.text = $"{currentFragments}/<br>{fragmentsNeededCurrent}";
-        
+        */
     }
     
     #endregion
@@ -177,22 +178,22 @@ public class Transformer : InteractionArea
         TooltipData data = new TooltipData();
         
         data.areaTitle = data.areaTitle = thisInteractionAreaType.ToString();
-        data.areaDescription = $"The transformer destroys every tenth dice produced in the factory to generate between <b>{fragmentsMin}</b> and <b>{fragmentsMax}</b> fragments." +
-                               $"<br>From <b>{fragmentsNeededCurrent}</b> fragments <b>{materialProduced}</b> material is generated. ";
+        data.areaDescription =
+            $"The transformer generates <b>{1 * (extruderCurrent + 1)}</b> material for every <b>{diceNeededCurrent}</b> dice produced in the factory.";
                              
 
         //Condenser
         string condenserTooltip = $"";
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Transformer, 0))
         {
-            condenserTooltip = $"<br><br><b>CONDENSER:</b> Every condenser reduced the amount of fragments needed to generate material by <b>1</b>.";
+            condenserTooltip = $"<br><br><b>CONDENSER:</b> Every condenser reduces the amount of dice needed to generate material by <b>1</b>.";
         }
         
         //Extruder
         string extruderTooltip = $"";
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Transformer, 1))
         {
-            extruderTooltip = $"<br><br><b>EXTRUDER:</b> Every Extruder increases the amount of generated materials by <b>100</b>%.";
+            extruderTooltip = $"<br><br><b>EXTRUDER:</b> Every Extruder increases the amount of generated materials by <b>1</b>.";
         }
         
         data.areaDescription += condenserTooltip + extruderTooltip;

@@ -16,9 +16,12 @@ public class Button_Memory : Button
     private int myIndex;
     private float startPosY;
     
-    
+    // Called by Lab when the two correct icons are found and the button is solved
     [ShowInInspector, ReadOnly] private bool isSolved;
     public bool GetSolvedState() => isSolved;
+    public void SetSolvedState(bool solved) => isSolved = solved;
+
+    private Tween moveButton;
 
     void Start()
     {
@@ -33,12 +36,18 @@ public class Button_Memory : Button
         Lab.instance.ResearchInput(myIndex, fieldID);
     }
     
-    public void SetSolved(bool solved)
+    // Called by Lab when the button should not be pressable
+    public void ActivateDeactivate(bool activate)
     {
-        
-        if (solved)
+        isActive = activate;
+        if (!activate && myIcon.color.a > 0 && !isSolved) myIcon.DOFade(0, 0.2f);
+    }
+
+    // Called by Lab when a button is pressed and its icon should be shown or hidden
+    public void ShowIcon(bool _showIcon)
+    {
+        if (_showIcon)
         {
-            isSolved = true;
             isActive = false;
             myIcon.DOFade(1, 0.1f);
         }
@@ -46,27 +55,25 @@ public class Button_Memory : Button
         else
         {
            
-            myIcon.DOFade(0, 0.5f)
+            myIcon.DOFade(0, 0.4f)
                 .OnComplete(() =>
                 {
-                    isSolved = false;
                     isActive = true;
                 });
         }
     } 
     
-    public void ActivateDeactivate(bool activate) => isActive = activate;
-
-    public void ShowHide(bool show)
+    // Called by Lab when research is started
+    public void ShowHide(bool _show)
     {
-        if (show)
+        if (_show)
         {
-            gameObject.transform.DOLocalMoveY(0, 0.5f).SetEase(Ease.OutQuad);
+            moveButton = gameObject.transform.DOLocalMoveY(0, 0.5f).SetEase(Ease.OutQuad);
 
         }
         else
         {
-            gameObject.transform.DOLocalMoveY(startPosY, 0.5f).SetEase(Ease.InQuad);;
+            moveButton = gameObject.transform.DOLocalMoveY(startPosY, 0.5f).SetEase(Ease.InQuad);;
         }
     }
 }
