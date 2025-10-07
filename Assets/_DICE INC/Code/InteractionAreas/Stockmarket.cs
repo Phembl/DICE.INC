@@ -27,6 +27,9 @@ public class Stockmarket : InteractionArea
     [TitleGroup("Stock market")] 
     [SerializeField] private float timeBetweenUpdates;
     [Space]
+    [SerializeField] private float growChanceBase = 15f;
+    [ShowInInspector, ReadOnly] private float growChanceCurrent;
+    [Space]
     [SerializeField] private float marketcrashChanceIncreaseBase;
     [ShowInInspector, ReadOnly] private float marketcrashChanceIncreaseCurrent;
     [ShowInInspector, ReadOnly] private float marketcrashChanceCurrent;
@@ -37,8 +40,7 @@ public class Stockmarket : InteractionArea
     [SerializeField] private int growthstockMax;
     [Space]
     [SerializeField] private float growChanceIncrease;
-    [ShowInInspector, ReadOnly] private float growChanceBase = 15f;
-    [ShowInInspector, ReadOnly] private float growChanceCurrent;
+
     [ShowInInspector, ReadOnly] private float growthstockCurrent;
     
     [Header("Market Cap")]
@@ -49,9 +51,6 @@ public class Stockmarket : InteractionArea
     [SerializeField] private float marketcapIncrease;
     [ShowInInspector, ReadOnly] private float marketcapBase = 2f;
     [ShowInInspector, ReadOnly] private float marketcapCurrent;
-    
-    [Header("Progress")] 
-    [SerializeField] private int growthstockToUnlockMarketcap;
     
     private bool stockmarketCycleActive;
     private float stockValueCurrent = 1f;
@@ -72,7 +71,7 @@ public class Stockmarket : InteractionArea
         marketcapCurrent = marketcapBase;
         marketcapDisplayMultCurrent = marketcapDisplayMultBase;
         
-        
+        UnlockInteractor(0); //Unlock Growth Stock
     }
 
     protected override void OnAreaUnlock()
@@ -168,12 +167,6 @@ public class Stockmarket : InteractionArea
     protected override void CheckProgress()
     {
         
-        if (CPU.instance.GetAreaInteractorCount(InteractionAreaType.Stockmarket, 0) >= growthstockToUnlockMarketcap &&
-            !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Stockmarket, 1))
-        {
-            UnlockInteractor(1);
-        }
-        
     }
     
     private IEnumerator StockmarketCycle()
@@ -228,8 +221,19 @@ public class Stockmarket : InteractionArea
             }
             
          
-            if (stockValueCurrent >= marketcapCurrent) stockValueCurrent = marketcapCurrent; //Market Cap
+            if (stockValueCurrent >= marketcapCurrent) 
+            {
+                stockValueCurrent = marketcapCurrent; //Market Cap
+                
+                //If the marketCap interactor is not unlocked, it is unlocked here
+                if (!CPU.instance.GetInteractorUnlockState(InteractionAreaType.Stockmarket, 1))
+                {
+                    UnlockInteractor(1);
+                }
+            }
+            
             else if (stockValueCurrent <= 0) stockValueCurrent = 0; //Not below Zero
+            
             stockValueTMP.text = stockValueCurrent.ToString("F3");
             
             //Next Entry
@@ -277,7 +281,7 @@ public class Stockmarket : InteractionArea
         
         
         //Market Cap TT
-        string marketcapTooltip = $"<br><br>??? (Growth stock to unlock: <b>{growthstockToUnlockMarketcap}</b>)";
+        string marketcapTooltip = $"";
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Stockmarket, 1))
         {
             

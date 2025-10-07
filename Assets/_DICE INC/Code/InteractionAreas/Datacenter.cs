@@ -17,6 +17,10 @@ public class Datacenter : InteractionArea
     [TitleGroup("References")] 
     [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Datacenter;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
+    [SerializeField] private GameObject dataPointPrefab;
+    [SerializeField] private Transform generatorHolder;
+    [SerializeField] private RawImage dataPool;
+    
     
     
     [TitleGroup("Datacenter")] 
@@ -27,25 +31,32 @@ public class Datacenter : InteractionArea
     [SerializeField] private int generatorCostBase;
     [SerializeField] private float generatorCostMult;
     [SerializeField] private int generatorMax;
+    [Space]
+    [ShowInInspector, ReadOnly] private int generatorCurrent;
  
     
     [Header("Affinity")]
     [SerializeField] private int affinityCostBase;
     [SerializeField] private float affinityCostMult;
     [SerializeField] private int affinityMax;
+    [Space]
+    [ShowInInspector, ReadOnly] private int affinityCurrent;
     
     [Header("Throughput")]
     [SerializeField] private int throughputCostBase;
     [SerializeField] private float throughputCostMult;
     [SerializeField] private int throughputMax;
+    [Space]
+    [ShowInInspector, ReadOnly] private int throughputCurrent;
 
+    private bool datacenterCycleActive;
     
         
     #region |-------------- INIT --------------|
 
     protected override void InitSubClass()
     {
-        
+        UnlockInteractor(0); //Unlock Generators
     }
 
     protected override void OnAreaUnlock()
@@ -99,13 +110,18 @@ public class Datacenter : InteractionArea
         
         switch (index)
         {
-            case 0: // Particle Cannon
+            case 0: // Generators
+                generatorCurrent = count;
+
+                if (!datacenterCycleActive) StartCoroutine(DataCenterCycle());
                 break;
             
             case 1: // Affinity
+                affinityCurrent = count;
                 break;
             
             case 2:// Throughput
+                throughputCurrent = count;
                 break;
             
         }
@@ -120,6 +136,14 @@ public class Datacenter : InteractionArea
         
         
         
+    }
+
+    private IEnumerator DataCenterCycle()
+    {
+        datacenterCycleActive = true;
+
+
+        yield return new WaitForEndOfFrame();
     }
     
     

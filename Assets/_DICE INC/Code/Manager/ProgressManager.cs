@@ -41,16 +41,17 @@ public class ProgressManager : MonoBehaviour
 
             case 2:
                 technology.UnlockArea();
-                ResourceManager.instance.UnlockResource(Resource.mDice);
+                UnlockResource(Resource.mDice);
                 break;
 
             case 3:
                 stockmarket.UnlockArea();
-                ResourceManager.instance.UnlockResource(Resource.Data);
+                UnlockResource(Resource.Data);
                 break;
 
             case 4:
                 datacenter.UnlockArea();
+                factory.UnlockInteractor(5); //Unlock AI Worker
                 break;
         }
     }
@@ -76,6 +77,15 @@ public class ProgressManager : MonoBehaviour
             case Resource.Material:
                 ResourceManager.instance.UnlockResource(Resource.Material);
                 import.UnlockInteractor(1);
+                break;
+            
+            case Resource.mDice:
+                ResourceManager.instance.UnlockResource(Resource.mDice);
+                break;
+            
+            case Resource.Data:
+                ResourceManager.instance.UnlockResource(Resource.Data);
+                import.UnlockInteractor(2);
                 break;
                 
         }

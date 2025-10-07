@@ -123,10 +123,6 @@ public class Factory : InteractionArea
         {
             nextLoader.GetComponent<Image>().DOFade(0, 0);
         }
-        
-        //TEST
-        UnlockInteractor(3);
-        UnlockInteractor(4);
     }
     
     protected override List<int> GetCostsBase()
@@ -187,7 +183,7 @@ public class Factory : InteractionArea
         {
             case 0: //Workers
                 workerCurrent = count;
-                if (!factoryCycleActive) StartCoroutine(WorkShopCycle());
+                if (!factoryCycleActive) StartCoroutine(FactoryCycle());
                 
                 //If AI Workers are unlocked and only one worker is currently there, update AI Worker availability
                 if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 5) &&
@@ -264,22 +260,27 @@ public class Factory : InteractionArea
 
      
         //Unlock Interactors based on level
-        for (int i = 0; i < unlockLevels.Length; i++)
+        //Stops after Overdrive because AI Worker and SelfLearning are unlocked when Data Center is unlocked by Lab
+        if (!CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 4))
         {
-            if (level >= unlockLevels[i] &&
-                !CPU.instance.GetInteractorUnlockState(thisInteractionAreaType, i))
+            for (int i = 0; i < unlockLevels.Length; i++)
             {
-                UnlockInteractor(i);
+                if (level >= unlockLevels[i] &&
+                    !CPU.instance.GetInteractorUnlockState(thisInteractionAreaType, i))
+                {
+                    UnlockInteractor(i);
+                }
             }
         }
-
+        
+        //Unlock Material when conveyors are unlocked
         if (level == unlockLevels[1]) ProgressManager.instance.UnlockResource(Resource.Material);
        
       
     }
     
     
-    private IEnumerator WorkShopCycle()
+    private IEnumerator FactoryCycle()
     {
         factoryCycleActive = true;
         while (factoryCycleActive)
