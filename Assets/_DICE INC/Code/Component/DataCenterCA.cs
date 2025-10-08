@@ -1,37 +1,42 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using DICEINC.Global;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 
 public class DataCenterCA : MonoBehaviour
 {
-    [Header("Display / Grid")]
-    [SerializeField] private RawImage display;       // auto-filled in Awake if on same GO
-    [SerializeField] private int gridWidth = 48;
-    [SerializeField] private int gridHeight = 128;
+    [SerializeField] private bool printLog;
+    
+    [Header("Grid")]
+    [SerializeField] private RawImage display;     
+    [SerializeField] private int gridWidth = 47;
+    [SerializeField] private int gridHeight = 127;
     [SerializeField] private Color32 backgroundColor = new Color32(0, 0, 0, 255);
     [SerializeField] private Color32 trailColor = new Color32(0, 255, 255, 255);
+    [SerializeField] private Color32 dataColor = new Color32(255, 100, 100, 255);
 
-    [Header("Agents")]
-    [SerializeField] private int agentCount = 24;
-    [SerializeField] private float speedCellsPerSecond = 12f;
-    [Tooltip("Random spread in degrees around 'down' for initial directions.")]
-    [SerializeField] private float initialAngleSpreadDeg = 35f;
-    [Tooltip("Small randomness added on trail bounce to avoid ping-ponging.")]
-    [SerializeField] private float bounceNoiseDeg = 10f;
+    [Header("Settings")]
+    [Tooltip("50 ticks = 1 second.")]
+    [SerializeField] private int ticksUntilMove = 5;
+    [SerializeField] private int ticksUntilWipe = 800;
+    [SerializeField] private int ticksUntilSpawn = 50;
+    [SerializeField] private bool spawnImmediatelyOnStart = true; // spawn first agent at t=0
+    [SerializeField] private int cluster;
 
-    [Header("Lifecycle")]
-    [Tooltip("Wipes the entire board every X seconds.")]
-    [SerializeField] private float wipeIntervalSeconds = 3.5f;
-
-    [Header("Timing")]
-    [SerializeField] private bool useFixedUpdate = true; // recommended
-    [SerializeField] private int maxCellsPerSegment = 256; // safety cap per agent step
-
-    // Optional event: subscribe if you want to count 'Data' on trail hits.
-    public event Action OnTrailHit;
-
+    //Tick tracking
+    private int ticksUntilMoveCurrent;
+    private int ticksUntilWipeCurrent;
+    private int ticksUntilSpawnCurrent;
+    private bool isRunning;
+    
+    private float simTickInterval;
+    private float tickTimer;
+    
     // Internal buffers
     private Texture2D _tex;
     private Color32[] _pixels;  // size = gridWidth * gridHeight
@@ -39,32 +44,41 @@ public class DataCenterCA : MonoBehaviour
 
     private struct Agent
     {
-        public Vector2 pos; // in cell space, continuous
-        public Vector2 vel; // normalized direction
+        public Vector2Int pos; // in cell space, continuous
+        public Vector2Int vel; // normalized direction
     }
-    private readonly List<Agent> _agents = new List<Agent>(64);
+    private readonly List<Agent> _agents = new List<Agent>(128);
+    private List<Vector2Int> _spawnPositions = new List<Vector2Int>();
+    
+    private int _spawnedCount = 0; // how many agents have been spawned so far
+    private int _movementTryCounter;
+    
 
-    private float _wipeTimer = 0f;
-    private System.Random _rng; // deterministic if you want (seed it)
-
-    private void Awake()
+    #region |-------------- INIT --------------|
+    
+    private void Start()
     {
-        if (display == null) display = GetComponent<RawImage>();
-        _rng = new System.Random(); // set a seed if you want reproducibility
+        if (display == null) Debug.LogError("DataCenter Texture is missing");
+        
+        ticksUntilWipeCurrent = ticksUntilWipe;
+        ticksUntilMoveCurrent = ticksUntilMove;
+        ticksUntilSpawnCurrent = ticksUntilSpawn;
+    }
+
+    public void initializeCA()
+    {
+        Debug.Log("Initializing DataCenter CA");
+        
+        simTickInterval = 1f / 100; //0.01s per tick
+        
         InitTextureAndGrid();
-        SpawnAgents();
+        
+        if (spawnImmediatelyOnStart) SpawnAgent();
+        
+        //Start Update
+        isRunning = true;
     }
-
-    private void OnEnable()
-    {
-        // Ensure crisp pixel look when RawImage scales us up
-        if (_tex != null)
-        {
-            _tex.filterMode = FilterMode.Point;
-            _tex.wrapMode = TextureWrapMode.Clamp;
-        }
-    }
-
+    
     private void InitTextureAndGrid()
     {
         _tex = new Texture2D(gridWidth, gridHeight, TextureFormat.RGBA32, false);
@@ -74,14 +88,103 @@ public class DataCenterCA : MonoBehaviour
         _pixels = new Color32[gridWidth * gridHeight];
         _occ = new byte[gridWidth * gridHeight];
 
-        FillAll(backgroundColor);
+        ClearGrid(backgroundColor);
+        display.texture = _tex;
+
+        CreateBorder();
+        CreateSpawner();
+
         _tex.SetPixels32(_pixels);
         _tex.Apply(false, false);
+    }
+    
+    #endregion
+    
+    #region |-------------- LOOP --------------|
+    
+    private void Update()
+    {
+        /*
+        if (!isRunning) return;
+        
+        tickTimer += Time.deltaTime;
 
-        display.texture = _tex;
+        while (tickTimer >= simTickInterval)
+        {
+            tickTimer -= simTickInterval;
+            RunSimulation();
+        }
+        */
+        
+    }
+    private void FixedUpdate()
+    {
+        if (!isRunning) return;
+        
+        //Evaluate Wipe
+        ticksUntilWipeCurrent--;
+        if (ticksUntilWipeCurrent <= 0)
+        {
+            //wipe
+            Wipe();
+            //Reset ticks
+            ticksUntilWipeCurrent = ticksUntilWipe;
+            ticksUntilMoveCurrent = ticksUntilMove;
+            ticksUntilSpawnCurrent = ticksUntilSpawn;
+            return;
+        }
+
+        //Evaluate Spawn
+        ticksUntilSpawnCurrent--;
+        if (ticksUntilSpawnCurrent <= 0)
+        {
+            //Spawn
+            SpawnAgent();
+            ticksUntilSpawnCurrent = ticksUntilSpawn;
+        }
+          
+        //Evaluate Movement
+        ticksUntilMoveCurrent--;
+        if (ticksUntilMoveCurrent <= 0)
+        {
+            MoveAgent();
+            ticksUntilMoveCurrent = ticksUntilMove;
+        }
+        
+        // Upload pixels once per frame
+        DrawTexture();
     }
 
-    private void FillAll(Color32 c)
+    #endregion
+   
+    #region |-------------- HELPER --------------|
+
+    void DrawTexture()
+    {
+        _tex.SetPixels32(_pixels);
+        _tex.Apply(false, false);
+    }
+    void CreateBorder()
+    {
+        //Draw invisible border (so that wall hit and trail hit can be computed as the same thing)
+        for (int y = 0; y < gridHeight; y++)
+        {
+            for (int x = 0; x < gridWidth; x++)
+            {
+                bool isBorder =
+                    y == 0 || y == gridHeight - 1 ||
+                    x == 0 || x == gridWidth  - 1;
+
+                if (isBorder)
+                {
+                    int index = y * gridWidth + x;
+                    _occ[index] = 1;
+                }
+            }
+        }
+    }
+    
+    private void ClearGrid(Color32 c)
     {
         for (int i = 0; i < _pixels.Length; i++)
         {
@@ -89,185 +192,395 @@ public class DataCenterCA : MonoBehaviour
             _occ[i] = 0;
         }
     }
-
-    private void SpawnAgents()
+    
+    void CreateSpawner()
     {
-        _agents.Clear();
-
-        for (int i = 0; i < agentCount; i++)
+        _spawnPositions.Clear(); 
+        for (int x = 2; x < gridWidth - 2; x++)
         {
-            Agent a = new Agent();
-
-            // Spawn along the top row (just inside the wall)
-            a.pos.x = UnityEngine.Random.Range(1f, gridWidth - 1f);
-            a.pos.y = gridHeight - 2f;
-
-            // Aim roughly downward with some spread
-            float angle = 270f + UnityEngine.Random.Range(-initialAngleSpreadDeg, initialAngleSpreadDeg);
-            a.vel = AngleToDir(angle);
-
-            _agents.Add(a);
+            if (x % 5 == 0)
+            {
+                _spawnPositions.Add(new Vector2Int(x, 1));
+                _spawnPositions.Add(new Vector2Int(x, gridHeight - 2));
+            }
+            
         }
+        
+        if (printLog) Debug.Log($"DataCenter: Created {_spawnPositions.Count} data spawn positions");
     }
 
-    private static Vector2 AngleToDir(float degrees)
+    void CreateCluster()
     {
-        float rad = degrees * Mathf.Deg2Rad;
-        Vector2 v = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
-        if (v.sqrMagnitude < 1e-6f) v = Vector2.down;
-        return v.normalized;
+        int rndX = Random.Range(10, gridWidth-10);
+        int rndY = Random.Range(10, gridHeight-10);
+        
+        
     }
 
-    private void Update()
+    private void SpawnAgent()
     {
-        if (!useFixedUpdate)
-            Step(Time.deltaTime);
-    }
+        if (_spawnedCount >= 18) return;
+        
+        if (printLog) Debug.Log("DataCenter: Spawning Agent.");
+        
+        Agent agent = new Agent();
 
-    private void FixedUpdate()
-    {
-        if (useFixedUpdate)
-            Step(Time.fixedDeltaTime);
+        int randomSpawnIndex = Random.Range(0, _spawnPositions.Count);
+        Vector2Int nextAgentSpawn = _spawnPositions[randomSpawnIndex];
+        _spawnPositions.RemoveAt(randomSpawnIndex);
+        
+        agent.pos = nextAgentSpawn;
+        agent.vel.x = Random.Range(-1, 2);
+        
+        if (agent.pos.y > 10) agent.vel.y = -1;
+        else agent.vel.y = 1;
+        
+        _agents.Add(agent);
+        _spawnedCount++;
     }
-
-    private void Step(float dt)
+    
+    private void MoveAgent()
     {
         if (_tex == null) return;
-
-        float stepDist = speedCellsPerSecond * dt;
 
         // Move each agent and write trails
         for (int i = 0; i < _agents.Count; i++)
         {
-            Agent a = _agents[i];
+            Agent agent = _agents[i];
 
-            Vector2 prevPos = a.pos;
-            Vector2 candidate = a.pos + a.vel * stepDist;
+            if (agent.vel == Vector2Int.zero) continue;
+            
+            
+            Vector2Int currentPos = agent.pos;
+            int currentIndex = currentPos.y * gridWidth + currentPos.x;
+            _occ[currentIndex] = 1;
+            _pixels[currentIndex] = trailColor;
 
-            // Wall reflection (analytical)
-            ReflectOffBounds(ref a, ref candidate);
+            Vector2Int nextPos = currentPos + agent.vel;
 
-            // Traverse path from prevPos to candidate across grid cells
-            bool hitTrail = TraverseAndStamp(prevPos, candidate, ref a);
-
-            if (hitTrail)
+            var hitData = HitSomething(agent.vel, currentPos);
+            if (hitData.hit)
             {
-                // Flip direction (simple, arcade-y), add tiny noise to avoid infinite ping-pong
-                a.vel = -a.vel;
-                if (bounceNoiseDeg > 0f)
+                //Add Data
+                CPU.instance.ChangeResource(Resource.Data, 1);
+                
+                agent.vel = hitData.newVelocity;
+                nextPos = currentPos + agent.vel;
+                
+                // Checks if the next pos is outside the grid
+                //If yes, agent is disabled
+                if ((uint)nextPos.x >= (uint)gridWidth || (uint)nextPos.y >= (uint)gridHeight)
                 {
-                    float jitter = UnityEngine.Random.Range(-bounceNoiseDeg, bounceNoiseDeg);
-                    a.vel = Quaternion.Euler(0, 0, jitter) * a.vel;
-                    a.vel.Normalize();
+                    agent.vel = Vector2Int.zero;
+                    _agents[i] = agent;
+                    continue;
                 }
-                // Keep position at prevPos on collision to avoid tunneling
-                a.pos = prevPos;
-
-                OnTrailHit?.Invoke();
             }
-            else
-            {
-                a.pos = candidate;
-            }
-
-            _agents[i] = a;
+            
+            //Set and draw point in Grid
+            int nextPosIndex = nextPos.y * gridWidth + nextPos.x;
+            _occ[nextPosIndex] = 1;
+            _pixels[nextPosIndex] = dataColor;
+            
+            agent.pos = nextPos;
+            _agents[i] = agent;
+            
         }
+        
+    }
+    
+    private void Wipe()
+    {
+        if (printLog) Debug.Log("DataCenter: Perform wipe.");
+        isRunning = false;
 
-        // Periodic full wipe
-        _wipeTimer += dt;
-        if (_wipeTimer >= wipeIntervalSeconds)
-        {
-            _wipeTimer = 0f;
-            FillAll(backgroundColor);
-        }
-
-        // Upload pixels once per frame
-        _tex.SetPixels32(_pixels);
-        _tex.Apply(false, false);
+        StartCoroutine(WipeAnimation());
+        
     }
 
-    private void ReflectOffBounds(ref Agent a, ref Vector2 candidate)
+    private IEnumerator WipeAnimation()
     {
-        // X bounds
-        if (candidate.x < 0f)
-        {
-            candidate.x = 0f;
-            a.vel.x = -a.vel.x;
-        }
-        else if (candidate.x >= gridWidth - 1e-3f)
-        {
-            candidate.x = gridWidth - 1e-3f;
-            a.vel.x = -a.vel.x;
-        }
 
-        // Y bounds
-        if (candidate.y < 0f)
+        for (int x = 0; x < gridWidth; x++)
         {
-            candidate.y = 0f;
-            a.vel.y = -a.vel.y;
-        }
-        else if (candidate.y >= gridHeight - 1e-3f)
-        {
-            candidate.y = gridHeight - 1e-3f;
-            a.vel.y = -a.vel.y;
-        }
+            for (int y = 0; y < gridHeight; y++)
+            {
+                int nextPosIndex = y * gridWidth + x;
+                _pixels[nextPosIndex] = trailColor;
+                DrawTexture();
+            }
 
-        a.vel.Normalize();
+            yield return new WaitForSeconds(0.01f);
+        }
+        
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int y = 0; y < gridHeight; y++)
+            {
+                int nextPosIndex = y * gridWidth + x;
+                _pixels[nextPosIndex] = backgroundColor;
+                DrawTexture();
+            }
+
+            yield return new WaitForSeconds(0.01f);
+        }
+        
+        ClearGrid(backgroundColor);
+        // Full reset: clear agents
+        _agents.Clear();
+        _spawnedCount = 0;
+        
+        CreateBorder();
+        CreateSpawner();
+        
+        if (spawnImmediatelyOnStart) SpawnAgent();
+        
+        isRunning = true;
     }
 
-    /// <summary>
-    /// Steps along the segment from start->end through grid cells.
-    /// Returns true if we encountered an occupied cell (trail collision).
-    /// Also stamps the path into the grid & pixel buffer.
-    /// </summary>
-    private bool TraverseAndStamp(Vector2 start, Vector2 end, ref Agent a)
+    
+    private (bool hit, Vector2Int newVelocity) HitSomething(Vector2Int velocity, Vector2Int currentPos)
+{
+    Vector2Int newVel = Vector2Int.zero;
+
+    int x = currentPos.x;
+    int y = currentPos.y;
+
+    /*
+     * Hit Alignment:
+     * / — \   0 1 2
+     * | 0 |   3 4 5
+     * \ — /   6 7 8
+     */
+    
+    switch (velocity.x, velocity.y)
     {
-        float dx = end.x - start.x;
-        float dy = end.y - start.y;
-        int steps = Mathf.CeilToInt(Mathf.Max(Mathf.Abs(dx), Mathf.Abs(dy)));
-        steps = Mathf.Clamp(steps, 1, maxCellsPerSegment);
-
-        float inv = 1f / steps;
-        bool hitTrail = false;
-
-        // We read occupancy BEFORE writing, so crossing any existing trail triggers a bounce.
-        for (int i = 1; i <= steps; i++)
+        case (0, 1): // ↑
         {
-            float t = i * inv;
-            float fx = Mathf.Lerp(start.x, end.x, t);
-            float fy = Mathf.Lerp(start.y, end.y, t);
-
-            int cx = (int)Mathf.Floor(fx);
-            int cy = (int)Mathf.Floor(fy);
-
-            if ((uint)cx >= (uint)gridWidth || (uint)cy >= (uint)gridHeight)
-                continue;
-
-            int idx = cy * gridWidth + cx;
-
-            // Check first
-            if (_occ[idx] != 0)
+            bool ahead = IsBlocked(x, y + 1);
+            if (ahead)
             {
-                hitTrail = true;
+                bool right = IsBlocked(x + 1, y);
+                bool left  = IsBlocked(x - 1, y);
+
+                if (right)       newVel = Random.value > 0.5f ? GetDirection(3) : GetDirection(6); // left / lower-left
+                else if (left)   newVel = Random.value > 0.5f ? GetDirection(5) : GetDirection(8); // right / lower-right
+                else             newVel = Random.value > 0.5f ? GetDirection(6) : GetDirection(8); // lower-left / lower-right
+
+                return (true, newVel);
+            }
+            break;
+        }
+
+        case (-1, 0): // ←
+        {
+            bool ahead = IsBlocked(x - 1, y);
+            if (ahead)
+            {
+                bool up   = IsBlocked(x, y + 1);
+                bool down = IsBlocked(x, y - 1);
+
+                if (up)         newVel = Random.value > 0.5f ? GetDirection(1) : GetDirection(2); // up / upper-right
+                else if (down)  newVel = Random.value > 0.5f ? GetDirection(7) : GetDirection(8); // down / lower-right
+                else            newVel = Random.value > 0.5f ? GetDirection(2) : GetDirection(8); // upper-right / lower-right
+
+                return (true, newVel);
+            }
+            break;
+        }
+
+        case (1, 0): // →
+        {
+            bool ahead = IsBlocked(x + 1, y);
+            if (ahead)
+            {
+                bool up   = IsBlocked(x, y + 1);
+                bool down = IsBlocked(x, y - 1);
+
+                if (up)         newVel = Random.value > 0.5f ? GetDirection(7) : GetDirection(8); // down / lower-right
+                else if (down)  newVel = Random.value > 0.5f ? GetDirection(1) : GetDirection(2); // up / upper-right
+                else            newVel = Random.value > 0.5f ? GetDirection(0) : GetDirection(6); // upper-left / lower-left
+
+                return (true, newVel);
+            }
+            break;
+        }
+
+        case (0, -1): // ↓
+        {
+            bool ahead = IsBlocked(x, y - 1);
+            if (ahead)
+            {
+                bool right = IsBlocked(x + 1, y);
+                bool left  = IsBlocked(x - 1, y);
+
+                if (right)      newVel = Random.value > 0.5f ? GetDirection(5) : GetDirection(2); // right / upper-right
+                else if (left)  newVel = Random.value > 0.5f ? GetDirection(3) : GetDirection(0); // left / upper-left
+                else            newVel = Random.value > 0.5f ? GetDirection(0) : GetDirection(2); // upper-left / upper-right
+
+                return (true, newVel);
+            }
+            break;
+        }
+
+        case (1, 1): // ↗
+        {
+            bool diag = IsBlocked(x + 1, y + 1);
+            if (diag)
+            {
+                bool up  = IsBlocked(x,     y + 1);
+                bool rt  = IsBlocked(x + 1, y);
+
+                if (up)        newVel = Random.value > 0.5f ? GetDirection(7) : GetDirection(8); // down / lower-right
+                else if (rt)   newVel = Random.value > 0.5f ? GetDirection(3) : GetDirection(0); // left / upper-left
+                else           newVel = Random.value > 0.5f ? GetDirection(3) : GetDirection(7); // left / down
+
+                return (true, newVel);
+            }
+            else if (IsBlocked(x, y + 1))
+            {
+                newVel = Random.value > 0.5f ? GetDirection(3) : GetDirection(7); // left / down
+                return (true, newVel);
+            }
+            break;
+        }
+
+        case (-1, 1): // ↖
+        {
+            bool diag = IsBlocked(x - 1, y + 1);
+            if (diag)
+            {
+                bool up  = IsBlocked(x,     y + 1);
+                bool lf  = IsBlocked(x - 1, y);
+
+                if (up)        newVel = Random.value > 0.5f ? GetDirection(7) : GetDirection(6); // down / lower-left
+                else if (lf)   newVel = Random.value > 0.5f ? GetDirection(5) : GetDirection(2); // right / upper-right
+                else           newVel = Random.value > 0.5f ? GetDirection(7) : GetDirection(5); // down / right
+
+                return (true, newVel);
+            }
+            else if (IsBlocked(x, y + 1))
+            {
+                newVel = Random.value > 0.5f ? GetDirection(7) : GetDirection(5); // down / right
+                return (true, newVel);
+            }
+            break;
+        }
+
+        case (-1, -1): // ↙
+        {
+            bool diag = IsBlocked(x - 1, y - 1);
+            if (diag)
+            {
+                bool dn  = IsBlocked(x,     y - 1);
+                bool lf  = IsBlocked(x - 1, y);
+
+                if (dn)        newVel = Random.value > 0.5f ? GetDirection(0) : GetDirection(1); // upper-left / up
+                else if (lf)   newVel = Random.value > 0.5f ? GetDirection(5) : GetDirection(8); // right / lower-right
+                else           newVel = Random.value > 0.5f ? GetDirection(1) : GetDirection(5); // up / right
+
+                return (true, newVel);
+            }
+            else if (IsBlocked(x, y - 1))
+            {
+                newVel = Random.value > 0.5f ? GetDirection(1) : GetDirection(5); // up / right
+                return (true, newVel);
+            }
+            break;
+        }
+
+        case (1, -1): // ↘
+        {
+            bool diag = IsBlocked(x + 1, y - 1);
+            if (diag)
+            {
+                bool dn  = IsBlocked(x,     y - 1);
+                bool rt  = IsBlocked(x + 1, y);
+
+                if (dn)        newVel = Random.value > 0.5f ? GetDirection(1) : GetDirection(2); // up / upper-right
+                else if (rt)   newVel = Random.value > 0.5f ? GetDirection(3) : GetDirection(6); // left / lower-left
+                else           newVel = Random.value > 0.5f ? GetDirection(3) : GetDirection(1); // left / up
+
+                return (true, newVel);
+            }
+            else if (IsBlocked(x, y - 1))
+            {
+                newVel = Random.value > 0.5f ? GetDirection(3) : GetDirection(1); // left / up
+                return (true, newVel);
+            }
+            break;
+        }
+    }
+
+    return (false, newVel);
+}
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool IsBlocked(int x, int y)
+    {
+        //Checks if the target coordinate is either outside of the grid or occupied
+        if ((uint)x >= (uint)gridWidth || (uint)y >= (uint)gridHeight)
+            return true;
+        return _occ[y * gridWidth + x] == 1;
+    }
+
+    private Vector2Int GetDirection(int directionIndex)
+    {
+        Vector2Int direction = new Vector2Int();
+
+        switch (directionIndex)
+        {
+            case 0: //Upper left
+                direction.x = -1;
+                direction.y = 1;
                 break;
-            }
-
-            // Then stamp (we always draw even if we bounced earlier in a previous frame)
-            _occ[idx] = 1;
-            _pixels[idx] = trailColor;
+            
+            case 1: // Up
+                direction.x = 0;
+                direction.y = 1;
+                break;
+            
+            case 2: //Upper Right
+                direction.x = 1;
+                direction.y = 1;
+                break;
+            
+            case 3: //Left
+                direction.x = -1;
+                direction.y = 0;
+                break;
+            
+            case 4: //None
+                direction.x = 0;
+                direction.y = 0;
+                break;
+            
+            case 5: //Right
+                direction.x = 1;
+                direction.y = 0;
+                break;
+            
+            case 6: //Lower left
+                direction.x = -1;
+                direction.y = -1;
+                break;
+            
+            case 7: //Down
+                direction.x = 0;
+                direction.y = -1;
+                break;
+            
+            case 8: //Lower Right
+                direction.x = 1;
+                direction.y = -1;
+                break;
+                
+                
         }
-
-        return hitTrail;
+        
+        return direction;
     }
-
-    // ——— Utilities ———
-
-    // Call this if you change grid size at runtime (Editor button etc.)
-    public void Rebuild(int width, int height)
-    {
-        gridWidth = Mathf.Max(4, width);
-        gridHeight = Mathf.Max(4, height);
-        InitTextureAndGrid();
-        SpawnAgents();
-    }
+    
+    #endregion
+    
 }

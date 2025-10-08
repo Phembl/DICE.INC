@@ -17,9 +17,8 @@ public class Datacenter : InteractionArea
     [TitleGroup("References")] 
     [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Datacenter;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
-    [SerializeField] private GameObject dataPointPrefab;
-    [SerializeField] private Transform generatorHolder;
-    [SerializeField] private RawImage dataPool;
+    [SerializeField] private DataCenterCA datacenterCA;
+
     
     
     
@@ -61,7 +60,7 @@ public class Datacenter : InteractionArea
 
     protected override void OnAreaUnlock()
     {
-       
+        datacenterCA.initializeCA();
     }
 
     protected override List<int> GetCostsBase()
