@@ -22,7 +22,6 @@ public class Interactor : MonoBehaviour
     
     //Colors
     private Color colorActive;
-    //private Color colorDark;
     private Color colorInactive;
     private Color colorScreen;
     
@@ -137,7 +136,7 @@ public class Interactor : MonoBehaviour
     
     void CheckAvailabilityMDice()
     {
-        if (costResource != Resource.mDice) return;
+        if (costResource != Resource.mDICE) return;
         
         CheckAvailability();
     }
@@ -170,7 +169,7 @@ public class Interactor : MonoBehaviour
                 else isPurchasable = true;
                 break;
             
-            case Resource.mDice:
+            case Resource.mDICE:
                 if (currentCost > CPU.instance.GetMDice()) isPurchasable = false;
                 else isPurchasable = true;
                 break;

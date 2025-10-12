@@ -28,7 +28,7 @@ namespace DICEINC.Global
         Dice,
         Material,
         Luck,
-        mDice,
+        mDICE,
         Data
     }
 

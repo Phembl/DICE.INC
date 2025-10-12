@@ -41,7 +41,7 @@ public class ProgressManager : MonoBehaviour
 
             case 2:
                 technology.UnlockArea();
-                UnlockResource(Resource.mDice);
+                UnlockResource(Resource.mDICE);
                 break;
 
             case 3:
@@ -79,8 +79,8 @@ public class ProgressManager : MonoBehaviour
                 import.UnlockInteractor(1);
                 break;
             
-            case Resource.mDice:
-                ResourceManager.instance.UnlockResource(Resource.mDice);
+            case Resource.mDICE:
+                ResourceManager.instance.UnlockResource(Resource.mDICE);
                 break;
             
             case Resource.Data:

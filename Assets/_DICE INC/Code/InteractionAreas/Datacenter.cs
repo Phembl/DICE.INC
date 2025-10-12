@@ -18,33 +18,28 @@ public class Datacenter : InteractionArea
     [ReadOnly] public InteractionAreaType thisInteractionAreaType = InteractionAreaType.Datacenter;
     protected override InteractionAreaType GetInteractionAreaType() => thisInteractionAreaType;
     [SerializeField] private DataCenterCA datacenterCA;
-
-    
-    
-    
-    [TitleGroup("Datacenter")] 
-    [SerializeField] private float timeBetweenUpdates;
-    [Space]
+    [SerializeField] private int[] unlockLevels; 
     
     [Header("Generator")]
     [SerializeField] private int generatorCostBase;
     [SerializeField] private float generatorCostMult;
     [SerializeField] private int generatorMax;
+    [SerializeField] private int generatorTickDecrease;
     [Space]
     [ShowInInspector, ReadOnly] private int generatorCurrent;
- 
     
-    [Header("Affinity")]
-    [SerializeField] private int affinityCostBase;
-    [SerializeField] private float affinityCostMult;
-    [SerializeField] private int affinityMax;
+    [Header("Crystal")]
+    [SerializeField] private int crystalCostBase;
+    [SerializeField] private float crystalCostMult;
+    [SerializeField] private int crystalMax;
     [Space]
-    [ShowInInspector, ReadOnly] private int affinityCurrent;
+    [ShowInInspector, ReadOnly] private int crystalCurrent;
     
     [Header("Throughput")]
     [SerializeField] private int throughputCostBase;
     [SerializeField] private float throughputCostMult;
     [SerializeField] private int throughputMax;
+    [SerializeField] private int throughputTickIncrease;
     [Space]
     [ShowInInspector, ReadOnly] private int throughputCurrent;
 
@@ -60,7 +55,7 @@ public class Datacenter : InteractionArea
 
     protected override void OnAreaUnlock()
     {
-        datacenterCA.initializeCA();
+        
     }
 
     protected override List<int> GetCostsBase()
@@ -68,7 +63,7 @@ public class Datacenter : InteractionArea
         List<int> costs = new List<int>();
         
         costs.Add(generatorCostBase);
-        costs.Add(affinityCostBase);
+        costs.Add(crystalCostBase);
         costs.Add(throughputCostBase);
         
         return costs;
@@ -79,7 +74,7 @@ public class Datacenter : InteractionArea
         List<float> costs = new List<float>();
         
         costs.Add(generatorCostMult);
-        costs.Add(affinityCostMult);
+        costs.Add(crystalCostMult);
         costs.Add(throughputCostMult);
         
         return costs;
@@ -90,7 +85,7 @@ public class Datacenter : InteractionArea
         List<int> max = new List<int>();
         
         max.Add(generatorMax);
-        max.Add(affinityMax);
+        max.Add(crystalMax);
         max.Add(throughputMax);
         
         return max;
@@ -111,41 +106,49 @@ public class Datacenter : InteractionArea
         {
             case 0: // Generators
                 generatorCurrent = count;
-
-                if (!datacenterCycleActive) StartCoroutine(DataCenterCycle());
+                datacenterCA.ChangeSpawnTicks(-generatorTickDecrease);
+                if (!datacenterCycleActive)
+                {
+                    datacenterCycleActive = true;
+                    datacenterCA.initializeCA();
+                }
                 break;
             
-            case 1: // Affinity
-                affinityCurrent = count;
+            case 1: // Crystal
+                crystalCurrent = count;
+                datacenterCA.ChangeCrystalSpawnChance((float)crystalCurrent / 100);
                 break;
             
             case 2:// Throughput
                 throughputCurrent = count;
+                datacenterCA.ChangeWipeTicks(throughputTickIncrease);
                 break;
             
         }
     }
-
     
 
-       
+    //Send by CA when data collides
+    public void IncreaseLevel()
+    {
+        level++;
+        CheckProgress();
+    }
     
     protected override void CheckProgress()
     {
-        
-        
+      
+        for (int i = 0; i < unlockLevels.Length; i++)
+        {
+            if (level >= unlockLevels[i] &&
+                !CPU.instance.GetInteractorUnlockState(thisInteractionAreaType, i))
+            {
+                UnlockInteractor(i);
+            }
+        }
         
     }
 
-    private IEnumerator DataCenterCycle()
-    {
-        datacenterCycleActive = true;
-
-
-        yield return new WaitForEndOfFrame();
-    }
-    
-    
     #endregion
     
     #region |-------------- TOOLTIP --------------|
@@ -155,27 +158,30 @@ public class Datacenter : InteractionArea
         TooltipData data = new TooltipData();
         
         data.areaTitle = thisInteractionAreaType.ToString();
-        data.areaDescription = "The data center,";
+        data.areaDescription = "The data center, generates data particles which generate data on collision." +
+                               $"<br>One data particle is generated every <b>{(float)datacenterCA.GetSpawnTicks()/50}</b> seconds." +
+                               $"<br>The data pool is wiped every <b>{(float)datacenterCA.GetWipeTicks()/50}</b> seconds.";
                              
 
         //Generator
-        string value1Tooltip = $"<br><br><b>GENERATOR:</b> Increases the number of particles shot per shoot, increasing the number of traveling particles.";
+        string value1Tooltip = $"<br><br><b>GENERATOR:</b> Every generator decreases the time between data point generation by <b>{(float)generatorTickDecrease/50}</b> seconds.";
         
         
         //Value 2 TT
-        string value2Tooltip = $"<br><br>???</b>)";
+        string value2Tooltip = $"";
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Datacenter, 1))
         {
 
-            value2Tooltip = $"<br><br><b>AFFINITY:</b> Introduces a chance for a particle to increase its traveling speed after a collision.";
+            value2Tooltip = $"<br><br><b>CRYSTAL:</b> Introduces a chance for data to crystallize after every wipe. Every level increases the crystallization chance by <b>1</b>%." +
+                            $"<br>Current crystallization chance: <b>{crystalCurrent}</b>%.";
         }
         
         //Value 3 TT
-        string value3Tooltip = $"<br><br>???</b>)";
+        string value3Tooltip = $"";
         if (CPU.instance.GetInteractorUnlockState(InteractionAreaType.Datacenter, 2))
         {
 
-            value3Tooltip = $"<br><br><b>THROUGHPUT:</b> Increase the number of shots before the area is cleared, increasing the collision chance and frequency.";
+            value3Tooltip = $"<br><br><b>THROUGHPUT:</b> Every throughput Increase the time between wipes by <b>{(float)throughputTickIncrease/50}</b> seconds.";
         }
         
         data.areaDescription += value1Tooltip + value2Tooltip +  value3Tooltip;

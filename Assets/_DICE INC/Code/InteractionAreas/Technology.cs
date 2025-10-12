@@ -22,7 +22,6 @@ public class Technology : InteractionArea
     [SerializeField] private DiceTable diceTable;
     
     [TitleGroup("Technology")] 
-    [ShowInInspector, ReadOnly] private int technologyLevel = 1;
     [ShowInInspector, ReadOnly] private double rollsCurrent;
     [SerializeField] private double rollsGoalBase;
     [SerializeField] private double rollsGoalMult;
@@ -190,7 +189,7 @@ public class Technology : InteractionArea
             yield return new WaitForSeconds(2.2f);
             
             //Add Resources
-            CPU.instance.ChangeResource(Resource.mDice, 1);
+            CPU.instance.ChangeResource(Resource.mDICE, 1);
             level++;
             CheckProgress();
             
@@ -234,8 +233,8 @@ public class Technology : InteractionArea
         TooltipData data = new TooltipData();
         
         data.areaTitle = data.areaTitle = thisInteractionAreaType.ToString();
-        data.areaDescription = $"Technology is used to improve dice performance. To do that, dice rolls are evaluated to generate mega-dice(mDice) which can be used to increase different dice-aspects." +
-                               $"<br><br>Rolls needed to generate the next mDice: <b>{rollsGoalCurrent - rollsCurrent}</b>." +
+        data.areaDescription = $"Technology is used to improve dice performance. To do that, dice rolls are evaluated to generate mega-dice(mDICE) which can be used to increase different dice-aspects." +
+                               $"<br><br>Rolls needed to generate the next mDICE: <b>{rollsGoalCurrent - rollsCurrent}</b>." +
                                $"<br><br><b>WARNING: Overflowing rolls can not be taken into consideration as roll data needs to be evaluated first!</b>";
 
         //Extra Sides TT

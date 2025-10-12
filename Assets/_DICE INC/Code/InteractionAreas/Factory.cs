@@ -22,6 +22,7 @@ public class Factory : InteractionArea
     [SerializeField] private Transform factoryLoader;
     [SerializeField] private Transformer transformer;
     [SerializeField] private TMP_Text tempTransformerTMP;
+    [SerializeField] private Sprite[] diceSprites;
 
     [TitleGroup("Factory")] 
     [SerializeField] private float timerBase;
@@ -275,8 +276,8 @@ public class Factory : InteractionArea
         
         //Unlock Material when conveyors are unlocked
         if (level == unlockLevels[1]) ProgressManager.instance.UnlockResource(Resource.Material);
-       
-      
+        
+        if (AIWorkerCurrent >= 10 && !CPU.instance.GetInteractorUnlockState(InteractionAreaType.Factory, 6)) UnlockInteractor(6);
     }
     
     
@@ -311,6 +312,7 @@ public class Factory : InteractionArea
             {
                 float singleLoadTimer = nextProductionTimer / 10;
                 
+                factoryLoader.GetChild(i).gameObject.GetComponent<Image>().sprite = diceSprites[Random.Range(0, diceSprites.Length)];
                 factoryLoader.GetChild(i).gameObject.GetComponent<Image>().DOFade(1, singleLoadTimer);
                 yield return new WaitForSeconds(singleLoadTimer);
             }

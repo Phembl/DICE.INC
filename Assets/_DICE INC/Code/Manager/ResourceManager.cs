@@ -111,12 +111,12 @@ public class ResourceManager : MonoBehaviour
                 CPU.instance.UnlockLuck();
                 break;
             
-            case Resource.mDice:
+            case Resource.mDICE:
                 mDiceTitleTMP.text = "mDICE";
                 mDiceCounterTMP.text = "0";
                 mDiceTitleTMP.color = colorActive;
                 mDiceCounterTMP.color = colorActive;
-                Debug.Log("Resource: mDice are now unlocked");
+                Debug.Log("Resource: mDICE are now unlocked");
                 CPU.instance.UnlockMDice();
                 break;
             
@@ -164,7 +164,7 @@ public class ResourceManager : MonoBehaviour
                 luckCounterTMP.color = colorInactive;
                 break;
             
-            case Resource.mDice:
+            case Resource.mDICE:
                 mDiceTitleTMP.text = "???";
                 mDiceCounterTMP.text = "";
                 mDiceTitleTMP.color = colorInactive;

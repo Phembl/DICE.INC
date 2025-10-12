@@ -33,7 +33,7 @@ public class Lab : MonoBehaviour
     //Research
     private int currentResearchIndex;
     private bool researchIsActive;
-    private bool researchIsPrepared;
+    private bool researchIsPreparing;
     public bool GetResearchIsActive() => researchIsActive;
     private Coroutine researchCostCoroutine;
     private int researchSuccessCounter;
@@ -75,7 +75,8 @@ public class Lab : MonoBehaviour
     
     void PrepareNextResearch()
     {
-        researchIsPrepared = true;
+        researchIsPreparing = true;
+        researchButtonImage.sprite = researchButtonActivate;
         DefineIconPool();
         
         //MemoryFieldsUsed is used as a temp container to store and remove the memoryFields for randomization
@@ -106,7 +107,7 @@ public class Lab : MonoBehaviour
         
         WriteResearchText($"RESEARCH: <b>{researchGoals[currentResearchIndex].ToString()}</b><br>COST: <b>{researchCost[currentResearchIndex]} PIPS/s</b>");
 
-        researchIsPrepared = false;
+        researchIsPreparing = false;
     }
 
     void WriteResearchText(string text)
@@ -139,7 +140,7 @@ public class Lab : MonoBehaviour
 
     public void StartStopResearch()
     {
-        if (researchIsPrepared) return;
+        if (researchIsPreparing) return;
         
         if (!researchIsActive) //Start Research
         {
@@ -147,7 +148,7 @@ public class Lab : MonoBehaviour
             if (researchCost[currentResearchIndex] > CPU.instance.GetPips()) return;
             
             researchIsActive = true;
-            researchIsPrepared = true;
+            researchIsPreparing = true;
             StartCoroutine(ActivateMemoryButtons());
             
             researchButtonImage.sprite = researchButtonDeactivate;
@@ -159,7 +160,7 @@ public class Lab : MonoBehaviour
         else //Stop Research
         {
             researchIsActive = false;
-            researchIsPrepared = true;
+            researchIsPreparing = true;
             StopCoroutine(researchCostCoroutine); 
             
             StartCoroutine(DeactivateMemoryButtons());
@@ -193,7 +194,7 @@ public class Lab : MonoBehaviour
             if (!nextMemory.GetSolvedState()) nextMemory.ActivateDeactivate(true);
         }
 
-        researchIsPrepared = false;
+        researchIsPreparing = false;
         researchCostCoroutine = StartCoroutine(ResearchCost());
     }
 
@@ -208,7 +209,7 @@ public class Lab : MonoBehaviour
         
         yield return new WaitForSeconds(0.5f);
 
-        researchIsPrepared = false;
+        researchIsPreparing = false;
     }
 
     //Send by MemoryCards
@@ -259,7 +260,9 @@ public class Lab : MonoBehaviour
     IEnumerator ResearchSuccess()
     {
         researchIsActive = false;
-        researchIsPrepared = true;
+        researchIsPreparing = true;
+        
+        
         StopCoroutine(researchCostCoroutine); 
         
         WriteResearchText($"research success!<br><b>{researchGoals[currentResearchIndex].ToString()}</b> unlocked.");
@@ -271,6 +274,7 @@ public class Lab : MonoBehaviour
         foreach (Button_Memory nextMemory in memoryFields)
         {
             nextMemory.ActivateDeactivate(false);
+            nextMemory.SetSolvedState(false);
             nextMemory.ShowHide(false);
             nextMemory.ShowIcon(false);
         }
@@ -279,10 +283,19 @@ public class Lab : MonoBehaviour
 
         ProgressManager.instance.ResearchProgress(currentResearchIndex);
         
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(3f);
         
         currentResearchIndex++;
-        PrepareNextResearch();
+        if (currentResearchIndex < researchGoals.Length) PrepareNextResearch();
+        else EndLab();
+        
+        
+    }
+
+    void EndLab()
+    {
+        if (printLog) Debug.Log($"LAB: All research finished.");
+        WriteResearchText($"No more research available.");
     }
     
     #endregion

@@ -125,6 +125,7 @@ public class Transformer : InteractionArea
         }
         
     }
+    
 
     public void TriggerTransformer(int _material)
     {
@@ -135,38 +136,8 @@ public class Transformer : InteractionArea
         if (printLog) Debug.Log($"Transformer: Received {_material} material to produce. With {extruderCurrent} extruders, {materialsProduced} materials produced.");
         
         level++;
+        CheckProgress();
         
-        /*
-        
-        destroyedDice += dice;
-
-        //For each Dice, roll fragments
-        for (int i = 0; i < dice; i++)
-        {
-            int fragmentsProduced = Random.Range(fragmentsMin, fragmentsMax);
-            currentFragments += fragmentsProduced;
-        }
-        
-        if (printLog) Debug.Log($"Transformer: Current fragments are {currentFragments}.");
-
-        //Check for enough fragments
-        if (currentFragments >= diceNeededCurrent)
-        {
-            if (printLog) Debug.Log($"Transformer: Fragments reached {diceNeededCurrent}. Now producing {materialProducedCurrent} material.");
-            
-            //Produce Material
-            currentFragments -= diceNeededCurrent;
-            if (currentFragments < 0) currentFragments = 0;
-            
-            if (printLog) Debug.Log($"Transformer: New current fragments are {currentFragments}.");
-            
-            CPU.instance.ChangeResource(Resource.Material, materialProducedCurrent);
-            
-            level++;
-            CheckProgress();
-        }
-        
-        */
     }
     
     #endregion

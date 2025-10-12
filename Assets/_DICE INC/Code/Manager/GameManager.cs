@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour
     //DataCenter
     [SerializeField, FoldoutGroup("Datacenter")] private bool datacenterUnlocked;
     [SerializeField, FoldoutGroup("Datacenter")] private int startGenerator;
-    [SerializeField, FoldoutGroup("Datacenter")] private int startAffinity;
+    [SerializeField, FoldoutGroup("Datacenter")] private int startCrystal;
     [SerializeField, FoldoutGroup("Datacenter")] private int startThroughput;
     
     #endregion
@@ -160,7 +160,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("|----- START INIT: Data Center -----|");
         List <int> datacenterStartSettings  = new List<int>();
         datacenterStartSettings.Add(startGenerator);
-        datacenterStartSettings.Add(startAffinity); 
+        datacenterStartSettings.Add(startCrystal); 
         datacenterStartSettings.Add(startThroughput);
         datacenter.InitializeInteractionArea(datacenterUnlocked, datacenterStartSettings);
         Debug.Log("|----- FINISH INIT: Data Center -----|");
@@ -199,8 +199,8 @@ public class GameManager : MonoBehaviour
         if (luckUnlocked) resourceManager.UnlockResource(Resource.Luck);
         else resourceManager.LockResource(Resource.Luck);
         
-        if (mDiceUnlocked) resourceManager.UnlockResource(Resource.mDice);
-        else resourceManager.LockResource(Resource.mDice);
+        if (mDiceUnlocked) resourceManager.UnlockResource(Resource.mDICE);
+        else resourceManager.LockResource(Resource.mDICE);
 
         if (dataUnlocked)
         {
@@ -213,7 +213,7 @@ public class GameManager : MonoBehaviour
         if (startDice > 0) CPU.instance.ChangeResource(Resource.Dice, startDice);
         if (startMaterial > 0) CPU.instance.ChangeResource(Resource.Material, startMaterial);
         if (startLuck > 0) CPU.instance.ChangeResource(Resource.Luck, startLuck);
-        if (startMDice > 0) CPU.instance.ChangeResource(Resource.mDice, startMDice);
+        if (startMDice > 0) CPU.instance.ChangeResource(Resource.mDICE, startMDice);
         if (startData > 0) CPU.instance.ChangeResource(Resource.Data, startData);
         
         //UnlockDice

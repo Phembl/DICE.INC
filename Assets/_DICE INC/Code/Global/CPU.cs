@@ -120,7 +120,7 @@ public class CPU : MonoBehaviour
                 if (printLog) Debug.Log($"Luck changed to {luckCurrent}");
                 break;
             
-            case Resource.mDice:
+            case Resource.mDICE:
                 mDiceCurrent += change;
                 if (change > 0) mDiceTotal += change;
                 if (mDiceCurrent < 0) mDiceCurrent = 0;
