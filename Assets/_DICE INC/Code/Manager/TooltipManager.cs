@@ -90,6 +90,10 @@ public class TooltipManager : MonoBehaviour
         
         tooltipIsOpen = true;
         
+        //Set Tooltip Collider Size (to block BackgroundCloser)
+        Vector2 tooltipSize = tooltipContent.GetComponent<RectTransform>().sizeDelta;
+        tooltipContent.gameObject.GetComponent<BoxCollider2D>().size = tooltipSize;
+        
         currentTooltip.GetComponent<CanvasGroup>().DOFade(1, 0.5f)
             .OnComplete(() =>
             {
@@ -123,6 +127,9 @@ public class TooltipManager : MonoBehaviour
         var updatedTooltipData = GetTooltipData(interactionArea);
         Transform tooltipContent = currentTooltip.transform.GetChild(1);
         tooltipContent.GetChild(1).gameObject.GetComponent<TMP_Text>().text = updatedTooltipData.areaDescription;
+        
+        Vector2 tooltipSize = tooltipContent.GetComponent<RectTransform>().sizeDelta;
+        tooltipContent.gameObject.GetComponent<BoxCollider2D>().size = tooltipSize;
     }
 
     private TooltipData GetTooltipData(InteractionAreaType interactionArea)

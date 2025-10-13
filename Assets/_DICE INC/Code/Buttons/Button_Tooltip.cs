@@ -4,8 +4,6 @@ using UnityEngine;
 public class Button_Tooltip : Button
 {
     [SerializeField] private InteractionAreaType interactionArea;
-
-    private bool tooltipActive;
     
     void Start()
     {
@@ -19,11 +17,11 @@ public class Button_Tooltip : Button
     
     protected override void ButtonAction()
     {
-        if (!tooltipActive) //Open Tooltip
+        if (!TooltipManager.instance.GetTooltipStatus()) //Open Tooltip
         {
             if (TooltipManager.instance.GetWorkingStatus()) return; //Checks if the tooltip is currently being build
             
-            tooltipActive = true;
+           
             TooltipManager.instance.OpenTooltip(interactionArea);
         }
         
@@ -31,7 +29,7 @@ public class Button_Tooltip : Button
         {
             if (TooltipManager.instance.GetWorkingStatus()) return; //Checks if the tooltip is currently being build
             
-            tooltipActive = false;
+            
             TooltipManager.instance.CloseTooltip(); 
         }
     }
