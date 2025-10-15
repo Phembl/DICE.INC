@@ -138,6 +138,13 @@ public class MenuManager : MonoBehaviour
         {
             if (!currentContainer.activeSelf) currentContainer.SetActive(true);
             currentContainer.GetComponent<CanvasGroup>().DOFade(1f, fadeTime);
+
+            switch (containerIndex)
+            {
+                case 0:
+                    MessageManager.instance.OpenMessageWindow();
+                    break;
+            }
         }
         
         else    //Close Container

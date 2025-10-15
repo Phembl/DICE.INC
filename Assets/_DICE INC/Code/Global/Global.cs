@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace DICEINC.Global
 {
@@ -36,6 +38,13 @@ namespace DICEINC.Global
     {
         public string areaTitle;
         public string areaDescription;
+    }
+    
+    [Serializable]
+    public struct MessageData
+    {
+        public string messageSubject;
+        public string messageBody;
     }
     
     public static class Utility
