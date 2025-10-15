@@ -78,7 +78,7 @@ public class TooltipManager : MonoBehaviour
         
         var tooltipData = GetTooltipData(interactionArea);
         
-        currentCanvas.planeDistance = 80;
+        currentCanvas.planeDistance = 90;
         currentCanvas.sortingOrder = 2;
         
         currentTooltip.GetComponent<CanvasGroup>().alpha = 0;

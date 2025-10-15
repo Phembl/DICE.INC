@@ -104,8 +104,7 @@ public class DataCenterCA : MonoBehaviour
         CreateBorder();
         CreateSpawner();
 
-        tex.SetPixels32(pixels);
-        tex.Apply(false, false);
+        DrawTexture();
     }
     
 #endregion

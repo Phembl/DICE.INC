@@ -9,6 +9,6 @@ public class Button_Menu_Settings : Button
 
     protected override void ButtonAction()
     {
-        // Settings -> Settings
+        if (!MenuManager.instance.GetBusyStatus()) MenuManager.instance.OpenMenu(2);
     }
 }
